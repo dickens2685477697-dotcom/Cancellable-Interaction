@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Makes the object camera locked (body locked)
 /// </summary>
-public class BodyLock : MonoBehaviour
+public class Body_Lock : MonoBehaviour
 {
     private Transform MainCamera;
     public Vector3 InitDist;

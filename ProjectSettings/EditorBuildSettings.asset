@@ -6,26 +6,35 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/MRTK-20220825-Bubble.unity
-    guid: 3c7530100b850064a801f77015ccab44
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/MRTK-20221112-Keyboard.unity
-    guid: 3ecb902b5b4f45b47886b38667267bb8
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/MRTK-20221123-Study1.unity
+    path: Assets/Scenes/Study1.unity
     guid: a29e3526062243546b9d249abdb323a0
   - enabled: 0
-    path: Assets/Scenes/demo.unity
-    guid: a0c27778dc081994ca45733677c83780
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/feedbackProtu.unity
-    guid: 783e9a23dca4e7341b20ae0f9d04d514
-  - enabled: 1
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/keyboard/KeyboardS.unity
     guid: ef4265ab0775e4e4ab1aa1763c0a87e3
   - enabled: 0
-    path: Assets/Scenes/ballsized.unity
-    guid: 5fc3e934c39f5b04eb785f6d50736cdd
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Scenes/Study3/study3.unity
+    guid: 3073b687c93a9bd4abd8041fe5b82c4d
+  - enabled: 1
+    path: Assets/Scenes/show.unity
+    guid: 516ffbf7bb0eff04f9a58d8293cf2e02
+  - enabled: 0
+    path: Assets/Scenes/fast_tap_thershold/pilot_fast_tap.unity
+    guid: 17fb1661265046928d070182d87266e8
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10926f304a59325418a14aef890d8831, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: a76364285d1cdbb43a5c6852d9c4db64, type: 2}

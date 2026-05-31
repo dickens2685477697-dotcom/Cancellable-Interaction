@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Angelo Morty And Cindy Co
-  productName: NewfastTapWithCancel
+  productName: show4.0
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -41,6 +41,12 @@ PlayerSettings:
     height: 1
   m_SplashScreenLogos: []
   m_VirtualRealitySplashScreen: {fileID: 0}
+  m_ShowUnitySplashAds: 0
+  m_AdsAndroidGameId: 
+  m_AdsIosGameId: 
+  m_ShowSplashAdsSlogan: 0
+  m_SloganImage: {fileID: 0}
+  m_SloganHeight: 150
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1920
   defaultScreenHeight: 1080
@@ -85,6 +91,11 @@ PlayerSettings:
   hideHomeButton: 0
   submitAnalytics: 1
   usePlayerLog: 1
+  autoStreaming: 0
+  useAnimationStreaming: 0
+  useFontStreaming: 0
+  autoStreamingId: 
+  instantGameAppId: 
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
   useFlipModelSwapchain: 1
@@ -136,10 +147,10 @@ PlayerSettings:
     Others: 1
   bundleVersion: 1
   preloadedAssets:
+  - {fileID: 11400000, guid: a76364285d1cdbb43a5c6852d9c4db64, type: 2}
   - {fileID: 11400000, guid: 10926f304a59325418a14aef890d8831, type: 2}
   - {fileID: 3343696991154007106, guid: de773ea752402334b8f92d9eebd8a528, type: 2}
   - {fileID: 5047004330950518005, guid: 11fe22d37de2b2e4bb0522de077470a7, type: 2}
-  - {fileID: 11400000, guid: a76364285d1cdbb43a5c6852d9c4db64, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -158,7 +169,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.NewfastTapWithCancel
+    Android: com.AngeloMortyAndCindyCo.show10
     Standalone: com.OculusMenuSystem2022.3D-Project
   buildNumber:
     Standalone: 0
@@ -382,6 +393,7 @@ PlayerSettings:
   - m_BuildTarget: WebGL
     m_StaticBatching: 0
     m_DynamicBatching: 0
+  m_BuildTargetSecurityBuild: []
   m_BuildTargetGraphicsJobs:
   - m_BuildTarget: MacStandaloneSupport
     m_GraphicsJobs: 0

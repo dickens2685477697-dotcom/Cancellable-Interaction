@@ -14,14 +14,15 @@ public class S1Clock: MonoBehaviour
     public Transform clockTransform;
     public TextMeshProUGUI ClockText, PerformedActionText, PerformedActionNum, HintText;
     public Material CapsuleMaterial;
-    public Vector4 DisplayBubbleActiveColor = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+    //public Vector4 DisplayBubbleActiveColor = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+    public Vector4 DisplayBubbleActiveColor = new Color(1f, 1f, 0f);
     public Vector4 DisplayBubbleInactiveColor = new Vector4(0.3f, 0.3f, 0.3f, 1f);
 
     [Space]
     public string KeepStill = "Please Keep Still";
     public string MoveAway = "Please Move Away";
-    public string insertion = "Press the bubble";
-    public string warning = "Move back to continue";
+    public string insertion = "Put finger in green ball";
+    public string warning = "Please Move back";
 
     [Space]
     public bool PrematureExit = false;
@@ -30,8 +31,9 @@ public class S1Clock: MonoBehaviour
 
     [Space]
     public int Count = 0;
-    public float CountdownTime = 5.0f;
-    public float CT = 5.0f;
+    public float CountdownTime = 3.0f;
+    public float CT = 3.0f;
+    public int expTime = 10; 
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,10 @@ public class S1Clock: MonoBehaviour
         CountCompleteEvent ??= new UnityEvent();
         //CountCompleteEvent.AddListener(CountUpdate);
         setBubbleColor(DisplayBubbleInactiveColor);
+        HintText.text = "Put finger in green ball";
+        PerformedActionText.text = "Remaining times:";
+        PerformedActionNum.text = expTime.ToString();
+        ClockText.text = CT.ToString("F2");
     }
 
     // Update is called once per frame
@@ -52,15 +58,16 @@ public class S1Clock: MonoBehaviour
 
     public void CountUpdate()
     {
-        if(Count != 3)
+        if(Count < expTime)
         {
             Count += 1;
-            PerformedActionNum.text = Count.ToString();
+            PerformedActionNum.text = (expTime-Count).ToString();
         }
         else
         {
             Count = 0;
-            PerformedActionNum.text = Count.ToString();
+            //PerformedActionNum.text = (5 - Count).ToString();
+            acce.enabled = false;
         }
     }
 
@@ -90,13 +97,13 @@ public class S1Clock: MonoBehaviour
 
         float timer = CT;
         setBubbleColor(DisplayBubbleActiveColor);
-
+        ClockText.enabled = true;
         while (timer > 0 && PrematureExit == false)
         {
             CountdownTime = timer;
             HintText.text = KeepStill;
             // update the text with the current timer value
-            ClockText.text = timer.ToString("F2");
+            ClockText.text = timer.ToString("F2") + "s";
             timer -= Time.deltaTime;
 
             // wait for one frame
@@ -107,6 +114,7 @@ public class S1Clock: MonoBehaviour
         if (timer < 0.1f)
         {
             StopCoroutine("CountdownCoroutine");
+
             OnSucceed();
         }
 
@@ -131,6 +139,23 @@ public class S1Clock: MonoBehaviour
         ClockText.color = Color.red;
         setTextColor(Color.red);
     }
+    public void TapBlueBall(int expTimes = 0)
+    {
+        HintText.text = "Tap the blue ball";
+        if (expTimes == 10) {
+            HintText.text = "Thanks";
+        }
+        print(expTimes);
+        //setBubbleColor(Color.red);
+        //ClockText.color = Color.red;
+        //setTextColor(Color.red);
+    }
+    public void Over()
+    {
+        HintText.text = "Thanks";
+        ClockText.enabled = false;
+        print("qqq");
+    }
 
     public void ResetStates()
     {
@@ -140,5 +165,6 @@ public class S1Clock: MonoBehaviour
         setBubbleColor(Color.grey);
         setTextColor(Color.white);
         HintText.text = insertion;
+        ClockText.enabled = false;
     }
 }

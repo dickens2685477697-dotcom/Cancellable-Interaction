@@ -20,6 +20,9 @@ TagManager:
   - triggeringPlane
   - Trigger
   - keys
+  - Target
+  - Obstacle
+  - circle
   layers:
   - Default
   - TransparentFX

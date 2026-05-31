@@ -85,7 +85,6 @@ public class AcceStimulate : MonoBehaviour
     public char condition;
     public Material OutMate, InMate, HLMate;
     public MeshRenderer meshRenderer;
-    public S2SetVariable ParentSSV;
     public float Distance;
 
     // Set Condition C's bound to Acceleration instead of Velocity.
@@ -113,7 +112,6 @@ public class AcceStimulate : MonoBehaviour
 
         Bounds = gameObject.GetComponent<Collider>().bounds;
         meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        ParentSSV = transform.parent.GetComponent<S2SetVariable>();
 
         InEvent ??= new UnityEvent();
         InEvent_Bool ??= new UnityEvent<bool>();
@@ -127,7 +125,12 @@ public class AcceStimulate : MonoBehaviour
     void Update()
     {
         // Make sure the collider moves with the body locked transform
-        Bounds.center = transform.position;
+        //Bounds.center = transform.position;
+        //print("kkk");
+        //print(gameObject.name);
+        //print(Bounds.center.x);
+        //print(Bounds.center.y);
+        //print(Bounds.center.z);
     }
 
     void FixedUpdate()
@@ -163,22 +166,32 @@ public class AcceStimulate : MonoBehaviour
 
             #endregion
 
-            #region 010 Behavior
+              #region 010 Behavior
             // Try get the position of Distal and Middle Joint
             HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
             HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
             // Judge if the fingertip is inside
-            if (Bounds.Contains(IndexTipPose2.Position) || Bounds.Contains(IndexDistalPose.Position))
+            if (Bounds.Contains(IndexTipPose2.Position))
             {
                 //UnityEngine.Debug.LogFormat("Inside {0}", name);
+                // print("校验");
+                // print(Bounds.center.x);
+                // print(Bounds.center.y);
+                // print(Bounds.center.z);
+                // print(IndexTipPose2.Position.x);
+                // print(IndexTipPose2.Position.y);
+                // print(IndexTipPose2.Position.z);
+                // print(Vector3.Distance(Bounds.center, IndexTipPose2.Position));
                 Entered = true;
+                InEvent.Invoke();
                 if (!Invoked)
                 {
-                    InEvent.Invoke();
+                    
+                    //InMaterial();
                 }
-                // Change Outlo
-                if (!CloseSti && !HighLighted)
-                    meshRenderer.material = InMate;
+                // Change Outlook ,���ﲻ��Ҫ�ı�outlook��ֻ��Ҫ�����¼�����
+                //if (!CloseSti && !HighLighted)
+                //    meshRenderer.material = InMate;
                 UpdateT += Time.deltaTime;
 
                 // If already enter hesitate state, do not act more
@@ -259,7 +272,7 @@ public class AcceStimulate : MonoBehaviour
                     if (Prepared)
                     {
                         PrepTime += Time.deltaTime;
-                        if (PrepTime > HesTime)
+                        if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
                             if (!Invoked)
@@ -317,8 +330,12 @@ public class AcceStimulate : MonoBehaviour
                     }
                     AfterOutEvent.Invoke();
                     // Out of the inner area
-                    if (!HighLighted)
-                        OutMaterial();
+                    //if (!Hesitated)
+                    //{
+                    //    OutMaterial();
+                    //}
+                    //OutMaterial();
+
                 }
                 UpdateT = 0;
                 Prepared = false;
@@ -348,7 +365,7 @@ public class AcceStimulate : MonoBehaviour
     {
         CloseSti = true;
     }
-
+     
     /// <summary>
     /// Condition A and B for Acce mode, line-crossing version
     /// </summary>

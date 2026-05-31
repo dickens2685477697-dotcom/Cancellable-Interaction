@@ -25,6 +25,9 @@
 
 # Visual Studio cache directory
 .vs/
+.vscode/
+.idea/
+.nested-git-backups/
 
 # Gradle cache directory
 .gradle/
@@ -63,6 +66,10 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# NuGet restored package folders
+/[Pp]ackages/MathNet.Numerics.*/
+/[Pp]ackages/System.ValueTuple.*/
 
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*

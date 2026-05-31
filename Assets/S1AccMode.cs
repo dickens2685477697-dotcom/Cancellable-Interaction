@@ -7,12 +7,87 @@ public class S1AccMode : MonoBehaviour
 {
     public AcceStimulate Acce;
     public S1Player Player;
+    public BallSpawner BallSpawner;
+    public bool isHinted = false;
+    public float oldTime;
+    public GameObject Got;
+    public bool handInBall = false;
     //public Material HesMaterial;
     //public CancelRainbow CancelR;
     public void Start()
     {
         Acce = GetComponent<AcceStimulate>();
         Player = GetComponentInChildren<S1Player>();
+        //Acce.AfterOutEvent.AddListener(SetMode);
+        Got = GameObject.Find("Got");
+        GameObject Spawner = GameObject.Find("Spawner");
+        if (Spawner != null)
+        {
+            BallSpawner = Spawner.GetComponent<BallSpawner>();
+        }
+        Acce.InEvent.AddListener(() =>
+        {
+            if (!handInBall)
+            {
+                
+                handInBall = true;
+            }
+        });
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            SetMode();
+            handInBall = false;
+        });
+
+    }
+    void SetMode()
+    {
+        //if (BallSpawner != null)
+        //{
+        //    if (isHinted)
+        //    {
+        //        BallSpawner.ResetExp();
+        //        gameObject.GetComponentInChildren<TMPro.TMP_Text>().text = "";
+        //        gameObject.GetComponent<Renderer>().enabled = false;
+        //        Got.SetActive(false);
+        //        oldTime = Time.time;
+        //        isHinted = false;
+        //    }
+        //    else
+        //    {
+        //        gameObject.GetComponentInChildren<TMPro.TMP_Text>().text = "Yes, I understand it.";
+        //        isHinted = true;
+        //    }
+        //}
+        if (BallSpawner.expRound >= 9)
+        {
+            BallSpawner.able_to_process = false;
+            BallSpawner.expRound = 0;
+        }
+        if (BallSpawner != null && BallSpawner.able_to_process)
+        {
+            BallSpawner.ResetExp();
+            Got.SetActive(false);
+            gameObject.SetActive(false);
+        }
+        
+    }
+    private void Update()
+    {
+        //if (Time.time - oldTime > 10)
+        //{
+        //    oldTime = Time.time;
+        //    gameObject.GetComponent<Renderer>().enabled = true;
+        //    if (isHinted)
+        //    {
+        //        gameObject.GetComponentInChildren<TMPro.TMP_Text>().text = "Yes, I understand it.";
+        //    }
+        //    else
+        //    {
+        //        gameObject.GetComponentInChildren<TMPro.TMP_Text>().text = "Next";
+        //    }
+        //    Got.SetActive(true);
+        //}
     }
     public void SetHesMode()
     {

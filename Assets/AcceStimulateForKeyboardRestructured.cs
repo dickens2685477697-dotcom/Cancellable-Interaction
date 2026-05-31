@@ -112,7 +112,6 @@ public class AcceStimulateForKeyboardRestructured : MonoBehaviour
     public char condition;
     public Material OutMate, InMate, HLMate;
     public MeshRenderer meshRenderer;
-    public S2SetVariable ParentSSV;
     public float Distance; 
 
 
@@ -137,7 +136,7 @@ public class AcceStimulateForKeyboardRestructured : MonoBehaviour
 
         Bounds = gameObject.GetComponent<Collider>().bounds;
         meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        ParentSSV = transform.parent.GetComponent<S2SetVariable>();
+
 
         InEvent ??= new UnityEvent();
         BeforeHesEvent ??= new UnityEvent();

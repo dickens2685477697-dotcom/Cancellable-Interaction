@@ -1,0 +1,151 @@
+using Oculus.Platform.Samples.VrHoops;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class Set4AITarget : MonoBehaviour
+{
+    public AcceStimulate Acce;
+    public ExpController expController;
+    public GameObject ball, ball2;
+    public S2Player Player, Player2;
+    public BallSpawner ballSpawner;
+    public int modeSelected;
+    public List<GameObject> balls;
+    public bool inBall = false;
+    public bool canceled = false;
+    public UnityEvent targetClicked, targetInEvent;
+    public bool handInBall = false;
+    public Material material, oriMaterial;
+    public HandLogWriter handLogWriter;
+    public EyeLogWriter eyeLogWriter;
+    public void Start()
+    {
+        Acce = GetComponent<AcceStimulate>();
+        expController = GetComponent<ExpController>();
+        handLogWriter = GameObject.Find("ExpController").GetComponent<HandLogWriter>();
+        eyeLogWriter = GameObject.Find("ExpController").GetComponent<EyeLogWriter>();
+        switch (modeSelected)
+        {
+            case 0:
+                SetFastMode();
+                break;
+            case 1:
+                Acce.Delay = true;
+                Acce.WaitTime = 0.25F;
+                SetHesMode();
+                break;
+            case 2:
+                Acce.Acce = true;
+                SetHesMode();
+                //print("Hes");
+                break;
+            case 3:
+                //快击
+                //SetFastMode();
+                Acce.Fast = true;
+                Set010();
+                break;
+        }
+        
+        Acce.InEvent.AddListener(() =>
+        {
+            if (!handInBall)
+            {
+                handInBall = true;
+                gameObject.GetComponent<MeshRenderer>().material = material;
+                handLogWriter.started = false;
+                eyeLogWriter.started = false;
+            }
+
+        });
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            handInBall = false;
+            gameObject.GetComponent<MeshRenderer>().material = oriMaterial;
+        });
+    }
+    public void SetHesMode()
+    {
+        //碰到球就应该停止收集数据
+        Acce.InEvent.AddListener(() =>
+        {
+            if (!inBall)
+            {
+                //targetInEvent.Invoke();
+            }
+            inBall = true;
+        });
+        //停满0.25s才出现下一个球
+        Acce.HesEvent.AddListener(() =>
+        {
+            targetClicked.Invoke();
+        });
+
+        //Acce.AfterOutEvent.AddListener(() => {
+        //    Player.TurnShallowBack();
+        //});
+
+    }
+    public void SetFastMode()
+    {
+        Acce.InEvent.AddListener(() =>
+        {
+
+            if (!inBall)
+            {
+                targetClicked.Invoke();
+            }
+            inBall = true;
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            inBall = false;
+        });
+    }
+    public void Set010()
+    {
+        Acce.HesEvent.AddListener(() =>
+        {
+            canceled = true;
+            Player2.TurnShallowBack();
+        });
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            if (!canceled)
+            {
+                Player.TurnYellow();
+            }
+            canceled = false;
+        });
+    }
+    private void Update()
+    {
+        //if (Time.time - oldTime > 1)
+        //{
+        //    oldTime = Time.time;
+        //    Player.TurnYellowBack();
+        //}
+    }
+    public void Set01Mode()
+    {
+        Acce.AfterOutEvent.AddListener(Reset);
+
+    }
+    public void Reset()
+    {
+        //foreach (var ball in balls) {
+        //    ball.GetComponent<MeshRenderer>().material = 
+        //}
+    }
+    public void Set010Mode()
+    {
+        print(777);
+        if (Player != null)
+        {
+            //Acce.OutEvent.AddListener(Player.ChangeColor);
+        }
+    }
+}

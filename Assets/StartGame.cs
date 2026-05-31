@@ -16,9 +16,6 @@ public class StartGame : MonoBehaviour
     }
     public void GameStart()
     {
-        Debug.Log("Start");
-        S2SetVariable ssv = Game.GetComponent<S2SetVariable>();
-        ssv.Mode01 = true;
-        ssv.SetMode(Game);
+
     }
 }

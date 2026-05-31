@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adaptive Velocity Mapping</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d0d5dd;
+      --panel: #ffffff;
+      --blue: #1d6fb8;
+      --green: #0f8a64;
+      --red: #bf3b3b;
+      --amber: #b36b00;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) 340px;
+      gap: 20px;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .plot-wrap,
+    .controls {
+      background: var(--panel);
+      border: 1px solid #e4e7ec;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    }
+
+    .plot-wrap {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e4e7ec;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 650;
+      margin: 0;
+    }
+
+    .result {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+      background: #f2f4f7;
+      color: var(--muted);
+    }
+
+    .result.pass {
+      background: #e8f5ef;
+      color: var(--green);
+    }
+
+    .result.fail {
+      background: #fbebeb;
+      color: var(--red);
+    }
+
+    .canvas-shell {
+      flex: 1;
+      min-height: 520px;
+      padding: 16px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .controls {
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .group {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      grid-column: 1 / -1;
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    input[type="number"] {
+      width: 92px;
+      height: 32px;
+      border: 1px solid #d0d5dd;
+      border-radius: 6px;
+      padding: 0 8px;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .formula {
+      display: grid;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #e4e7ec;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .formula code {
+      color: var(--ink);
+      background: #f2f4f7;
+      border-radius: 4px;
+      padding: 2px 5px;
+    }
+
+    .legend {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--line);
+    }
+
+    .swatch.blue { background: var(--blue); }
+    .swatch.gray { background: #8992a3; }
+    .swatch.green { background: var(--green); }
+    .swatch.amber { background: var(--amber); }
+
+    @media (max-width: 860px) {
+      .app {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+
+      .canvas-shell {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="plot-wrap" aria-label="Velocity threshold plot">
+      <div class="toolbar">
+        <h1 class="title">Adaptive Velocity Mapping</h1>
+        <div id="result" class="result">V_vec < threshold</div>
+      </div>
+      <div class="canvas-shell">
+        <canvas id="plot"></canvas>
+      </div>
+    </section>
+
+    <aside class="controls" aria-label="Controls">
+      <div class="group">
+        <div class="field">
+          <label for="speed">current V_vec</label>
+          <input id="speedValue" type="number" min="0" max="0.4" step="0.001" value="0.010">
+          <input id="speed" type="range" min="0" max="0.4" step="0.001" value="0.010">
+        </div>
+
+        <div class="field">
+          <label for="fingerThreshold">finger speed thershold</label>
+          <input id="fingerThresholdValue" type="number" min="0.001" max="0.4" step="0.001" value="0.030">
+          <input id="fingerThreshold" type="range" min="0.001" max="0.4" step="0.001" value="0.030">
+        </div>
+
+        <div class="field">
+          <label for="vMin">adaptive V_down min</label>
+          <input id="vMinValue" type="number" min="0" max="0.4" step="0.001" value="0.000">
+          <input id="vMin" type="range" min="0" max="0.4" step="0.001" value="0.000">
+        </div>
+
+        <div class="field">
+          <label for="vMax">adaptive V_down max</label>
+          <input id="vMaxValue" type="number" min="0" max="0.4" step="0.001" value="0.031">
+          <input id="vMax" type="range" min="0" max="0.4" step="0.001" value="0.031">
+        </div>
+      </div>
+
+      <div class="formula">
+        <div><code>x = V_vec</code></div>
+        <div><code>x <= finger speed thershold</code>: linear map from <code>adaptive V_down min</code> to <code>adaptive V_down max</code></div>
+        <div><code>x > finger speed thershold</code>: threshold stays at <code>adaptive V_down max</code></div>
+        <div>Trigger check: <code>V_vec < threshold</code></div>
+      </div>
+
+      <div class="legend">
+        <span><i class="swatch blue"></i>adaptive velocity threshold</span>
+        <span><i class="swatch gray"></i>threshold = V_vec</span>
+        <span><i class="swatch amber"></i>finger speed thershold</span>
+        <span><i class="swatch green"></i>current V_vec</span>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("plot");
+    const ctx = canvas.getContext("2d");
+    const result = document.getElementById("result");
+
+    const controls = {
+      speed: pair("speed"),
+      fingerThreshold: pair("fingerThreshold"),
+      vMin: pair("vMin"),
+      vMax: pair("vMax")
+    };
+
+    function pair(id) {
+      return {
+        range: document.getElementById(id),
+        number: document.getElementById(id + "Value")
+      };
+    }
+
+    function link(control) {
+      const sync = source => {
+        const value = Number(source.value);
+        control.range.value = value;
+        control.number.value = value.toFixed(3);
+        draw();
+      };
+      control.range.addEventListener("input", () => sync(control.range));
+      control.number.addEventListener("input", () => sync(control.number));
+    }
+
+    Object.values(controls).forEach(link);
+    window.addEventListener("resize", draw);
+
+    function values() {
+      let speed = Number(controls.speed.range.value);
+      let fingerThreshold = Math.max(0.001, Number(controls.fingerThreshold.range.value));
+      let vMin = Number(controls.vMin.range.value);
+      let vMax = Number(controls.vMax.range.value);
+      return { speed, fingerThreshold, vMin, vMax };
+    }
+
+    function thresholdAt(x, p) {
+      if (x > p.fingerThreshold) {
+        return p.vMax;
+      }
+      const t = Math.max(0, Math.min(1, x / p.fingerThreshold));
+      return p.vMin + (p.vMax - p.vMin) * t;
+    }
+
+    function draw() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const width = rect.width;
+      const height = rect.height;
+      const pad = { left: 66, right: 28, top: 26, bottom: 58 };
+      const plotW = width - pad.left - pad.right;
+      const plotH = height - pad.top - pad.bottom;
+      const p = values();
+      const xMax = Math.max(0.06, p.fingerThreshold * 1.55, p.speed * 1.35, p.vMax * 1.25, p.vMin * 1.25);
+      const yMax = Math.max(0.06, p.vMax * 1.35, p.vMin * 1.35, xMax * 0.75);
+      const threshold = thresholdAt(p.speed, p);
+      const pass = p.speed < threshold;
+
+      const x = v => pad.left + (v / xMax) * plotW;
+      const y = v => pad.top + plotH - (v / yMax) * plotH;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = "#f4f7fb";
+      ctx.fillRect(x(0), pad.top, Math.max(0, x(p.fingerThreshold) - x(0)), plotH);
+      ctx.fillStyle = "#fbf6ec";
+      ctx.fillRect(x(p.fingerThreshold), pad.top, Math.max(0, x(xMax) - x(p.fingerThreshold)), plotH);
+
+      drawGrid(x, y, xMax, yMax, pad, plotW, plotH);
+
+      drawLine([[0, 0], [Math.min(xMax, yMax), Math.min(xMax, yMax)]], x, y, "#8992a3", 2, [6, 5]);
+      drawLine([[0, p.vMin], [Math.min(p.fingerThreshold, xMax), p.vMax], [xMax, p.vMax]], x, y, "#1d6fb8", 3);
+
+      drawVertical(x(p.fingerThreshold), pad.top, pad.top + plotH, "#b36b00", [5, 5]);
+      drawVertical(x(p.speed), pad.top, pad.top + plotH, "#0f8a64", []);
+      drawHorizontal(y(threshold), pad.left, x(p.speed), "#0f8a64", [4, 4]);
+
+      ctx.fillStyle = pass ? "#0f8a64" : "#bf3b3b";
+      ctx.beginPath();
+      ctx.arc(x(p.speed), y(threshold), 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      label(`finger speed thershold ${p.fingerThreshold.toFixed(3)}`, x(p.fingerThreshold) + 8, pad.top + 18, "#8a5200");
+      label(`current V_vec ${p.speed.toFixed(3)}`, x(p.speed) + 8, y(threshold) - 10, pass ? "#0f8a64" : "#bf3b3b");
+      label(`threshold ${threshold.toFixed(3)}`, pad.left + 8, y(threshold) - 8, "#0f8a64");
+
+      ctx.fillStyle = "#1f2933";
+      ctx.font = "600 13px Inter, Segoe UI, Arial, sans-serif";
+      ctx.fillText("realtime speed V_vec", pad.left + plotW / 2 - 58, height - 16);
+      ctx.save();
+      ctx.translate(18, pad.top + plotH / 2 + 58);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("velocity threshold", 0, 0);
+      ctx.restore();
+
+      result.textContent = pass
+        ? `pass: ${p.speed.toFixed(3)} < ${threshold.toFixed(3)}`
+        : `fail: ${p.speed.toFixed(3)} >= ${threshold.toFixed(3)}`;
+      result.className = `result ${pass ? "pass" : "fail"}`;
+    }
+
+    function drawGrid(x, y, xMax, yMax, pad, plotW, plotH) {
+      ctx.strokeStyle = "#e4e7ec";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#667085";
+      ctx.font = "12px Inter, Segoe UI, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+
+      for (let i = 0; i <= 5; i++) {
+        const vx = (xMax / 5) * i;
+        const px = x(vx);
+        ctx.beginPath();
+        ctx.moveTo(px, pad.top);
+        ctx.lineTo(px, pad.top + plotH);
+        ctx.stroke();
+        ctx.fillText(vx.toFixed(3), px, pad.top + plotH + 8);
+      }
+
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i++) {
+        const vy = (yMax / 5) * i;
+        const py = y(vy);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, py);
+        ctx.lineTo(pad.left + plotW, py);
+        ctx.stroke();
+        ctx.fillText(vy.toFixed(3), pad.left - 8, py);
+      }
+
+      ctx.strokeStyle = "#98a2b3";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, pad.top);
+      ctx.lineTo(pad.left, pad.top + plotH);
+      ctx.lineTo(pad.left + plotW, pad.top + plotH);
+      ctx.stroke();
+    }
+
+    function drawLine(points, x, y, color, width, dash = []) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      points.forEach((point, index) => {
+        const px = x(point[0]);
+        const py = y(point[1]);
+        if (index === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function drawVertical(px, y1, y2, color, dash) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      ctx.moveTo(px, y1);
+      ctx.lineTo(px, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function drawHorizontal(py, x1, x2, color, dash) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      ctx.moveTo(x1, py);
+      ctx.lineTo(x2, py);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function label(text, px, py, color) {
+      ctx.fillStyle = color;
+      ctx.font = "600 12px Inter, Segoe UI, Arial, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, px, py);
+    }
+
+    draw();
+  </script>
+</body>
+</html>

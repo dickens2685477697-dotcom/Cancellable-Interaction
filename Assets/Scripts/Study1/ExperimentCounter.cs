@@ -16,22 +16,27 @@ public class ExperimentCounter : MonoBehaviour
     public TextMeshProUGUI DisplayNum;
     public TextMeshProUGUI TaskPrompt;
     public TextMeshProUGUI GesturePrompt;
-
-    private string CurrentTask_trigger = "Trigger";
+    StartBallBehavior2 startBallBehavior;
+    private string CurrentTask_trigger = "Use your own dwell time to trigger the ball";
     private string CurrentTask_DoNotTrigger = "Do not trigger";
 
     private string NormalGesturePrompt = "  ";
-    private string BackGesturePrompt = "Withdraw your hand";
+    private string BackGesturePrompt = "\"Withdraw\"";
     private string CrossingGesturePrompt = "Move Away your hand";
-
+    public Material shallowBall;
+    public Material oriBall;
     private bool isCoolingDown = false; // Add a flag to check if the coroutine is running
 
     // Start is called before the first frame update
     void Start()
     {
+        DisplayNum.text = 10.ToString();
         SphereCollider = gameObject.GetComponent<Collider>();
         acce = GetComponent<AcceStimulate>();
+        acce.InEvent.AddListener(TurnShallow);
         acce.OutEvent.AddListener(UpdateCount);
+        acce.OutEvent.AddListener(TurnShallowBack);
+        startBallBehavior = GetComponentInChildren<StartBallBehavior2>();
         TaskNum = 0;
         SwitchTask();
     }
@@ -49,8 +54,12 @@ public class ExperimentCounter : MonoBehaviour
 
     public void UpdateCount()
     {
-        count += 1;
-        DisplayNum.text = count.ToString();
+        if (startBallBehavior.GetState())
+        {
+            count += 1;
+            DisplayNum.text = (10 - count).ToString();
+        }
+            
     }
 
     public void LockTriggerOnCrossing()
@@ -70,21 +79,24 @@ public class ExperimentCounter : MonoBehaviour
         switch (TaskNum)
         {
             case 1:
-                TaskPrompt.color = Color.green;
+                TaskPrompt.color = Color.red;
                 TaskPrompt.text = CurrentTask_trigger;
-                GesturePrompt.text = NormalGesturePrompt;
+                GesturePrompt.color = Color.red;
+                //GesturePrompt.text = "\"Sweep\"";
                 break;
+            //case 2:
+            //    TaskPrompt.color = Color.red;
+            //    TaskPrompt.text = CurrentTask_DoNotTrigger;
+            //    GesturePrompt.color = Color.red;
+            //    GesturePrompt.text = BackGesturePrompt;
+            //    DisplayNum.text = 10.ToString();
+            //    break;
             case 2:
-                TaskPrompt.color = Color.red;
-                TaskPrompt.text = CurrentTask_DoNotTrigger;
-                GesturePrompt.color = Color.red;
-                GesturePrompt.text = BackGesturePrompt;
-                break;
-            case 3:
-                TaskPrompt.color = Color.red;
-                TaskPrompt.text = CurrentTask_DoNotTrigger;
-                GesturePrompt.color = Color.red;
-                GesturePrompt.text = CrossingGesturePrompt;
+                acce.enabled = false;
+                GameObject.Find("Task").SetActive(false);
+                TaskPrompt.color = Color.green;
+                TaskPrompt.text = "Thanks";
+                GesturePrompt.text = "";
                 break;
         }
     }
@@ -104,8 +116,17 @@ public class ExperimentCounter : MonoBehaviour
         SphereCollider.enabled = false;
 
         yield return new WaitForSeconds(coolDown);
-        DisplayNum.text = count.ToString();
+        DisplayNum.text = (10-count).ToString();
 
         isCoolingDown = false; // Set the flag to false when the coroutine finishes
+    }
+    void TurnShallow()
+    {
+        gameObject.GetComponent<MeshRenderer>().material = shallowBall;
+    }
+    void TurnShallowBack()
+    {
+        gameObject.GetComponent<MeshRenderer>().material = oriBall;
+        startBallBehavior.TureUnstarted();
     }
 }

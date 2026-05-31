@@ -15,13 +15,13 @@ public class S1SetVariable : MonoBehaviour
     {
         Init(gameObject);
         SetMaterial(gameObject);
-        SetMode(gameObject);
+        //SetMode(gameObject);
     }
     public void Init(GameObject root)
     {
         if (root.transform.childCount == 0) return;
         foreach (Transform t in root.transform)
-        {
+        { 
             AcceStimulate acce;
             S1AccMode sam;
             acce = t.GetComponent<AcceStimulate>();
@@ -54,8 +54,7 @@ public class S1SetVariable : MonoBehaviour
     }
 
     public void SetMode(GameObject root)
-    {
-        //print(root);
+    {     
         AcceStimulate acce;
         acce = root.GetComponent<AcceStimulate>();
         if (acce != null)

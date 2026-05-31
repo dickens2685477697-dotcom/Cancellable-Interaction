@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
@@ -13,6 +14,7 @@ public class LogWriter : MonoBehaviour
     private FileStream fs;
     private StreamWriter sw;
     private int caseTime;
+    public TextMeshProUGUI times;
     void Start()
     {
         date = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss");
@@ -64,5 +66,20 @@ public class LogWriter : MonoBehaviour
     public void increCase()
     {
         caseTime++;
+        
+        //times.text = (11 - caseTime).ToString();
+        if (caseTime >=16)
+        {
+            gameObject.SetActive(false);
+
+        }
+    }
+    public string GetFilePath()
+    {
+        return filePath;
+    }
+    public string GetFileFullPath()
+    {
+        return fileFullPath;
     }
 }

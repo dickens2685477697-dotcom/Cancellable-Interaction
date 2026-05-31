@@ -90,7 +90,7 @@ Material:
     - _Dissolve: 0.05
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FP: 0.33
+    - _FP: 0.03
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
