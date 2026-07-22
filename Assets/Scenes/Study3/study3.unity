@@ -1034,6 +1034,10 @@ MonoBehaviour:
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
   direction010WindowFrameCount: 10
+  direction010TestCDAngleThreshold: 20
+  direction010TestSmoothingAlpha: 0.25
+  direction010TestMinSpeedThreshold: 0.05
+  direction010TestWindowFrameCount: 10
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.05
@@ -2240,7 +2244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modeSelected: 24
+  modeSelected: 25
   able_to_process: 1
   enable_preview: 0
   enableMineBall: 1
@@ -2253,6 +2257,10 @@ MonoBehaviour:
   direction010SmoothingAlpha: 0.65
   direction010MinSpeedThreshold: 0.067
   direction010WindowFrameCount: 5
+  direction010TestCDAngleThreshold: 20
+  direction010TestSmoothingAlpha: 0.25
+  direction010TestMinSpeedThreshold: 0.067
+  direction010TestWindowFrameCount: 5
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.067
@@ -3505,6 +3513,10 @@ MonoBehaviour:
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
   direction010WindowFrameCount: 10
+  direction010TestCDAngleThreshold: 20
+  direction010TestSmoothingAlpha: 0.25
+  direction010TestMinSpeedThreshold: 0.05
+  direction010TestWindowFrameCount: 10
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.05
