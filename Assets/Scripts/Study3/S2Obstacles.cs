@@ -98,6 +98,11 @@ public class S2Obstacles : MonoBehaviour
     private readonly Queue<Vector3> direction010PositionHistory = new Queue<Vector3>();
     private bool direction010HasSmoothedDirection = false;
     private Vector3 direction010SmoothedDirection = Vector3.zero;
+    private bool pinchDirectionCancelTriggered = false;
+    private bool pinchDirectionReentryRequired = false;
+    private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
+    private bool pinchDirectionHasSmoothedDirection = false;
+    private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
     public void Start()
     {
         Acce = GetComponent<AcceStudy3>();
@@ -132,6 +137,9 @@ public class S2Obstacles : MonoBehaviour
                 break;
             case 15:
                 SetSpeedReleaseMode();
+                break;
+            case 26:
+                SetSpeedDirectionMode();
                 break;
             case 21:
                 SetSpeedMode();
@@ -168,6 +176,11 @@ public class S2Obstacles : MonoBehaviour
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
                 SetDwellReleaseMode();
                 break;
+            case 28:
+                Acce.Delay = true;
+                Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
+                SetDwellDirectionMode();
+                break;
             case 12:
                 Acce.Delay = true;
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
@@ -175,6 +188,9 @@ public class S2Obstacles : MonoBehaviour
                 break;
             case 13:
                 SetPinchReleaseTriggerMode();
+                break;
+            case 27:
+                SetPinchDirectionMode();
                 break;
             case 16:
                 SetPinchThumbSwipeMode();
@@ -392,6 +408,9 @@ public class S2Obstacles : MonoBehaviour
             case 15:
                 SetSpeedReleaseMode();
                 break;
+            case 26:
+                SetSpeedDirectionMode();
+                break;
             case 21:
                 SetSpeedMode();
                 break;
@@ -427,6 +446,11 @@ public class S2Obstacles : MonoBehaviour
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
                 SetDwellReleaseMode();
                 break;
+            case 28:
+                Acce.Delay = true;
+                Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
+                SetDwellDirectionMode();
+                break;
             case 12:
                 Acce.Delay = true;
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
@@ -434,6 +458,9 @@ public class S2Obstacles : MonoBehaviour
                 break;
             case 13:
                 SetPinchReleaseTriggerMode();
+                break;
+            case 27:
+                SetPinchDirectionMode();
                 break;
             case 16:
                 SetPinchThumbSwipeMode();
@@ -470,6 +497,7 @@ public class S2Obstacles : MonoBehaviour
         ResetPinchWristTiltState();
         ResetContact010ObstacleState();
         ResetDirection010ObstacleState();
+        ResetPinchDirectionObstacleCancelState();
         Acce?.InEvent.RemoveAllListeners();
         Acce?.BeforeHesEvent.RemoveAllListeners();
         Acce?.HesEvent.RemoveAllListeners();
@@ -1092,6 +1120,77 @@ public class S2Obstacles : MonoBehaviour
             }
 
             ResetSpeedReleaseState();
+            ResetFastTapTiming();
+        });
+    }
+
+    public void SetSpeedDirectionMode()
+    {
+        ResetSpeedReleaseState();
+        ResetDirection010ObstacleState();
+
+        Acce.InEvent.AddListener(() =>
+        {
+            if (speedReleaseReentryRequired || direction010ReentryRequired)
+            {
+                return;
+            }
+
+            if (!handInBall)
+            {
+                ballSpawner.errorInTimes++;
+                Player.TurnShallow();
+                handInBall = true;
+                handInBall2 = true;
+                inBall = true;
+                canceled = false;
+                speedReleaseMinSpeedMet = false;
+                direction010CancelTriggered = false;
+                direction010PositionHistory.Clear();
+                direction010HasSmoothedDirection = false;
+                direction010SmoothedDirection = Vector3.zero;
+                fastTapEntryTimestamp = Time.time;
+            }
+
+            if (!triggered)
+            {
+                ballSpawner.area_type = 2;
+                ballSpawner.index = ballIndex;
+            }
+            else
+            {
+                ballSpawner.area_type = 4;
+                ballSpawner.index = ballIndex;
+            }
+
+            CheckSpeedReleaseIndexTrigger();
+
+            if (speedReleaseMinSpeedMet
+                && !speedReleaseTriggered
+                && !speedReleaseReentryRequired
+                && IsDirection010CancelMovement())
+            {
+                TriggerDirection010ObstacleCancel();
+            }
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            if (handInBall && !speedReleaseTriggered && !direction010CancelTriggered)
+            {
+                TriggerSpeedObstacleCancel();
+            }
+
+            if (!triggered)
+            {
+                oldTime = Time.time;
+                Player.TurnShallowBack();
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+            }
+
+            ResetSpeedReleaseState();
+            ResetDirection010ObstacleState();
             ResetFastTapTiming();
         });
     }
@@ -2110,6 +2209,164 @@ public class S2Obstacles : MonoBehaviour
         }
     }
 
+    public void SetDwellDirectionMode()
+    {
+        ResetDirection010ObstacleState();
+        Acce.BeforeHesEvent.AddListener(Acce.SetInvoked);
+        Acce.HesEvent.AddListener(Acce.OpenCloseSti);
+        Acce.HesEvent.AddListener(Acce.showDebugger);
+        Acce.AfterOutEvent.AddListener(Acce.UnInvoked);
+
+        if (ballSpawner != null)
+        {
+            Acce.InEvent.AddListener(() =>
+            {
+                if (direction010ReentryRequired)
+                {
+                    return;
+                }
+
+                if (!handInBall2)
+                {
+                    Player.TurnShallow();
+                    handInBall2 = true;
+                    handInBall = true;
+                    inBall = true;
+                    canceled = false;
+                    direction010CancelTriggered = false;
+                    ResetDirection010ObstacleTrackingWindow();
+                    if (!triggered)
+                    {
+                        ballSpawner.errorInTimes++;
+                    }
+                }
+
+                if (!triggered)
+                {
+                    ballSpawner.area_type = 2;
+                    ballSpawner.index = ballIndex;
+                }
+                else
+                {
+                    ballSpawner.area_type = 4;
+                    ballSpawner.index = ballIndex;
+                }
+
+                if (!triggered && IsDirection010CancelMovement())
+                {
+                    TriggerDirection010ObstacleCancel();
+                }
+            });
+
+            Acce.HesEvent.AddListener(() =>
+            {
+                if (direction010CancelTriggered || direction010ReentryRequired || canceled)
+                {
+                    return;
+                }
+
+                if (!triggered)
+                {
+                    Player.TurnYellow();
+                    source.Play();
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                }
+            });
+
+            Acce.AfterOutEvent.AddListener(() =>
+            {
+                bool wasDirectionCanceled = direction010CancelTriggered || direction010ReentryRequired || canceled;
+
+                handInBall2 = false;
+                handInBall = false;
+                inBall = false;
+
+                if (!wasDirectionCanceled && !triggered)
+                {
+                    oldTime = Time.time;
+                    Player.TurnShallowBack();
+                }
+
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+                ResetDirection010ObstacleState();
+                ballSpawner.triggered = false;
+            });
+        }
+    }
+
+    public void SetPinchDirectionMode()
+    {
+        ResetPinchReleaseTriggerState();
+        ResetPinchDirectionObstacleCancelState();
+
+        Acce.InEvent.AddListener(() =>
+        {
+            HandlePinchDirectionObstacleEnter(true);
+
+            if (pinchReleaseTriggerArmed
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired
+                && !triggered
+                && IsPinchDirectionCancelMovement())
+            {
+                pinchReleaseTriggerArmed = false;
+                TriggerPinchDirectionObstacleCancel();
+            }
+        });
+
+        Acce2.InEvent.AddListener(() =>
+        {
+            HandlePinchDirectionObstacleEnter(false);
+        });
+
+        pinchob.PinchStart.AddListener(() =>
+        {
+            if (pinchReleaseTriggerCompleted
+                || pinchDirectionCancelTriggered
+                || pinchDirectionReentryRequired)
+            {
+                return;
+            }
+
+            if (inBall || inBall2)
+            {
+                pinchReleaseTriggerArmed = true;
+                ResetPinchDirectionObstacleTrackingWindow();
+            }
+        });
+
+        pinchob.PinchEnd.AddListener(() =>
+        {
+            if (pinchReleaseTriggerCompleted)
+            {
+                return;
+            }
+
+            if (pinchReleaseTriggerArmed
+                && (inBall || inBall2)
+                && !triggered
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired)
+            {
+                TriggerPinchReleaseTriggerObstacle();
+                ResetPinchDirectionObstacleCancelState();
+            }
+
+            pinchReleaseTriggerArmed = false;
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchDirectionObstacleExit(true);
+        });
+
+        Acce2.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchDirectionObstacleExit(false);
+        });
+    }
+
     public void SetPinchReleaseTriggerMode()
     {
         ResetPinchReleaseTriggerState();
@@ -2608,6 +2865,235 @@ public class S2Obstacles : MonoBehaviour
         pinchReleaseTriggerCompleted = false;
         inBall = false;
         inBall2 = false;
+    }
+
+    private void HandlePinchDirectionObstacleEnter(bool enteredByIndex)
+    {
+        if (pinchReleaseTriggerCompleted || pinchDirectionReentryRequired)
+        {
+            return;
+        }
+
+        HandlePinchReleaseTriggerEnter(enteredByIndex);
+    }
+
+    private void HandlePinchDirectionObstacleExit(bool exitedByIndex)
+    {
+        if (exitedByIndex)
+        {
+            inBall = false;
+        }
+        else
+        {
+            inBall2 = false;
+        }
+
+        if (inBall || inBall2)
+        {
+            if (!triggered && !pinchDirectionCancelTriggered && !pinchDirectionReentryRequired)
+            {
+                ballSpawner.area_type = 2;
+                ballSpawner.index = ballIndex;
+            }
+            return;
+        }
+
+        if (!triggered)
+        {
+            oldTime = Time.time;
+            Player.TurnShallowBack();
+        }
+
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+        ballSpawner.triggered = false;
+        ResetPinchReleaseTriggerState();
+        ResetPinchDirectionObstacleCancelState();
+    }
+
+    private void TriggerPinchDirectionObstacleCancel()
+    {
+        if (pinchDirectionCancelTriggered)
+        {
+            return;
+        }
+
+        pinchDirectionCancelTriggered = true;
+        pinchDirectionReentryRequired = true;
+        pinchReleaseTriggerArmed = false;
+        canceled = true;
+        handInBall = false;
+        handInBall2 = false;
+        inBall = false;
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+        Player.TurnShallowBack();
+    }
+
+    private bool IsPinchDirectionCancelMovement()
+    {
+        if (ballSpawner == null)
+        {
+            return false;
+        }
+
+        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
+        if (windowMovement.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        float minSpeed = GetPinchDirectionMinSpeedThreshold();
+        if (minSpeed > 0f && centerSpeed < minSpeed)
+        {
+            return false;
+        }
+
+        Collider collider = GetComponent<Collider>();
+        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
+        Vector3 ringCenter = ballSpawner.transform.position;
+        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
+        if (abDirection.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
+        Vector3 smoothedDirection = SmoothPinchDirectionDirection(windowMovement.normalized);
+        float angle = Vector3.Angle(smoothedDirection, cdDirection);
+        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
+        return cdAngleDelta <= GetPinchDirectionAngleThreshold();
+    }
+
+    private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
+    {
+        centerSpeed = 0f;
+        if (!TryGetPinchDirectionCenterPoint(out Vector3 currentCenter))
+        {
+            return Vector3.zero;
+        }
+
+        int windowFrameCount = GetPinchDirectionWindowFrameCount();
+        pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+
+        while (pinchDirectionCenterPositionHistory.Count > windowFrameCount)
+        {
+            pinchDirectionCenterPositionHistory.Dequeue();
+        }
+
+        if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
+        Vector3 averageDirection = Vector3.zero;
+        float totalSegmentDistance = 0f;
+        int validSegmentCount = 0;
+
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Vector3 segment = positions[i] - positions[i - 1];
+            if (segment.sqrMagnitude <= 0.0000001f)
+            {
+                continue;
+            }
+
+            averageDirection += segment.normalized;
+            totalSegmentDistance += segment.magnitude;
+            validSegmentCount++;
+        }
+
+        if (validSegmentCount == 0)
+        {
+            return Vector3.zero;
+        }
+
+        float sampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+        centerSpeed = (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
+        return averageDirection / validSegmentCount;
+    }
+
+    private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
+    {
+        centerPoint = Vector3.zero;
+        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        if (!hasIndexTip || !hasThumbTip)
+        {
+            return false;
+        }
+
+        centerPoint = (indexTipPose.Position + thumbTipPose.Position) * 0.5f;
+        return true;
+    }
+
+    private Vector3 SmoothPinchDirectionDirection(Vector3 currentDirection)
+    {
+        if (!pinchDirectionHasSmoothedDirection)
+        {
+            pinchDirectionSmoothedDirection = currentDirection;
+            pinchDirectionHasSmoothedDirection = true;
+            return pinchDirectionSmoothedDirection;
+        }
+
+        float alpha = GetPinchDirectionSmoothingAlpha();
+        pinchDirectionSmoothedDirection = Vector3.Slerp(pinchDirectionSmoothedDirection, currentDirection, alpha).normalized;
+        return pinchDirectionSmoothedDirection;
+    }
+
+    private int GetPinchDirectionWindowFrameCount()
+    {
+        if (ballSpawner == null)
+        {
+            return 10;
+        }
+
+        return Mathf.Max(2, ballSpawner.pinchDirectionWindowFrameCount);
+    }
+
+    private float GetPinchDirectionAngleThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 20f;
+        }
+
+        return Mathf.Clamp(ballSpawner.pinchDirectionCDAngleThreshold, 0f, 90f);
+    }
+
+    private float GetPinchDirectionSmoothingAlpha()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.25f;
+        }
+
+        return Mathf.Clamp01(ballSpawner.pinchDirectionSmoothingAlpha);
+    }
+
+    private float GetPinchDirectionMinSpeedThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.05f;
+        }
+
+        return Mathf.Max(0f, ballSpawner.pinchDirectionMinSpeedThreshold);
+    }
+
+    private void ResetPinchDirectionObstacleCancelState()
+    {
+        pinchDirectionCancelTriggered = false;
+        pinchDirectionReentryRequired = false;
+        ResetPinchDirectionObstacleTrackingWindow();
+    }
+
+    private void ResetPinchDirectionObstacleTrackingWindow()
+    {
+        pinchDirectionCenterPositionHistory.Clear();
+        pinchDirectionHasSmoothedDirection = false;
+        pinchDirectionSmoothedDirection = Vector3.zero;
     }
 
     private bool TryCapturePinchThumbSwipeStart()
@@ -3424,8 +3910,29 @@ public class S2Obstacles : MonoBehaviour
             return Vector3.zero;
         }
 
-        // 队列满指定帧数后，用当前点减最早点得到窗口累计位移方向。
-        return currentPosition - direction010PositionHistory.Peek();
+        // Average per-segment directions instead of relying on a single oldest/current endpoint pair.
+        Vector3[] positions = direction010PositionHistory.ToArray();
+        Vector3 averageDirection = Vector3.zero;
+        int validSegmentCount = 0;
+
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Vector3 segment = positions[i] - positions[i - 1];
+            if (segment.sqrMagnitude <= 0.0000001f)
+            {
+                continue;
+            }
+
+            averageDirection += segment.normalized;
+            validSegmentCount++;
+        }
+
+        if (validSegmentCount == 0)
+        {
+            return Vector3.zero;
+        }
+
+        return averageDirection / validSegmentCount;
     }
 
     private int GetDirection010WindowFrameCount()
@@ -3495,10 +4002,15 @@ public class S2Obstacles : MonoBehaviour
         canceled = false;
         direction010CancelTriggered = false;
         direction010ReentryRequired = false;
+        ResetDirection010ObstacleTrackingWindow();
+        ResetRainbowState();
+    }
+
+    private void ResetDirection010ObstacleTrackingWindow()
+    {
         direction010PositionHistory.Clear();
         direction010HasSmoothedDirection = false;
         direction010SmoothedDirection = Vector3.zero;
-        ResetRainbowState();
     }
 
     private void ShowRainbowArc()

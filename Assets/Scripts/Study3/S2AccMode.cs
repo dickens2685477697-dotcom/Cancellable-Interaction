@@ -85,6 +85,11 @@ public class S2AccMode : MonoBehaviour
     private readonly Queue<Vector3> direction010PositionHistory = new Queue<Vector3>();
     private bool direction010HasSmoothedDirection = false;
     private Vector3 direction010SmoothedDirection = Vector3.zero;
+    private bool pinchDirectionCancelTriggered = false;
+    private bool pinchDirectionReentryRequired = false;
+    private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
+    private bool pinchDirectionHasSmoothedDirection = false;
+    private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
     private GameObject rainbowArcRoot;
     private Vector3 rainbowEntryPosition;
     private bool rainbowEntryCaptured = false;
@@ -255,6 +260,9 @@ public class S2AccMode : MonoBehaviour
             case 15:
                 SetSpeedReleaseMode();
                 break;
+            case 26:
+                SetSpeedDirectionMode();
+                break;
             case 21:
                 SetSpeedMode();
                 break;
@@ -290,6 +298,11 @@ public class S2AccMode : MonoBehaviour
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
                 SetDwellReleaseMode();
                 break;
+            case 28:
+                Acce.Delay = true;
+                Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
+                SetDwellDirectionMode();
+                break;
             case 12:
                 Acce.Delay = true;
                 Acce.WaitTime = Mathf.Max(0f, ballSpawner.longPressTimeThreshold);
@@ -297,6 +310,9 @@ public class S2AccMode : MonoBehaviour
                 break;
             case 13:
                 SetPinchReleaseTriggerMode();
+                break;
+            case 27:
+                SetPinchDirectionMode();
                 break;
             case 16:
                 SetPinchThumbSwipeMode();
@@ -390,6 +406,78 @@ public class S2AccMode : MonoBehaviour
         Acce2.AfterOutEvent.AddListener(() =>
         {
             HandlePinchReleaseTriggerExit(false);
+        });
+    }
+
+    public void SetPinchDirectionMode()
+    {
+        ResetPinchReleaseTriggerState();
+        ResetPinchDirectionCancelState();
+
+        Acce.InEvent.AddListener(() =>
+        {
+            HandlePinchDirectionEnter(true);
+
+            if (pinchReleaseTriggerArmed
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired
+                && IsPinchDirectionCancelMovement())
+            {
+                TriggerPinchDirectionCancel();
+            }
+        });
+
+        Acce2.InEvent.AddListener(() =>
+        {
+            HandlePinchDirectionEnter(false);
+        });
+
+        pinchob.PinchStart.AddListener(() =>
+        {
+            if (!ballSpawner.enable_trigger
+                || pinchReleaseTriggerCompleted
+                || pinchDirectionCancelTriggered
+                || pinchDirectionReentryRequired)
+            {
+                return;
+            }
+
+            if (inBall || inBall2)
+            {
+                pinchReleaseTriggerArmed = true;
+                ResetPinchDirectionTrackingWindow();
+                ShowModeReadyRing();
+            }
+        });
+
+        pinchob.PinchEnd.AddListener(() =>
+        {
+            if (!ballSpawner.enable_trigger || pinchReleaseTriggerCompleted)
+            {
+                return;
+            }
+
+            if (pinchReleaseTriggerArmed
+                && (inBall || inBall2)
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired)
+            {
+                TriggerPinchReleaseTriggerSelection();
+                ResetPinchDirectionCancelState();
+            }
+
+            pinchReleaseTriggerArmed = false;
+            HideModeReadyRing();
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchDirectionExit(true);
+        });
+
+        Acce2.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchDirectionExit(false);
         });
     }
 
@@ -652,6 +740,106 @@ public class S2AccMode : MonoBehaviour
             }
 
             ResetDirection010State();
+        });
+    }
+
+    public void SetDwellDirectionMode()
+    {
+        ResetDirection010State();
+
+        if (ballSpawner != null)
+        {
+            Acce.InEvent.AddListener(() =>
+            {
+                if (!ballSpawner.enable_trigger || direction010ReentryRequired)
+                {
+                    return;
+                }
+
+                if (!handInBall2)
+                {
+                    handInBall2 = true;
+                    handInBall = true;
+                    inBall = true;
+                    canceled = false;
+                    direction010CancelTriggered = false;
+                    ResetDirection010TrackingWindow();
+                    ballSpawner.intargetTimes++;
+                }
+
+                if (isMineBall)
+                {
+                    Player.TurnShallowYellowMineBall();
+                }
+                else
+                {
+                    Player.TurnShallowGreenMineBall();
+                }
+
+                ballSpawner.area_type = 1;
+                ballSpawner.index = ballIndex;
+                logWriter3.isMineBall = isMineBall;
+                logWriter3.handInBall = true;
+
+                if (IsDirection010CancelMovement())
+                {
+                    TriggerDirection010Cancel();
+                }
+            });
+
+            Acce.HesEvent.AddListener(() =>
+            {
+                if (direction010CancelTriggered || direction010ReentryRequired || canceled)
+                {
+                    return;
+                }
+
+                if (isMineBall)
+                {
+                    logWriter3.successfully_Canceled = false;
+                    ballSpawner.caseTime++;
+                    ballSpawner.PlaySoundWrong();
+                    ballSpawner.getNewTarget();
+                    ballSpawner.triggerCondition = Acce.condition;
+                }
+                else
+                {
+                    ballSpawner.caseTime++;
+                    ballSpawner.PlaySound2();
+                    ballSpawner.getNewTarget();
+                    ballSpawner.triggerCondition = Acce.condition;
+                }
+
+                logWriter3.handInBall = false;
+                logWriter3.triggerTime = 0f;
+            });
+        }
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            bool wasDirectionCanceled = direction010CancelTriggered || direction010ReentryRequired || canceled;
+
+            if (wasDirectionCanceled)
+            {
+                ResetDirection010State();
+                return;
+            }
+
+            handInBall2 = false;
+            handInBall = false;
+            inBall = false;
+
+            Player.ChangeOpacityBack();
+            if (!ballSpawner.triggered)
+            {
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+            }
+
+            logWriter3.handInBall = false;
+            logWriter3.triggerTime = 0f;
+            useIndex = false;
+            ResetDirection010TrackingWindow();
         });
     }
 
@@ -1929,6 +2117,79 @@ public class S2AccMode : MonoBehaviour
         });
     }
 
+    public void SetSpeedDirectionMode()
+    {
+        ResetSpeedReleaseState();
+        ResetDirection010State();
+
+        Acce.InEvent.AddListener(() =>
+        {
+            if (!ballSpawner.enable_trigger || speedReleaseReentryRequired || direction010ReentryRequired)
+            {
+                return;
+            }
+
+            if (!handInBall)
+            {
+                handInBall = true;
+                handInBall2 = true;
+                inBall = true;
+                canceled = false;
+                speedReleaseMinSpeedMet = false;
+                direction010CancelTriggered = false;
+                direction010PositionHistory.Clear();
+                direction010HasSmoothedDirection = false;
+                direction010SmoothedDirection = Vector3.zero;
+                ballSpawner.intargetTimes++;
+                logWriter3.handInBall = true;
+                fastTapEntryTimestamp = Time.time;
+            }
+
+            if (isMineBall)
+            {
+                Player.TurnShallowYellowMineBall();
+            }
+            else
+            {
+                Player.TurnShallowGreenMineBall();
+            }
+
+            ballSpawner.area_type = 1;
+            ballSpawner.index = ballIndex;
+
+            CheckSpeedReleaseIndexTrigger();
+
+            if (speedReleaseMinSpeedMet
+                && !speedReleaseTriggered
+                && !speedReleaseReentryRequired
+                && IsDirection010CancelMovement())
+            {
+                HideModeReadyRing();
+                TriggerDirection010Cancel();
+            }
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            if (handInBall && !speedReleaseTriggered && !direction010CancelTriggered)
+            {
+                TriggerSpeedCancel(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
+            }
+
+            ResetSpeedReleaseState();
+            ResetDirection010State();
+            ResetFastTapTiming();
+            logWriter3.handInBall = false;
+            Player.ChangeOpacityBack();
+
+            if (!ballSpawner.triggered)
+            {
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+            }
+        });
+    }
+
     public void SetSpeedDwellMode()
     {
         ResetSpeedReleaseState();
@@ -2894,6 +3155,235 @@ public class S2AccMode : MonoBehaviour
         }
 
         return Mathf.Max(0f, Time.time - pinchReleaseTriggerEntryTimestamp);
+    }
+
+    private void HandlePinchDirectionEnter(bool enteredByIndex)
+    {
+        if (!ballSpawner.enable_trigger
+            || pinchReleaseTriggerCompleted
+            || pinchDirectionReentryRequired)
+        {
+            return;
+        }
+
+        HandlePinchReleaseTriggerEnter(enteredByIndex);
+    }
+
+    private void HandlePinchDirectionExit(bool exitedByIndex)
+    {
+        if (exitedByIndex)
+        {
+            inBall = false;
+        }
+        else
+        {
+            inBall2 = false;
+        }
+
+        if (inBall || inBall2)
+        {
+            if (!pinchDirectionCancelTriggered && !pinchDirectionReentryRequired)
+            {
+                ballSpawner.area_type = ballKind;
+                ballSpawner.index = ballIndex;
+                logWriter3.handInBall = true;
+            }
+            return;
+        }
+
+        if (pinchDirectionCancelTriggered || pinchDirectionReentryRequired)
+        {
+            ResetPinchReleaseTriggerVisuals();
+            ResetPinchReleaseTriggerState();
+            ResetPinchDirectionCancelState();
+            return;
+        }
+
+        ResetPinchReleaseTriggerVisuals();
+        ResetPinchReleaseTriggerState();
+        ResetPinchDirectionCancelState();
+    }
+
+    private void TriggerPinchDirectionCancel()
+    {
+        if (pinchDirectionCancelTriggered)
+        {
+            return;
+        }
+
+        pinchDirectionCancelTriggered = true;
+        pinchDirectionReentryRequired = true;
+        pinchReleaseTriggerArmed = false;
+        HideModeReadyRing();
+        TriggerSurfaceExitCancel("direction");
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+    }
+
+    private bool IsPinchDirectionCancelMovement()
+    {
+        if (ballSpawner == null)
+        {
+            return false;
+        }
+
+        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
+        if (windowMovement.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        float minSpeed = GetPinchDirectionMinSpeedThreshold();
+        if (minSpeed > 0f && centerSpeed < minSpeed)
+        {
+            return false;
+        }
+
+        Collider collider = GetComponent<Collider>();
+        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
+        Vector3 ringCenter = ballSpawner.transform.position;
+        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
+        if (abDirection.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
+        Vector3 smoothedDirection = SmoothPinchDirectionDirection(windowMovement.normalized);
+        float angle = Vector3.Angle(smoothedDirection, cdDirection);
+        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
+        return cdAngleDelta <= GetPinchDirectionAngleThreshold();
+    }
+
+    private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
+    {
+        centerSpeed = 0f;
+        if (!TryGetPinchDirectionCenterPoint(out Vector3 currentCenter))
+        {
+            return Vector3.zero;
+        }
+
+        int windowFrameCount = GetPinchDirectionWindowFrameCount();
+        pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+
+        while (pinchDirectionCenterPositionHistory.Count > windowFrameCount)
+        {
+            pinchDirectionCenterPositionHistory.Dequeue();
+        }
+
+        if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
+        Vector3 averageDirection = Vector3.zero;
+        float totalSegmentDistance = 0f;
+        int validSegmentCount = 0;
+
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Vector3 segment = positions[i] - positions[i - 1];
+            if (segment.sqrMagnitude <= 0.0000001f)
+            {
+                continue;
+            }
+
+            averageDirection += segment.normalized;
+            totalSegmentDistance += segment.magnitude;
+            validSegmentCount++;
+        }
+
+        if (validSegmentCount == 0)
+        {
+            return Vector3.zero;
+        }
+
+        float sampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+        centerSpeed = (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
+        return averageDirection / validSegmentCount;
+    }
+
+    private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
+    {
+        centerPoint = Vector3.zero;
+        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        if (!hasIndexTip || !hasThumbTip)
+        {
+            return false;
+        }
+
+        centerPoint = (indexTipPose.Position + thumbTipPose.Position) * 0.5f;
+        return true;
+    }
+
+    private Vector3 SmoothPinchDirectionDirection(Vector3 currentDirection)
+    {
+        if (!pinchDirectionHasSmoothedDirection)
+        {
+            pinchDirectionSmoothedDirection = currentDirection;
+            pinchDirectionHasSmoothedDirection = true;
+            return pinchDirectionSmoothedDirection;
+        }
+
+        float alpha = GetPinchDirectionSmoothingAlpha();
+        pinchDirectionSmoothedDirection = Vector3.Slerp(pinchDirectionSmoothedDirection, currentDirection, alpha).normalized;
+        return pinchDirectionSmoothedDirection;
+    }
+
+    private int GetPinchDirectionWindowFrameCount()
+    {
+        if (ballSpawner == null)
+        {
+            return 10;
+        }
+
+        return Mathf.Max(2, ballSpawner.pinchDirectionWindowFrameCount);
+    }
+
+    private float GetPinchDirectionAngleThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 20f;
+        }
+
+        return Mathf.Clamp(ballSpawner.pinchDirectionCDAngleThreshold, 0f, 90f);
+    }
+
+    private float GetPinchDirectionSmoothingAlpha()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.25f;
+        }
+
+        return Mathf.Clamp01(ballSpawner.pinchDirectionSmoothingAlpha);
+    }
+
+    private float GetPinchDirectionMinSpeedThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.05f;
+        }
+
+        return Mathf.Max(0f, ballSpawner.pinchDirectionMinSpeedThreshold);
+    }
+
+    private void ResetPinchDirectionCancelState()
+    {
+        pinchDirectionCancelTriggered = false;
+        pinchDirectionReentryRequired = false;
+        ResetPinchDirectionTrackingWindow();
+    }
+
+    private void ResetPinchDirectionTrackingWindow()
+    {
+        pinchDirectionCenterPositionHistory.Clear();
+        pinchDirectionHasSmoothedDirection = false;
+        pinchDirectionSmoothedDirection = Vector3.zero;
     }
 
     private void HandlePinchThumbSwipeIndexEnter()
@@ -4569,8 +5059,29 @@ public class S2AccMode : MonoBehaviour
             return Vector3.zero;
         }
 
-        // 队列满指定帧数后，用当前点减最早点得到窗口累计位移方向。
-        return currentPosition - direction010PositionHistory.Peek();
+        // Average per-segment directions instead of relying on a single oldest/current endpoint pair.
+        Vector3[] positions = direction010PositionHistory.ToArray();
+        Vector3 averageDirection = Vector3.zero;
+        int validSegmentCount = 0;
+
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Vector3 segment = positions[i] - positions[i - 1];
+            if (segment.sqrMagnitude <= 0.0000001f)
+            {
+                continue;
+            }
+
+            averageDirection += segment.normalized;
+            validSegmentCount++;
+        }
+
+        if (validSegmentCount == 0)
+        {
+            return Vector3.zero;
+        }
+
+        return averageDirection / validSegmentCount;
     }
 
     private int GetDirection010WindowFrameCount()
@@ -4820,14 +5331,19 @@ public class S2AccMode : MonoBehaviour
         canceled = false;
         direction010CancelTriggered = false;
         direction010ReentryRequired = false;
-        direction010PositionHistory.Clear();
-        direction010HasSmoothedDirection = false;
-        direction010SmoothedDirection = Vector3.zero;
+        ResetDirection010TrackingWindow();
         logWriter3.handInBall = false;
         logWriter3.isReact = false;
         ballSpawner.isReact = false;
         Player.ChangeOpacityBack();
         Player.hideCircle();
+    }
+
+    private void ResetDirection010TrackingWindow()
+    {
+        direction010PositionHistory.Clear();
+        direction010HasSmoothedDirection = false;
+        direction010SmoothedDirection = Vector3.zero;
     }
 
     private void ShowRainbowArc()

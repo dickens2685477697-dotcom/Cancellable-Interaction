@@ -1034,6 +1034,10 @@ MonoBehaviour:
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
   direction010WindowFrameCount: 10
+  pinchDirectionCDAngleThreshold: 20
+  pinchDirectionSmoothingAlpha: 0.25
+  pinchDirectionMinSpeedThreshold: 0.05
+  pinchDirectionWindowFrameCount: 10
   direction010TestCDAngleThreshold: 20
   direction010TestSmoothingAlpha: 0.25
   direction010TestMinSpeedThreshold: 0.05
@@ -2244,7 +2248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modeSelected: 25
+  modeSelected: 27
   able_to_process: 1
   enable_preview: 0
   enableMineBall: 1
@@ -2256,9 +2260,13 @@ MonoBehaviour:
   direction010CDAngleThreshold: 15
   direction010SmoothingAlpha: 0.65
   direction010MinSpeedThreshold: 0.067
-  direction010WindowFrameCount: 5
+  direction010WindowFrameCount: 4
+  pinchDirectionCDAngleThreshold: 15
+  pinchDirectionSmoothingAlpha: 0.65
+  pinchDirectionMinSpeedThreshold: 0.067
+  pinchDirectionWindowFrameCount: 4
   direction010TestCDAngleThreshold: 20
-  direction010TestSmoothingAlpha: 0.25
+  direction010TestSmoothingAlpha: 0.65
   direction010TestMinSpeedThreshold: 0.067
   direction010TestWindowFrameCount: 5
   releaseDistanceDeltaThreshold: 0.01
@@ -2276,8 +2284,8 @@ MonoBehaviour:
   pressSpeedThershold: 0.4
   dwellWithdrawCancelAngleThreshold: 160
   idLogicMode: 1
-  ID: 1
-  currentRoundID: 1
+  ID: 3
+  currentRoundID: 3
   currentCaseNumber: 1
   enabledOb: 0
   disableNonTargetBallTriggers: 1
@@ -3513,6 +3521,10 @@ MonoBehaviour:
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
   direction010WindowFrameCount: 10
+  pinchDirectionCDAngleThreshold: 20
+  pinchDirectionSmoothingAlpha: 0.25
+  pinchDirectionMinSpeedThreshold: 0.05
+  pinchDirectionWindowFrameCount: 10
   direction010TestCDAngleThreshold: 20
   direction010TestSmoothingAlpha: 0.25
   direction010TestMinSpeedThreshold: 0.05

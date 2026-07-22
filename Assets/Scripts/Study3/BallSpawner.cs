@@ -57,10 +57,8 @@
          pinchReleaseTrigger = 13,
          [InspectorName("2. Pinch-Dwell")]
          pinchDwell = 9,
-         [InspectorName("3. 010-direction")]
-         direction010 = 24,
-         [InspectorName("010-direction-test")]
-         direction010Test = 25,
+         [InspectorName("3.Pinch-Direction")]
+         pinchDirection = 27,
          // Pinch-Thumb-Swipe: pinch starts tracking while the index is inside the ball;
          // a thumb swipe along the index finger cancels, otherwise pinch release selects.
          [InspectorName("4. Pinch-Thumb-Swipe")]
@@ -69,17 +67,25 @@
          dwell = 1,
          [InspectorName("6. Dwell-Release")]
          dwellRelease = 11,
+         [InspectorName("7.Dwell-Direction")]
+         dwellDirection = 28,
          [InspectorName("8. Speed")]
          speed = 21,
          [InspectorName("9. Speed-Dwell")]
          speedDwell = 22,
          [InspectorName("10. Speed-Release")]
          speedRelease = 15,
+         [InspectorName("11.Speed-Direction")]
+         speedDirection = 26,
          // 010-Release: ReactTap entry logic + release gesture cancel + exit-to-confirm.
          [InspectorName("12. 010-Release")]
          release010 = 7,
          [InspectorName("13. 010-Time")]
          time010 = 5,
+         [InspectorName("14.010-direction")]
+         direction010 = 24,
+         [InspectorName("010-direction-test")]
+         direction010Test = 25,
          [InspectorName("15. 010-Contact")]
          contact010 = 23
      }
@@ -138,6 +144,16 @@
      [Min(2)]
      [Tooltip("010-direction方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
      public int direction010WindowFrameCount = 10;
+     [Tooltip("Pinch-Direction取消阈值：捏合后食指-拇指中心点移动方向与图中cd方向的最大偏差角，单位度")]
+     public float pinchDirectionCDAngleThreshold = 20f;
+     [Range(0f, 1f)]
+     [Tooltip("Pinch-Direction中心点方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
+     public float pinchDirectionSmoothingAlpha = 0.25f;
+     [Tooltip("Pinch-Direction取消速度阈值：捏合后食指-拇指中心点速度低于该值时，即使方向接近cd也不取消，单位米/秒")]
+     public float pinchDirectionMinSpeedThreshold = 0.05f;
+     [Min(2)]
+     [Tooltip("Pinch-Direction中心点方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     public int pinchDirectionWindowFrameCount = 10;
      [Tooltip("010-direction-test取消阈值：球内移动方向与图中cd方向或朝向用户方向的最大偏差角，单位度")]
      public float direction010TestCDAngleThreshold = 20f;
      [Range(0f, 1f)]
@@ -907,6 +923,9 @@
                  case Mode.pinchDwell:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Dwell\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
+                 case Mode.pinchDirection:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Direction\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
                  case Mode.direction010:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-direction\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
@@ -919,6 +938,9 @@
                  case Mode.dwellRelease:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell-Release\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
+                 case Mode.dwellDirection:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell-Direction\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
                  case Mode.dwellWithdraw:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell Withdraw\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
@@ -927,6 +949,9 @@
                      break;
                  case Mode.speedRelease:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed-Release\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.speedDirection:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed-Direction\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
                  case Mode.pinchThumbSwipe:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Thumb-Swipe\".\r\nPlease complete the task quickly and accurately.\r\n";
