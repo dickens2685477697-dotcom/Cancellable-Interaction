@@ -87,7 +87,9 @@
          [InspectorName("010-direction-test")]
          direction010Test = 25,
          [InspectorName("15. 010-Contact")]
-         contact010 = 23
+         contact010 = 23,
+         [InspectorName("010-Swing")]
+         swing010 = 29
      }
 
      public enum ID_kind
@@ -164,6 +166,8 @@
      [Min(2)]
      [Tooltip("010-direction-test方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
      public int direction010TestWindowFrameCount = 10;
+     [Tooltip("010-Swing取消阈值：进入010-Time触发阶段后，食指尖-手腕连线方向变化达到该角度即取消，单位度；大于180时禁用")]
+     public float swing010CancelAngleThreshold = 35f;
      // Inspector threshold for 010-Release cancellation. The value is a delta per frame in meters.
      [Tooltip("010-Release取消阈值：大拇指到中指/无名指/小拇指平均距离的单帧增量，单位米")]
      public float releaseDistanceDeltaThreshold = 0.01f;
@@ -976,6 +980,9 @@
                      break;
                  case Mode.contact010:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-Contact\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.swing010:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-Swing\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
              }
          }

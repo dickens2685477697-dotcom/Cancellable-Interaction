@@ -85,6 +85,9 @@ public class S2AccMode : MonoBehaviour
     private readonly Queue<Vector3> direction010PositionHistory = new Queue<Vector3>();
     private bool direction010HasSmoothedDirection = false;
     private Vector3 direction010SmoothedDirection = Vector3.zero;
+    private bool swing010CancelTriggered = false;
+    private bool swing010HasEntryDirection = false;
+    private Vector3 swing010EntryDirection = Vector3.zero;
     private bool pinchDirectionCancelTriggered = false;
     private bool pinchDirectionReentryRequired = false;
     private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
@@ -118,6 +121,10 @@ public class S2AccMode : MonoBehaviour
             {
                 TriggerFastTapCancel("Dwell");
             }
+        }
+        if (modeSelected == 29 && handInBall && !fastTapCancelTriggered && !fastTapReentryRequired)
+        {
+            CheckSwing010Cancel();
         }
         if (modeSelected == 6 && handInBall && rainbowArcActive && !rainbowCancelTriggered)
         {
@@ -277,6 +284,9 @@ public class S2AccMode : MonoBehaviour
                 break;
             case 5:
                 SetFastTapMode();
+                break;
+            case 29:
+                SetSwing010Mode();
                 break;
             case 6:
                 SetRainbow();
@@ -1647,7 +1657,10 @@ public class S2AccMode : MonoBehaviour
             }
         });
 
-        reactTap.CancelEvent.AddListener(() => TriggerFastTapCancel("Dwell"));
+        if (modeSelected != (int)BallSpawner.Mode.swing010)
+        {
+            reactTap.CancelEvent.AddListener(() => TriggerFastTapCancel("Dwell"));
+        }
 
         reactTap.AfterOutEvent.AddListener(() =>
         {
@@ -1656,7 +1669,12 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
-            if (handInBall && !fastTapCancelTriggered && !canceled && !fastTapReentryRequired && HasFastTapTimedOut())
+            if (modeSelected != (int)BallSpawner.Mode.swing010
+                && handInBall
+                && !fastTapCancelTriggered
+                && !canceled
+                && !fastTapReentryRequired
+                && HasFastTapTimedOut())
             {
                     TriggerFastTapCancel("Dwell");
             }
@@ -1705,6 +1723,30 @@ public class S2AccMode : MonoBehaviour
             logWriter3.reactTime = 0f;
             logWriter3.cancelTime = 0f;
             logWriter3.cancelTimes = 0;
+        });
+    }
+
+    public void SetSwing010Mode()
+    {
+        ResetSwing010State();
+        SetFastTapMode();
+
+        reactTap.InEvent.AddListener(() =>
+        {
+            CaptureSwing010EntryDirectionIfNeeded();
+        });
+
+        Acce.AfterOutEvent.AddListener(() =>
+        {
+            if (!handInBall)
+            {
+                ResetSwing010State();
+            }
+        });
+
+        reactTap.AfterOutEvent.AddListener(() =>
+        {
+            ResetSwing010State();
         });
     }
 
@@ -4033,6 +4075,98 @@ public class S2AccMode : MonoBehaviour
         float waitTime = ballSpawner != null ? Mathf.Max(0f, ballSpawner.longPressTimeThreshold) : 0.5f;
         return pinchWristTiltEntryTimestamp >= 0f
             && Time.time - pinchWristTiltEntryTimestamp >= waitTime;
+    }
+
+    private void CheckSwing010Cancel()
+    {
+        if (swing010CancelTriggered || fastTapCancelTriggered || fastTapReentryRequired)
+        {
+            return;
+        }
+
+        CaptureSwing010EntryDirectionIfNeeded();
+        if (!swing010HasEntryDirection)
+        {
+            return;
+        }
+
+        float threshold = ballSpawner != null ? Mathf.Max(0f, ballSpawner.swing010CancelAngleThreshold) : 35f;
+        if (threshold > 180f)
+        {
+            return;
+        }
+
+        if (!TryGetSwing010Direction(out Vector3 currentDirection))
+        {
+            return;
+        }
+
+        if (Vector3.Angle(swing010EntryDirection, currentDirection) >= threshold)
+        {
+            TriggerSwing010Cancel();
+        }
+    }
+
+    private void CaptureSwing010EntryDirectionIfNeeded()
+    {
+        if (swing010HasEntryDirection || !handInBall)
+        {
+            return;
+        }
+
+        swing010HasEntryDirection = TryGetSwing010Direction(out swing010EntryDirection);
+    }
+
+    private bool TryGetSwing010Direction(out Vector3 indexFromWristDirection)
+    {
+        indexFromWristDirection = Vector3.zero;
+
+        bool hasIndex = HandJointUtils.TryGetJointPose(
+            TrackedHandJoint.IndexTip,
+            Handedness.Any,
+            out MixedRealityPose indexTipPose);
+        bool hasWrist = HandJointUtils.TryGetJointPose(
+            TrackedHandJoint.Wrist,
+            Handedness.Any,
+            out MixedRealityPose wristPose);
+
+        if (!hasIndex || !hasWrist)
+        {
+            return false;
+        }
+
+        Vector3 direction = indexTipPose.Position - wristPose.Position;
+        if (direction.sqrMagnitude <= 0.000001f)
+        {
+            return false;
+        }
+
+        indexFromWristDirection = direction.normalized;
+        return true;
+    }
+
+    private void TriggerSwing010Cancel()
+    {
+        if (swing010CancelTriggered || fastTapCancelTriggered)
+        {
+            return;
+        }
+
+        swing010CancelTriggered = true;
+        TriggerFastTapCancel("swing");
+        ResetSwing010Tracking();
+    }
+
+    private void ResetSwing010State()
+    {
+        swing010CancelTriggered = false;
+        ResetSwing010Tracking();
+    }
+
+    private void ResetSwing010Tracking()
+    {
+        swing010HasEntryDirection = false;
+        swing010EntryDirection = Vector3.zero;
     }
 
     private void TriggerFastTapCancel(string cancelReason)
