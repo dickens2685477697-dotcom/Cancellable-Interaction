@@ -270,6 +270,8 @@ MonoBehaviour:
   canceled: 0
   handInBall2: 0
   logWriter3: {fileID: 0}
+  releaseGesture: {fileID: 0}
+  fastTapCancelTime: 0.7
 --- !u!82 &8337252718911521851
 AudioSource:
   m_ObjectHideFlags: 0
@@ -448,6 +450,8 @@ MonoBehaviour:
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
   Distance: 0
+  IndexVelocity: {x: 0, y: 0, z: 0}
+  IndexVelocityDirection: {x: 0, y: 0, z: 0}
   SurfaceEntryPoint: {x: 0, y: 0, z: 0}
   HasSurfaceEntryPoint: 0
   useAcce: 0
@@ -613,7 +617,7 @@ MonoBehaviour:
   V_vec: 0
   A_vec: 0
   V_up: 0
-  V_down: 0.209
+  V_down: 0.1
   A_: 11.661
   V_cross: 0
   V_vec_pre: 0
@@ -699,7 +703,7 @@ MonoBehaviour:
   fingerSpeedThershold: 0.6
   adaptiveVDownMin: 0.021
   adaptiveVDownMax: 0.303
-  enterSatisfiesSpeedAcceCondition: 0
+  enterSatisfiesSpeedAcceCondition: 1
   currentInBallDistance: 0
   storedCurrentInBallDistance: 0
   speedAcceMetPosition: {x: 0, y: 0, z: 0}

@@ -86,6 +86,8 @@ public class AcceStudy3 : MonoBehaviour
     public Material OutMate, InMate, HLMate;
     public MeshRenderer meshRenderer;
     public float Distance;
+    public Vector3 IndexVelocity;
+    public Vector3 IndexVelocityDirection;
     public Vector3 SurfaceEntryPoint;
     public bool HasSurfaceEntryPoint;
     private Vector3 previousDistalPosition;
@@ -112,6 +114,8 @@ public class AcceStudy3 : MonoBehaviour
         v = float.MaxValue;
         apre = float.MaxValue;
         a = float.MaxValue;
+        IndexVelocity = Vector3.zero;
+        IndexVelocityDirection = Vector3.zero;
         SurfaceEntryPoint = Vector3.zero;
         HasSurfaceEntryPoint = false;
 
@@ -155,7 +159,10 @@ public class AcceStudy3 : MonoBehaviour
 
             }
 
-            Distance = (IndexTipPose2.Position - IndexTipPose1.Position).magnitude;
+            Vector3 indexDelta = IndexTipPose2.Position - IndexTipPose1.Position;
+            Distance = indexDelta.magnitude;
+            IndexVelocity = Time.fixedDeltaTime > 0f ? indexDelta / Time.fixedDeltaTime : Vector3.zero;
+            IndexVelocityDirection = indexDelta.sqrMagnitude > 0f ? indexDelta.normalized : Vector3.zero;
             v = Distance / Time.fixedDeltaTime;
             //print("P1  " + IndexTipPose1.Position.ToString("F5"));
             //print("P2  " + IndexTipPose2.Position.ToString("F5"));

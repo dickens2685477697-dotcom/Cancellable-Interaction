@@ -20,12 +20,55 @@ public class LogWriter3 : MonoBehaviour
     public float reactTime = 0f;
     public int reactFrequency = 0;
     public int obstacleReactFrequency = 0;
-    public float cancelTime = 0f;
-    public int cancelTimes = 0;
+    private float _cancelTime = 0f;
+    private int _cancelTimes = 0;
+    private bool _handInBall = false;
+    private float lastBallEntryTimestamp = -1f;
+    public float cancelTime
+    {
+        get => _cancelTime;
+        set
+        {
+            if (_cancelTimes == 0)
+            {
+                _cancelTime = value;
+            }
+        }
+    }
+    public int cancelTimes
+    {
+        get => _cancelTimes;
+        set
+        {
+            if (value > _cancelTimes)
+            {
+                SetCancelTimeFromLastEntry();
+            }
+
+            _cancelTimes = value;
+            if (_cancelTimes == 0)
+            {
+                _cancelTime = 0f;
+            }
+        }
+    }
     public bool successfully_Canceled = false;
     public bool isReact = false;
-    public bool handInBall = false;
+    public bool handInBall
+    {
+        get => _handInBall;
+        set
+        {
+            if (value && !_handInBall)
+            {
+                MarkBallEntry();
+            }
+
+            _handInBall = value;
+        }
+    }
     public bool isMineBall = false;
+    private string cancelReasonLog = "";
     
     void Start()
     {
@@ -80,7 +123,11 @@ public class LogWriter3 : MonoBehaviour
         ans += "," + reactFrequency;
         ans += "," + obstacleReactFrequency;
         ans += "," + triggerTime;
-        if (isMineBall)
+        if (cancelTimes > 0)
+        {
+            ans += "," + cancelTime;
+        }
+        else if (isMineBall)
         {
             ans += "," + (triggerTime - reactTime);
         }
@@ -97,6 +144,7 @@ public class LogWriter3 : MonoBehaviour
         {
             ans += "," + "NA";
         }
+        ans += "," + EscapeCsv(GetCancelReasons());
         ans += "," + cancelTimes;
         ans += "," + ballSpawner.largeCirclePoint.x;
         ans += "," + ballSpawner.largeCirclePoint.y;
@@ -120,7 +168,7 @@ public class LogWriter3 : MonoBehaviour
             // Close the operator after creation
             fs = new FileStream(fileFullPath, FileMode.Create, FileAccess.Write);
             sw = new StreamWriter(fs);
-            sw.WriteLine("Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelTimes,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ");
+            sw.WriteLine("Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,cancelTimes,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ");
             sw.Close();
             fs.Close();
         }
@@ -133,14 +181,78 @@ public class LogWriter3 : MonoBehaviour
         {
             fs = new FileStream(fileFullPath, FileMode.Append, FileAccess.Write);
             sw = new StreamWriter(fs);
+            SetTriggerTimeFromLastEntry();
             string log = FormatMsg();
             sw.WriteLine(log);
             sw.Close();
             fs.Close();
             reactFrequency = 0;
             obstacleReactFrequency = 0;
+            cancelTimes = 0;
+            ClearTriggerTiming();
+        }
+        ClearCancelReasons();
+
+    }
+    public void RecordCancelReason(string reason)
+    {
+        if (!string.IsNullOrEmpty(reason))
+        {
+            cancelReasonLog = string.IsNullOrEmpty(cancelReasonLog)
+                ? reason
+                : cancelReasonLog + ", " + reason;
+        }
+    }
+
+    public void MarkBallEntry()
+    {
+        lastBallEntryTimestamp = Time.time;
+    }
+
+    public void SetCancelTimeFromLastEntry()
+    {
+        _cancelTime = lastBallEntryTimestamp >= 0f
+            ? Mathf.Max(0f, Time.time - lastBallEntryTimestamp)
+            : 0f;
+    }
+
+    public void SetTriggerTimeFromLastEntry()
+    {
+        triggerTime = lastBallEntryTimestamp >= 0f
+            ? Mathf.Max(0f, Time.time - lastBallEntryTimestamp)
+            : 0f;
+    }
+
+    private void ClearTriggerTiming()
+    {
+        triggerTime = 0f;
+        lastBallEntryTimestamp = -1f;
+        _handInBall = false;
+    }
+
+    private string GetCancelReasons()
+    {
+        return !string.IsNullOrEmpty(cancelReasonLog) ? cancelReasonLog : "NA";
+    }
+
+    private void ClearCancelReasons()
+    {
+        cancelReasonLog = "";
+    }
+
+    private string EscapeCsv(string value)
+    {
+        if (value == null)
+        {
+            return "";
         }
 
+        if (value.Contains(",") || value.Contains("\"") || value.Contains("\n") || value.Contains("\r"))
+        {
+            return "\"" + value.Replace("\"", "\"\"") + "\"";
+        }
+
+        return value;
     }
     public string GetFilePath()
     {

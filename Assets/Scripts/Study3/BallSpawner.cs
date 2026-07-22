@@ -29,12 +29,59 @@
      public enum Mode
      {
          Tap = 0,
-         longPress = 1,
+         [InspectorName("Magic Tap")]
          magicTap = 2,
+         [InspectorName("React Tap")]
          reactTap = 3,
+         [InspectorName("React Release")]
+         reactRelease = 14,
+         [InspectorName("Safe Gate")]
+         safeGate = 6,
+         [InspectorName("Press")]
+         press = 10,
+         [InspectorName("Pinch")]
          pinch = 4,
-         fastTap = 5,
-         rainbow = 6
+         [InspectorName("Pinch-Wrist-Tilt")]
+         pinchWristTilt = 17,
+         [InspectorName("Dwell-Wrist-Tilt")]
+         dwellWristTilt = 19,
+         [InspectorName("Speed-Wrist-Tilt")]
+         speedWristTilt = 20,
+         [InspectorName("010-Wrist-Tilt")]
+         wristTilt010 = 18,
+         [InspectorName("Pinch Release Cancel")]
+         pinchReleaseCancel = 8,
+         [InspectorName("Dwell Withdraw")]
+         dwellWithdraw = 12,
+         [InspectorName("1. Pinch-Release-Trigger")]
+         pinchReleaseTrigger = 13,
+         [InspectorName("2. Pinch-Dwell")]
+         pinchDwell = 9,
+         [InspectorName("3. 010-direction")]
+         direction010 = 24,
+         [InspectorName("010-direction-test")]
+         direction010Test = 25,
+         // Pinch-Thumb-Swipe: pinch starts tracking while the index is inside the ball;
+         // a thumb swipe along the index finger cancels, otherwise pinch release selects.
+         [InspectorName("4. Pinch-Thumb-Swipe")]
+         pinchThumbSwipe = 16,
+         [InspectorName("5. Dwell")]
+         dwell = 1,
+         [InspectorName("6. Dwell-Release")]
+         dwellRelease = 11,
+         [InspectorName("8. Speed")]
+         speed = 21,
+         [InspectorName("9. Speed-Dwell")]
+         speedDwell = 22,
+         [InspectorName("10. Speed-Release")]
+         speedRelease = 15,
+         // 010-Release: ReactTap entry logic + release gesture cancel + exit-to-confirm.
+         [InspectorName("12. 010-Release")]
+         release010 = 7,
+         [InspectorName("13. 010-Time")]
+         time010 = 5,
+         [InspectorName("15. 010-Contact")]
+         contact010 = 23
      }
 
      public enum ID_kind
@@ -67,8 +114,80 @@
      public bool able_to_process = true;
      public bool enable_preview = true;
      public bool enableMineBall = false;
-     [Tooltip("Rainbow圆环位置：当前模式为按入球方向取反；OppositeUserFacing为放到用户朝向那一面的背侧")]
+     [Tooltip("Mine Ball模式下，食指进入目标球后是否延迟显示黄球/绿球")]
+     public bool enableMineBallRevealDelay = false;
+     [Tooltip("Mine Ball模式下，延迟显示黄球/绿球的时间阈值，单位秒")]
+     public float mineBallRevealDelayTime = 0.5f;
+     [Tooltip("Safe Gate圆环位置：当前模式为按入球方向取反；OppositeUserFacing为放到用户朝向那一面的背侧")]
      public RainbowArcPlacement rainbowArcPlacement = RainbowArcPlacement.OppositeEntry;
+     [UnityEngine.Serialization.FormerlySerializedAs("showContact010CancelRegion")]
+     [Tooltip("010-Contact模式下是否用绿色线条显示Opposite User Facing映射到球背面的触发区域")]
+     public bool showContact010TriggerRegion = false;
+     [InspectorName("Show Mode Ready Ring")]
+     [Tooltip("开启后，Study3部分模式达到可触发准备状态时，在球面向用户的一侧显示灰色圆环")]
+     public bool showModeReadyRing = true;
+     [UnityEngine.Serialization.FormerlySerializedAs("direction010ParallelAngleThreshold")]
+     [UnityEngine.Serialization.FormerlySerializedAs("direction010PerpendicularAngleThreshold")]
+     [Tooltip("010-direction取消阈值：球内移动方向与图中cd方向的最大偏差角，单位度")]
+     public float direction010CDAngleThreshold = 20f;
+     [Range(0f, 1f)]
+     [Tooltip("010-direction方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
+     public float direction010SmoothingAlpha = 0.25f;
+     [Tooltip("010-direction取消速度阈值：食指速度低于该值时，即使方向接近cd也不取消，单位米/秒")]
+     public float direction010MinSpeedThreshold = 0.05f;
+     [Min(2)]
+     [Tooltip("010-direction方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     public int direction010WindowFrameCount = 10;
+     [Tooltip("010-direction-test取消阈值：球内移动方向与图中cd方向或朝向用户方向的最大偏差角，单位度")]
+     public float direction010TestCDAngleThreshold = 20f;
+     [Range(0f, 1f)]
+     [Tooltip("010-direction-test方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
+     public float direction010TestSmoothingAlpha = 0.25f;
+     [Tooltip("010-direction-test取消速度阈值：食指速度低于该值时，即使方向接近取消方向也不取消，单位米/秒")]
+     public float direction010TestMinSpeedThreshold = 0.05f;
+     [Min(2)]
+     [Tooltip("010-direction-test方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     public int direction010TestWindowFrameCount = 10;
+     // Inspector threshold for 010-Release cancellation. The value is a delta per frame in meters.
+     [Tooltip("010-Release取消阈值：大拇指到中指/无名指/小拇指平均距离的单帧增量，单位米")]
+     public float releaseDistanceDeltaThreshold = 0.01f;
+     [UnityEngine.Serialization.FormerlySerializedAs("reactReleaseWristSpeedThreshold")]
+     [Tooltip("React Release触发阈值：React Tap速度/加速度条件满足后，食指速度达到该值才触发，单位米/秒")]
+     public float reactReleaseIndexSpeedThreshold = 0.2f;
+     [InspectorName("Speed-min-Threshold")]
+     [Tooltip("Speed-Release准备阈值：食指进入球后，速度低于该值才进入待触发状态，单位米/秒")]
+     public float speedMinThreshold = 0.05f;
+     [InspectorName("Speed-Max-Threshold")]
+     [Tooltip("Speed-Release触发阈值：进入待触发状态后，食指速度高于该值触发，单位米/秒")]
+     public float speedMaxThreshold = 0.2f;
+     [Tooltip("Dwell触发阈值：食指进入目标区域后需要停留的时间，单位秒")]
+     public float longPressTimeThreshold = 0.5f;
+     [Tooltip("Pinch Release Cancel取消阈值：食指尖到拇指尖张开速度，单位米/秒")]
+     public float pinchReleaseOpeningSpeedThreshold = 0.6f;
+     [Tooltip("PinchEnd阈值：食指尖到拇指尖距离大于该值时判定松开，单位米")]
+     public float pinchEndDistanceThreshold = 0.05f;
+     // Current Pinch-Thumb-Swipe resolves on PinchEnd:
+     // contact distance greater than the threshold selects; contact distance within
+     // the threshold cancels. The legacy travel/ratio fields are retained for
+     // serialized scene compatibility but are not used by the current mode.
+     [HideInInspector]
+     [Tooltip("Pinch-Thumb-Swipe取消阈值：拇指沿食指方向累计滑动距离，单位米")]
+     public float pinchThumbSwipeDistanceThreshold = 0.03f;
+     [InspectorName("Pinch Thumb Swipe Contact Distance Threshold")]
+     [Tooltip("Pinch-Thumb-Swipe贴合阈值：拇指到食指线段的最大距离，单位米")]
+     public float pinchThumbSwipeContactDistanceThreshold = 0.018f;
+     [HideInInspector]
+     [Tooltip("Pinch-Thumb-Swipe方向阈值：拇指位移投影/总位移比例，0-1")]
+     public float pinchThumbSwipeDirectionRatioThreshold = 0.75f;
+     [Tooltip("Pinch-Dwell取消阈值：进入目标球后未捏合的最大停留时长，单位秒")]
+     public float pinchDwellCancelTime = 0.5f;
+     [Tooltip("Pinch-Wrist-Tilt取消阈值：捏合后、松开前允许的最大手腕旋转角度，单位度")]
+     public float pinchWristTiltCancelAngleThreshold = 30f;
+     [InspectorName("press speed thershold")]
+     [Tooltip("Press触发阈值：食指进入目标区域后的移动速度，单位米/秒")]
+     public float pressSpeedThershold = 0.2f;
+     [Tooltip("Dwell Withdraw取消角度阈值：当前食指移动方向与用户面向方向的夹角达到该角度时取消，单位度；大于180时禁用movement取消")]
+     public float dwellWithdrawCancelAngleThreshold = 120f;
      [Tooltip("Old: ID 1 - 9. New: ID 1 - 3 maps to old ID 1, 5, 9.")]
      public IDLogicMode idLogicMode = IDLogicMode.Old;
      [Tooltip("Old ID: 1 - 9. New ID: 1 - 3.")]
@@ -80,6 +199,10 @@
      
      [Header("是否启用障碍物")]
      public bool enabledOb = true; // 是否启用障碍物
+     [Header("非目标球触发控制")]
+     [InspectorName("Disable Non-Target Ball Triggers")]
+     [Tooltip("开启后，除当前目标球之外的外圈球和随机障碍球不会触发交互/误触事件。")]
+     public bool disableNonTargetBallTriggers = false;
      [Header("目标球生成规则")]
      [Tooltip("起始球的索引")]
      public int start;
@@ -211,8 +334,7 @@
              oriBallY.Add(CircleRadius * Mathf.Sin(angle1 * Mathf.Deg2Rad) + CircleRadius);
          }
          
-         // ----- [新增] 初始化对象池 -----
-         InitializeObjectPool();
+         // Obstacle pool is initialized lazily when obstacle balls are actually needed.
      }
      
      /// <summary>
@@ -220,7 +342,19 @@
      /// </summary>
      private void InitializeObjectPool()
      {
+         if (poolParent != null)
+         {
+             return;
+         }
+
+         if (ObstaclePrefab == null)
+         {
+             UnityEngine.Debug.LogWarning($"{name}: ObstaclePrefab is not assigned; obstacle pool initialization skipped.");
+             return;
+         }
+
          poolParent = new GameObject("ObstaclePool");
+         poolParent.transform.SetParent(transform, false);
          for (int i = 0; i < initialPoolSize; i++)
          {
              GameObject obj = Instantiate(ObstaclePrefab);
@@ -484,14 +618,17 @@
              // 如果是起始球，则标记为已触发状态并变为绿色
              if (isStartPoint)
              {
-                if (lastBall != null)
-                {
-                    lastBall.GetComponent<S2Obstacles>().triggered = false;
-                    lastBall.GetComponent<AcceStudy3>().enabled = true;
-                    lastBall.GetComponent<S2Player>().enabled = true;
-                    lastBall.GetComponent<ReactTap>().enabled = true;
-                    lastBall.GetComponent<AcceStudy3_2>().enabled = true;
-                    lastBall.GetComponent<Pinch>().enabled = true;
+               if (lastBall != null)
+               {
+                   lastBall.GetComponent<S2Obstacles>().triggered = false;
+                   if (!disableNonTargetBallTriggers)
+                   {
+                       lastBall.GetComponent<AcceStudy3>().enabled = true;
+                       lastBall.GetComponent<S2Player>().enabled = true;
+                       lastBall.GetComponent<ReactTap>().enabled = true;
+                       lastBall.GetComponent<AcceStudy3_2>().enabled = true;
+                       lastBall.GetComponent<Pinch>().enabled = true;
+                   }
                 }
                 
                  newBall.GetComponent<S2Obstacles>().triggered = true;
@@ -511,6 +648,10 @@
                  triggered = true;
                  lastBall = newBall;
              }
+             else if (!isTarget)
+             {
+                 ApplyNonTargetBallTriggerInspector(newBall);
+             }
          }
      }
 
@@ -519,6 +660,14 @@
      /// </summary>
      void SpawnRandomBallsWithPy()
      {
+         if (ObstaclePrefab == null)
+         {
+             UnityEngine.Debug.LogWarning($"{name}: ObstaclePrefab is not assigned; random obstacle spawning skipped.");
+             return;
+         }
+
+         InitializeObjectPool();
+
          Vector3 BallScale = new Vector3(BallSize, BallSize, BallSize);
          float lenth = 1F;
 
@@ -562,8 +711,8 @@
                 obstacle.transform.rotation = Quaternion.identity;
                 obstacle.transform.SetParent(ParentObject.transform);
                 obstacle.SetActive(true);
-                obstacle.GetComponent<S2Obstacles>().ClearMode();
-                obstacle.GetComponent<S2Obstacles>().SetMode((int)modeSelected);
+                SetNonTargetBallTriggerComponentsEnabled(obstacle, true);
+                PrepareNonTargetObstacleForMode(obstacle);
              }
             else
             {
@@ -575,6 +724,7 @@
              obstacle.transform.localScale = BallScale;
              allBalls.Add(obstacle);
              obstacleObjects.Add(obstacle);
+             ApplyNonTargetBallTriggerInspector(obstacle);
 
              // 实验未开始时，禁用所有随机障碍球的脚本
             //  if (!expStarted)
@@ -710,6 +860,15 @@
                  ObstaclePrefab.GetComponent<AcceStudy3>().triggerDis = 0.045f;
                  ObNum = 3;
                  break;
+             case 9:
+                 seeds = new List<int> { 1, 5, 11, 13, 14, 18, 21, 26, 28, 31, 32, 33, 36, 38, 40 };
+                 minD = 0.11f;
+                 BallSize = 0.09F;
+                 CircleRadius = 0.25F;
+                 TargetPrefab.GetComponent<AcceStudy3>().triggerDis = 0.045f;
+                 ObstaclePrefab.GetComponent<AcceStudy3>().triggerDis = 0.045f;
+                 ObNum = 3;
+                 break;
          }
      }
 
@@ -728,16 +887,70 @@
              switch (modeSelected)
              {
                  case Mode.Tap:
-                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Long-Press\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
-                 case Mode.longPress:
-                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Magic-Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
+                 case Mode.dwell:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Magic Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
                  case Mode.magicTap:
-                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"React-Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"React Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.reactRelease:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"React Release\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
                  case Mode.pinch:
-                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"React-Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"React Tap\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.pinchReleaseCancel:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch Release Cancel\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.pinchDwell:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Dwell\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.direction010:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-direction\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.direction010Test:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-direction-test\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.press:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Press\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.dwellRelease:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell-Release\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.dwellWithdraw:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell Withdraw\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.pinchReleaseTrigger:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Release-Trigger\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.speedRelease:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed-Release\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.pinchThumbSwipe:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Thumb-Swipe\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.pinchWristTilt:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Pinch-Wrist-Tilt\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.wristTilt010:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-Wrist-Tilt\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.dwellWristTilt:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dwell-Wrist-Tilt\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.speed:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.speedDwell:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed-Dwell\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.speedWristTilt:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Speed-Wrist-Tilt\".\r\nPlease complete the task quickly and accurately.\r\n";
+                     break;
+                 case Mode.contact010:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"010-Contact\".\r\nPlease complete the task quickly and accurately.\r\n";
                      break;
              }
          }
@@ -752,6 +965,10 @@
          if (!Application.isPlaying)
          {
              currentRoundID = ID;
+         }
+         else
+         {
+             ApplyNonTargetBallTriggerSettingToExistingBalls();
          }
      }
 
@@ -827,6 +1044,91 @@
          if (errorObstacleZ == null) errorObstacleZ = new List<float>();
      }
 
+     private void ApplyNonTargetBallTriggerInspector(GameObject ball)
+     {
+         if (!disableNonTargetBallTriggers || ball == null)
+         {
+             return;
+         }
+
+         S2Obstacles obstacles = ball.GetComponent<S2Obstacles>();
+         if (obstacles != null)
+         {
+             obstacles.ClearMode();
+             obstacles.triggered = true;
+         }
+
+         SetNonTargetBallTriggerComponentsEnabled(ball, false);
+     }
+
+     private void SetNonTargetBallTriggerComponentsEnabled(GameObject ball, bool enabled)
+     {
+         if (ball == null)
+         {
+             return;
+         }
+
+         AcceStudy3 acce = ball.GetComponent<AcceStudy3>();
+         if (acce != null) acce.enabled = enabled;
+
+         AcceStudy3_2 acce2 = ball.GetComponent<AcceStudy3_2>();
+         if (acce2 != null) acce2.enabled = enabled;
+
+         ReactTap reactTap = ball.GetComponent<ReactTap>();
+         if (reactTap != null) reactTap.enabled = enabled;
+
+         Pinch pinch = ball.GetComponent<Pinch>();
+         if (pinch != null) pinch.enabled = enabled;
+
+         S2Obstacles obstacles = ball.GetComponent<S2Obstacles>();
+         if (obstacles != null) obstacles.enabled = enabled;
+     }
+
+     private void PrepareNonTargetObstacleForMode(GameObject obstacle)
+     {
+         S2Obstacles obstacleMode = obstacle.GetComponent<S2Obstacles>();
+         if (obstacleMode == null)
+         {
+             return;
+         }
+
+         obstacleMode.triggered = false;
+         obstacleMode.inBall = false;
+         obstacleMode.inBall2 = false;
+         obstacleMode.handInBall = false;
+         obstacleMode.handInBall2 = false;
+         obstacleMode.canceled = false;
+         obstacleMode.useIndex = false;
+         obstacleMode.ClearMode();
+         obstacleMode.SetMode((int)modeSelected);
+     }
+
+     private void ApplyNonTargetBallTriggerSettingToExistingBalls()
+     {
+         foreach (GameObject ball in allBalls)
+         {
+             if (ball == null || ball.GetComponent<S2AccMode>() != null)
+             {
+                 continue;
+             }
+
+             if (disableNonTargetBallTriggers)
+             {
+                 ApplyNonTargetBallTriggerInspector(ball);
+                 continue;
+             }
+
+             if (ball == lastBall)
+             {
+                 SetNonTargetBallTriggerComponentsEnabled(ball, false);
+                 continue;
+             }
+
+             SetNonTargetBallTriggerComponentsEnabled(ball, true);
+             PrepareNonTargetObstacleForMode(ball);
+         }
+     }
+
      private void ClearAllGameObjects()
      {
          // ----- [修改] 将障碍物返回对象池，并销毁目标球 -----
@@ -834,9 +1136,21 @@
          // 1. 将使用中的障碍物对象返回池中
          foreach (GameObject obs in obstacleObjects)
          {
-             obs.transform.SetParent(poolParent.transform);
-             obs.SetActive(false);
-             obstaclePool.Enqueue(obs);
+             if (obs == null)
+             {
+                 continue;
+             }
+
+             if (poolParent != null)
+             {
+                 obs.transform.SetParent(poolParent.transform);
+                 obs.SetActive(false);
+                 obstaclePool.Enqueue(obs);
+             }
+             else
+             {
+                 Destroy(obs);
+             }
          }
          
          // 2. 销毁非池化的目标球对象

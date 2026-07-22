@@ -1025,12 +1025,35 @@ MonoBehaviour:
   able_to_process: 1
   enable_preview: 1
   enableMineBall: 0
+  enableMineBallRevealDelay: 0
+  mineBallRevealDelayTime: 0.5
   rainbowArcPlacement: 0
+  showContact010TriggerRegion: 0
+  showModeReadyRing: 1
+  direction010CDAngleThreshold: 20
+  direction010SmoothingAlpha: 0.25
+  direction010MinSpeedThreshold: 0.05
+  direction010WindowFrameCount: 10
+  releaseDistanceDeltaThreshold: 0.01
+  reactReleaseIndexSpeedThreshold: 0.2
+  speedMinThreshold: 0.05
+  speedMaxThreshold: 0.2
+  longPressTimeThreshold: 0.5
+  pinchReleaseOpeningSpeedThreshold: 0.6
+  pinchEndDistanceThreshold: 0.05
+  pinchThumbSwipeDistanceThreshold: 0.03
+  pinchThumbSwipeContactDistanceThreshold: 0.018
+  pinchThumbSwipeDirectionRatioThreshold: 0.75
+  pinchDwellCancelTime: 0.5
+  pinchWristTiltCancelAngleThreshold: 30
+  pressSpeedThershold: 0.2
+  dwellWithdrawCancelAngleThreshold: 120
   idLogicMode: 0
   ID: 1
   currentRoundID: 1
   currentCaseNumber: 1
   enabledOb: 1
+  disableNonTargetBallTriggers: 0
   start: 0
   rotationDirection: 0
   ObstaclePrefab: {fileID: 0}
@@ -2186,11 +2209,8 @@ MonoBehaviour:
   reactTime: 0
   reactFrequency: 0
   obstacleReactFrequency: 0
-  cancelTime: 0
-  cancelTimes: 0
   successfully_Canceled: 0
   isReact: 0
-  handInBall: 0
   isMineBall: 0
 --- !u!114 &1830579779
 MonoBehaviour:
@@ -2220,16 +2240,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modeSelected: 3
+  modeSelected: 24
   able_to_process: 1
   enable_preview: 0
   enableMineBall: 1
+  enableMineBallRevealDelay: 0
+  mineBallRevealDelayTime: 0.1
   rainbowArcPlacement: 1
+  showContact010TriggerRegion: 1
+  showModeReadyRing: 1
+  direction010CDAngleThreshold: 15
+  direction010SmoothingAlpha: 0.65
+  direction010MinSpeedThreshold: 0.067
+  direction010WindowFrameCount: 5
+  releaseDistanceDeltaThreshold: 0.01
+  reactReleaseIndexSpeedThreshold: 0.2
+  speedMinThreshold: 0.067
+  speedMaxThreshold: 0.375
+  longPressTimeThreshold: 0.7
+  pinchReleaseOpeningSpeedThreshold: 0.2
+  pinchEndDistanceThreshold: 0.023
+  pinchThumbSwipeDistanceThreshold: 0.013
+  pinchThumbSwipeContactDistanceThreshold: 0.017
+  pinchThumbSwipeDirectionRatioThreshold: 0.75
+  pinchDwellCancelTime: 0.7
+  pinchWristTiltCancelAngleThreshold: 30
+  pressSpeedThershold: 0.4
+  dwellWithdrawCancelAngleThreshold: 160
   idLogicMode: 1
   ID: 1
   currentRoundID: 1
   currentCaseNumber: 1
   enabledOb: 0
+  disableNonTargetBallTriggers: 1
   start: 1
   rotationDirection: 1
   ObstaclePrefab: {fileID: 8524059368368922056, guid: 258efb093605d32449a127a86ddb400c, type: 3}
@@ -3453,12 +3496,35 @@ MonoBehaviour:
   able_to_process: 1
   enable_preview: 1
   enableMineBall: 0
+  enableMineBallRevealDelay: 0
+  mineBallRevealDelayTime: 0.5
   rainbowArcPlacement: 0
+  showContact010TriggerRegion: 0
+  showModeReadyRing: 1
+  direction010CDAngleThreshold: 20
+  direction010SmoothingAlpha: 0.25
+  direction010MinSpeedThreshold: 0.05
+  direction010WindowFrameCount: 10
+  releaseDistanceDeltaThreshold: 0.01
+  reactReleaseIndexSpeedThreshold: 0.2
+  speedMinThreshold: 0.05
+  speedMaxThreshold: 0.2
+  longPressTimeThreshold: 0.5
+  pinchReleaseOpeningSpeedThreshold: 0.6
+  pinchEndDistanceThreshold: 0.05
+  pinchThumbSwipeDistanceThreshold: 0.03
+  pinchThumbSwipeContactDistanceThreshold: 0.018
+  pinchThumbSwipeDirectionRatioThreshold: 0.75
+  pinchDwellCancelTime: 0.5
+  pinchWristTiltCancelAngleThreshold: 30
+  pressSpeedThershold: 0.2
+  dwellWithdrawCancelAngleThreshold: 120
   idLogicMode: 0
   ID: 1
   currentRoundID: 1
   currentCaseNumber: 1
   enabledOb: 1
+  disableNonTargetBallTriggers: 0
   start: 0
   rotationDirection: 0
   ObstaclePrefab: {fileID: 0}
