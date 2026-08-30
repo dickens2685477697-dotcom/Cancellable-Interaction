@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7a310a6a2b94e9fae77a2c88d12fb11, type: 3}
+  m_Name: Study3SelectionSettings
+  m_EditorClassIdentifier: 
+  rainbowArcPlacement: 1
+  showContact010TriggerRegion: 0
+  showModeReadyRing: 1
+  showDirectionCDArrow: 0
+  showDirectionCancelCone: 0
+  directionCancelConeLength: 0.15
+  useEntryDirectionAxisForDirectionCancel: 1
+  entryDirectionConeHalfAngle: 45
+  direction010CDAngleThreshold: 20
+  direction010SmoothingAlpha: 0.65
+  direction010MinSpeedThreshold: 0.196
+  direction010WindowFrameCount: 4
+  pinchDirectionCDAngleThreshold: 20
+  pinchDirectionSmoothingAlpha: 0.65
+  pinchDirectionMinSpeedThreshold: 0.196
+  pinchDirectionWindowFrameCount: 4
+  direction010TestCDAngleThreshold: 20
+  direction010TestSmoothingAlpha: 0.65
+  direction010TestMinSpeedThreshold: 0.067
+  direction010TestWindowFrameCount: 5
+  swing010CancelAngleThreshold: 20
+  releaseDistanceDeltaThreshold: 0.01
+  reactReleaseIndexSpeedThreshold: 0.2
+  speedMinThreshold: 0.067
+  speedMaxThreshold: 0.375
+  longPressTimeThreshold: 0.7
+  pinchReleaseOpeningSpeedThreshold: 0.2
+  pinchEndDistanceThreshold: 0.03
+  pinchThumbSwipeDistanceThreshold: 0.013
+  pinchThumbSwipeContactDistanceThreshold: 0.022
+  pinchThumbSwipeDirectionRatioThreshold: 0.75
+  pinchDwellCancelTime: 0.7
+  pinchWristTiltCancelAngleThreshold: 30
+  pressSpeedThershold: 0.4
+  dwellWithdrawCancelAngleThreshold: 160

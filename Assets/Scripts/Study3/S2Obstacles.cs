@@ -106,6 +106,16 @@ public class S2Obstacles : MonoBehaviour
     private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
     private bool pinchDirectionHasSmoothedDirection = false;
     private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
+    private bool directionCancelLowSpeedMet = false;
+    private bool directionCancelEntryAxisCaptured = false;
+    private Vector3 directionCancelEntryAxis = Vector3.zero;
+    private bool direction010HasAcceptedPosition = false;
+    private Vector3 direction010LastAcceptedPosition = Vector3.zero;
+    private bool pinchDirectionHasRawPosition = false;
+    private Vector3 pinchDirectionPreviousRawPosition = Vector3.zero;
+    private bool pinchDirectionHasAcceptedPosition = false;
+    private Vector3 pinchDirectionLastAcceptedPosition = Vector3.zero;
+    private DirectionCDArrowVisual directionCDArrowVisual;
     public void Start()
     {
         Acce = GetComponent<AcceStudy3>();
@@ -222,6 +232,7 @@ public class S2Obstacles : MonoBehaviour
 
 
         }
+        ApplyDirectionCDArrowVisibility();
         source = GetComponent<AudioSource>();
         source.clip = clip;
         ballIndex = ballSpawner.obstacleObjects.IndexOf(gameObject);
@@ -493,6 +504,8 @@ public class S2Obstacles : MonoBehaviour
                 SetDirection010Mode();
                 break;
         }
+
+        ApplyDirectionCDArrowVisibility();
     }
     public void ClearMode()
     {
@@ -522,6 +535,7 @@ public class S2Obstacles : MonoBehaviour
         reactTap?.AfterOutEvent.RemoveAllListeners();
         pinchob?.PinchStart.RemoveAllListeners();
         pinchob?.PinchEnd.RemoveAllListeners();
+        HideDirectionCDArrow();
     }
     public void SetReactTapMode()
     {
@@ -1193,6 +1207,8 @@ public class S2Obstacles : MonoBehaviour
                 fastTapEntryTimestamp = Time.time;
             }
 
+            CaptureDirectionCancelEntryAxisIfNeeded();
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1217,11 +1233,6 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
-            if (handInBall && !speedReleaseTriggered && !direction010CancelTriggered)
-            {
-                TriggerSpeedObstacleCancel();
-            }
-
             if (!triggered)
             {
                 oldTime = Time.time;
@@ -1563,31 +1574,16 @@ public class S2Obstacles : MonoBehaviour
     {
         ResetPinchThumbSwipeState();
 
-        // Obstacle flow mirrors the selection mode: index entry arms the obstacle,
-        // PinchStart enables contact tracking, and PinchEnd resolves trigger/cancel
-        // from thumb-to-index distance.
+        // Only a fresh PinchStart inside begins tracking. Entering while
+        // already pinching only updates contact state.
         Acce.InEvent.AddListener(() =>
         {
-            if (pinchThumbSwipeReentryRequired || triggered)
-            {
-                ballSpawner.area_type = triggered ? 4 : 3;
-                ballSpawner.index = -1;
-                return;
-            }
+            HandlePinchThumbSwipeObstacleEnter(true);
+        });
 
-            if (!inBall)
-            {
-                Player.TurnShallow();
-                inBall = true;
-                ballSpawner.area_type = 2;
-                ballSpawner.index = ballIndex;
-                ballSpawner.errorInTimes++;
-            }
-            else
-            {
-                ballSpawner.area_type = 2;
-                ballSpawner.index = ballIndex;
-            }
+        Acce2.InEvent.AddListener(() =>
+        {
+            HandlePinchThumbSwipeObstacleEnter(false);
         });
 
         pinchob.PinchStart.AddListener(() =>
@@ -1597,7 +1593,7 @@ public class S2Obstacles : MonoBehaviour
                 return;
             }
 
-            if (inBall && TryCapturePinchThumbSwipeStart())
+            if (HasAnyPinchContact() && TryCapturePinchThumbSwipeStart())
             {
                 pinchThumbSwipeTracking = true;
             }
@@ -1621,22 +1617,12 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
-            inBall = false;
-            if (pinchThumbSwipeReentryRequired)
-            {
-                ClearPinchThumbSwipeReentry();
-                return;
-            }
+            HandlePinchThumbSwipeObstacleExit(true);
+        });
 
-            ResetPinchThumbSwipeTracking();
-            ballSpawner.area_type = 3;
-            ballSpawner.index = -1;
-            oldTime = Time.time;
-            if (!triggered)
-            {
-                Player.TurnYellowBack();
-            }
-            ballSpawner.triggered = false;
+        Acce2.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchThumbSwipeObstacleExit(false);
         });
     }
 
@@ -1666,6 +1652,7 @@ public class S2Obstacles : MonoBehaviour
                 ballSpawner.area_type = 2;
                 ballSpawner.index = ballIndex;
             }
+
         });
 
         pinchob.PinchStart.AddListener(() =>
@@ -2188,7 +2175,7 @@ public class S2Obstacles : MonoBehaviour
         {
             Acce.InEvent.AddListener(() =>
             {
-                // 010-direction: 进入障碍球后检测 cd 方向取消；取消后必须离开球体再重新进入。
+                // 010-direction: 进入障碍球后检测朝向用户方向取消；取消后必须离开球体再重新进入。
                 if (direction010ReentryRequired)
                 {
                     return;
@@ -2206,6 +2193,8 @@ public class S2Obstacles : MonoBehaviour
                     ballSpawner.errorInTimes++;
                 }
 
+                CaptureDirectionCancelEntryAxisIfNeeded();
+
                 if (!triggered)
                 {
                     ballSpawner.area_type = 2;
@@ -2217,7 +2206,7 @@ public class S2Obstacles : MonoBehaviour
                     ballSpawner.index = ballIndex;
                 }
 
-                // 在球内每个 FixedUpdate 通过 InEvent 检测一次：可调窗口内的平滑方向接近 cd 时取消误触。
+                // 在球内每个 FixedUpdate 通过 InEvent 检测一次：可调窗口内的平滑方向接近朝向用户方向时取消误触。
                 if (IsDirection010CancelMovement())
                 {
                     TriggerDirection010ObstacleCancel();
@@ -2230,7 +2219,7 @@ public class S2Obstacles : MonoBehaviour
 
                 if (wasInside && !direction010CancelTriggered && !triggered)
                 {
-                    // 离开障碍球时，如果此前没有按 cd 方向取消，则按障碍球误触记录。
+                    // 离开障碍球时，如果此前没有按朝向用户方向取消，则按障碍球误触记录。
                     Player.TurnYellow();
                     source.Play();
                     ballSpawner.triggerCondition = 'D';
@@ -2281,6 +2270,8 @@ public class S2Obstacles : MonoBehaviour
                         ballSpawner.errorInTimes++;
                     }
                 }
+
+                CaptureDirectionCancelEntryAxisIfNeeded();
 
                 if (!triggered)
                 {
@@ -2344,6 +2335,7 @@ public class S2Obstacles : MonoBehaviour
         Acce.InEvent.AddListener(() =>
         {
             HandlePinchDirectionObstacleEnter(true);
+            CaptureDirectionCancelEntryAxisIfNeeded();
 
             if (pinchReleaseTriggerArmed
                 && !pinchDirectionCancelTriggered
@@ -2370,7 +2362,7 @@ public class S2Obstacles : MonoBehaviour
                 return;
             }
 
-            if (inBall || inBall2)
+            if (HasAnyPinchContact())
             {
                 pinchReleaseTriggerArmed = true;
                 ResetPinchDirectionObstacleTrackingWindow();
@@ -2384,13 +2376,26 @@ public class S2Obstacles : MonoBehaviour
                 return;
             }
 
+            bool hasPinchContact = HasAnyPinchContact();
             if (pinchReleaseTriggerArmed
-                && (inBall || inBall2)
+                && hasPinchContact
                 && !triggered
                 && !pinchDirectionCancelTriggered
                 && !pinchDirectionReentryRequired)
             {
                 TriggerPinchReleaseTriggerObstacle();
+                ResetPinchDirectionObstacleCancelState();
+            }
+            else if (pinchReleaseTriggerArmed
+                && !hasPinchContact
+                && !triggered
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired)
+            {
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+                pinchReleaseTriggerArmed = false;
+                ResetPinchReleaseTriggerState();
                 ResetPinchDirectionObstacleCancelState();
             }
 
@@ -2429,7 +2434,7 @@ public class S2Obstacles : MonoBehaviour
                 return;
             }
 
-            if (inBall || inBall2)
+            if (HasAnyPinchContact())
             {
                 pinchReleaseTriggerArmed = true;
             }
@@ -2442,9 +2447,15 @@ public class S2Obstacles : MonoBehaviour
                 return;
             }
 
-            if (pinchReleaseTriggerArmed && (inBall || inBall2) && !triggered)
+            if (pinchReleaseTriggerArmed && HasAnyPinchContact() && !triggered)
             {
                 TriggerPinchReleaseTriggerObstacle();
+            }
+            else if (pinchReleaseTriggerArmed && !HasAnyPinchContact())
+            {
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+                ResetPinchReleaseTriggerState();
             }
 
             pinchReleaseTriggerArmed = false;
@@ -2958,6 +2969,8 @@ public class S2Obstacles : MonoBehaviour
         Player.TurnShallow();
         ballSpawner.area_type = 2;
         ballSpawner.index = ballIndex;
+
+
     }
 
     private void HandlePinchReleaseTriggerExit(bool exitedByIndex)
@@ -2971,13 +2984,26 @@ public class S2Obstacles : MonoBehaviour
             inBall2 = false;
         }
 
-        if (inBall || inBall2)
+        if (HasAnyPinchContact())
         {
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
                 ballSpawner.index = ballIndex;
             }
+            return;
+        }
+
+        if (pinchob != null
+            && pinchob.isPinch
+            && pinchReleaseTriggerArmed
+            && !pinchReleaseTriggerCompleted
+            && !triggered)
+        {
+            // Wait for PinchEnd before discarding an armed gesture. A transient
+            // physics-frame exit may be followed by a valid final contact.
+            ballSpawner.area_type = 3;
+            ballSpawner.index = -1;
             return;
         }
 
@@ -3011,6 +3037,11 @@ public class S2Obstacles : MonoBehaviour
         inBall2 = false;
     }
 
+    private bool HasAnyPinchContact()
+    {
+        return inBall || inBall2;
+    }
+
     private void HandlePinchDirectionObstacleEnter(bool enteredByIndex)
     {
         if (pinchReleaseTriggerCompleted || pinchDirectionReentryRequired)
@@ -3018,7 +3049,12 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
+        bool wasArmed = pinchReleaseTriggerArmed;
         HandlePinchReleaseTriggerEnter(enteredByIndex);
+        if (!wasArmed && pinchReleaseTriggerArmed)
+        {
+            ResetPinchDirectionObstacleTrackingWindow();
+        }
     }
 
     private void HandlePinchDirectionObstacleExit(bool exitedByIndex)
@@ -3032,7 +3068,7 @@ public class S2Obstacles : MonoBehaviour
             inBall2 = false;
         }
 
-        if (inBall || inBall2)
+        if (HasAnyPinchContact())
         {
             if (!triggered && !pinchDirectionCancelTriggered && !pinchDirectionReentryRequired)
             {
@@ -3073,7 +3109,6 @@ public class S2Obstacles : MonoBehaviour
         ballSpawner.index = -1;
         Player.TurnShallowBack();
     }
-
     private bool IsPinchDirectionCancelMovement()
     {
         if (ballSpawner == null)
@@ -3081,32 +3116,147 @@ public class S2Obstacles : MonoBehaviour
             return false;
         }
 
-        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
-        if (windowMovement.sqrMagnitude <= 0.0000001f)
-        {
-            return false;
-        }
-
-        float minSpeed = GetPinchDirectionMinSpeedThreshold();
-        if (minSpeed > 0f && centerSpeed < minSpeed)
-        {
-            return false;
-        }
-
+        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+        CaptureDirectionCancelEntryAxisIfNeeded();
         Collider collider = GetComponent<Collider>();
         Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 ringCenter = ballSpawner.transform.position;
-        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
-        if (abDirection.sqrMagnitude <= 0.0000001f)
+        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
+        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
+        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(centerSpeed);
+        if (windowMovement.sqrMagnitude <= 0.0000001f)
         {
+            RecordPinchDirectionDebug(
+                entryDirectionAxisMode && centerSpeed < GetEntryDirectionCancelLowSpeedThreshold()
+                    ? "entry_direction_frame_skipped_low_speed"
+                    : entryDirectionAxisMode && !speedGatePass
+                        ? "direction_speed_below_threshold"
+                    : pinchDirectionCenterPositionHistory.Count < GetPinchDirectionWindowFrameCount() ? "not_ready_window" : "zero_window_movement",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                entryDirectionAxisMode ? directionCancelEntryAxis : Vector3.zero,
+                float.NaN,
+                false,
+                centerSpeed,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
-        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
-        Vector3 smoothedDirection = SmoothPinchDirectionDirection(windowMovement.normalized);
-        float angle = Vector3.Angle(smoothedDirection, cdDirection);
-        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
-        return cdAngleDelta <= GetPinchDirectionAngleThreshold();
+        if (entryDirectionAxisMode)
+        {
+            if (!speedGatePass)
+            {
+                RecordPinchDirectionDebug(
+                    "direction_speed_below_threshold",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    directionCancelEntryAxis,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+        else
+        {
+            float minSpeed = GetPinchDirectionMinSpeedThreshold();
+            if (minSpeed > 0f && centerSpeed < minSpeed)
+            {
+                RecordPinchDirectionDebug(
+                    "speed_too_low",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    Vector3.zero,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        Vector3 referenceDirection = entryDirectionAxisMode
+            ? directionCancelEntryAxis
+            : -GetViewerBackDirection(ballCenter);
+        if (referenceDirection.sqrMagnitude <= 0.0000001f)
+        {
+            RecordPinchDirectionDebug(
+                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                referenceDirection,
+                float.NaN,
+                true,
+                centerSpeed,
+                ballCenter,
+                viewerPosition);
+            return false;
+        }
+
+        Vector3 currentDirection = entryDirectionAxisMode
+            ? windowMovement.normalized
+            : SmoothPinchDirectionDirection(windowMovement.normalized);
+        Vector3 comparisonDirection = Vector3.zero;
+        Vector3 comparisonReferenceDirection = Vector3.zero;
+        if (entryDirectionAxisMode)
+        {
+            comparisonDirection = currentDirection.normalized;
+            comparisonReferenceDirection = referenceDirection.normalized;
+        }
+        else
+        {
+            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
+            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
+            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
+            {
+                RecordPinchDirectionDebug(
+                    "zero_horizontal_direction",
+                    false,
+                    windowMovement,
+                    comparisonDirection,
+                    true,
+                    comparisonReferenceDirection,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        float angle = entryDirectionAxisMode
+            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
+            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        bool anglePass = entryDirectionAxisMode
+            ? angle <= GetPinchDirectionAngleThreshold()
+            : angle <= GetPinchDirectionAngleThreshold();
+        RecordPinchDirectionDebug(
+            entryDirectionAxisMode
+                ? (anglePass ? "inside_cancel_cone" : "angle_outside_cancel_cone")
+                : (anglePass ? "pass" : "angle_too_large"),
+            anglePass,
+            windowMovement,
+            comparisonDirection,
+            true,
+            comparisonReferenceDirection,
+            angle,
+            anglePass,
+            centerSpeed,
+            ballCenter,
+            viewerPosition);
+        return anglePass;
     }
 
     private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
@@ -3117,6 +3267,74 @@ public class S2Obstacles : MonoBehaviour
             return Vector3.zero;
         }
 
+        if (IsEntryDirectionAxisMode())
+        {
+            float entrySampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+            if (!pinchDirectionHasRawPosition)
+            {
+                pinchDirectionPreviousRawPosition = currentCenter;
+                pinchDirectionHasRawPosition = true;
+                pinchDirectionLastAcceptedPosition = currentCenter;
+                pinchDirectionHasAcceptedPosition = true;
+                return Vector3.zero;
+            }
+
+            Vector3 rawMovement = currentCenter - pinchDirectionPreviousRawPosition;
+            centerSpeed = rawMovement.magnitude / entrySampleDeltaTime;
+            pinchDirectionPreviousRawPosition = currentCenter;
+
+            if (centerSpeed < GetEntryDirectionCancelLowSpeedThreshold())
+            {
+                directionCancelLowSpeedMet = true;
+                return Vector3.zero;
+            }
+
+            if (!pinchDirectionHasAcceptedPosition)
+            {
+                pinchDirectionLastAcceptedPosition = currentCenter;
+                pinchDirectionHasAcceptedPosition = true;
+                return Vector3.zero;
+            }
+
+            Vector3 acceptedMovement = currentCenter - pinchDirectionLastAcceptedPosition;
+            pinchDirectionLastAcceptedPosition = currentCenter;
+            if (acceptedMovement.sqrMagnitude <= 0.0000001f)
+            {
+                return Vector3.zero;
+            }
+
+            int entryWindowFrameCount = GetPinchDirectionWindowFrameCount();
+            pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+            while (pinchDirectionCenterPositionHistory.Count > entryWindowFrameCount)
+            {
+                pinchDirectionCenterPositionHistory.Dequeue();
+            }
+
+            if (pinchDirectionCenterPositionHistory.Count < entryWindowFrameCount)
+            {
+                return Vector3.zero;
+            }
+
+            Vector3[] entryPositions = pinchDirectionCenterPositionHistory.ToArray();
+            Vector3 entryAverageDirection = Vector3.zero;
+            int entryValidSegmentCount = 0;
+            for (int i = 1; i < entryPositions.Length; i++)
+            {
+                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
+                if (segment.sqrMagnitude <= 0.0000001f)
+                {
+                    continue;
+                }
+
+                entryAverageDirection += segment.normalized;
+                entryValidSegmentCount++;
+            }
+
+            return entryValidSegmentCount > 0
+                ? entryAverageDirection / entryValidSegmentCount
+                : Vector3.zero;
+        }
+
         int windowFrameCount = GetPinchDirectionWindowFrameCount();
         pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
 
@@ -3125,12 +3343,23 @@ public class S2Obstacles : MonoBehaviour
             pinchDirectionCenterPositionHistory.Dequeue();
         }
 
+        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
+        float currentSegmentSpeed = 0f;
+        if (positions.Length >= 2)
+        {
+            Vector3 currentSegment = positions[positions.Length - 1] - positions[positions.Length - 2];
+            currentSegmentSpeed = currentSegment.magnitude / Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+        }
+
         if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
         {
+            if (IsEntryDirectionAxisMode())
+            {
+                centerSpeed = currentSegmentSpeed;
+            }
             return Vector3.zero;
         }
 
-        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
         Vector3 averageDirection = Vector3.zero;
         float totalSegmentDistance = 0f;
         int validSegmentCount = 0;
@@ -3154,7 +3383,9 @@ public class S2Obstacles : MonoBehaviour
         }
 
         float sampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
-        centerSpeed = (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
+        centerSpeed = IsEntryDirectionAxisMode()
+            ? currentSegmentSpeed
+            : (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
         return averageDirection / validSegmentCount;
     }
 
@@ -3186,6 +3417,65 @@ public class S2Obstacles : MonoBehaviour
         return pinchDirectionSmoothedDirection;
     }
 
+    private void RecordPinchDirectionDebug(
+        string failReason,
+        bool finalCancelPass,
+        Vector3 windowMovement,
+        Vector3 smoothedDirection,
+        bool hasSmoothedDirection,
+        Vector3 userFacingDirection,
+        float angleDeg,
+        bool anglePass,
+        float centerSpeed,
+        Vector3 ballCenter,
+        Vector3 viewerPosition)
+    {
+        if (logWriter3 == null)
+        {
+            return;
+        }
+
+        int windowFrameCount = GetPinchDirectionWindowFrameCount();
+        float minSpeed = GetPinchDirectionMinSpeedThreshold();
+        bool speedPass = minSpeed <= 0f || centerSpeed >= minSpeed;
+        bool windowReady = pinchDirectionCenterPositionHistory.Count >= windowFrameCount;
+        Vector3 centerPosition = GetCurrentPinchDirectionCenterForDebug();
+
+        logWriter3.WriteDirectionDebug(
+            "S2Obstacles.pinchDirection",
+            failReason,
+            finalCancelPass,
+            modeSelected,
+            ballIndex,
+            ballKind,
+            handInBall,
+            pinchDirectionReentryRequired,
+            pinchDirectionCancelTriggered,
+            pinchDirectionCenterPositionHistory.Count,
+            windowFrameCount,
+            windowReady,
+            windowMovement,
+            smoothedDirection,
+            hasSmoothedDirection,
+            userFacingDirection,
+            angleDeg,
+            GetPinchDirectionAngleThreshold(),
+            anglePass,
+            centerSpeed,
+            minSpeed,
+            speedPass,
+            ballCenter,
+            centerPosition,
+            viewerPosition);
+    }
+
+    private Vector3 GetCurrentPinchDirectionCenterForDebug()
+    {
+        return TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
+            ? centerPoint
+            : Vector3.zero;
+    }
+
     private int GetPinchDirectionWindowFrameCount()
     {
         if (ballSpawner == null)
@@ -3198,6 +3488,13 @@ public class S2Obstacles : MonoBehaviour
 
     private float GetPinchDirectionAngleThreshold()
     {
+        if (IsEntryDirectionAxisMode())
+        {
+            return ballSpawner != null
+                ? Mathf.Clamp(ballSpawner.entryDirectionConeHalfAngle, 0f, 180f)
+                : 45f;
+        }
+
         if (ballSpawner == null)
         {
             return 20f;
@@ -3226,10 +3523,72 @@ public class S2Obstacles : MonoBehaviour
         return Mathf.Max(0f, ballSpawner.pinchDirectionMinSpeedThreshold);
     }
 
+    private bool IsEntryDirectionAxisMode()
+    {
+        if (ballSpawner == null || !ballSpawner.useEntryDirectionAxisForDirectionCancel)
+        {
+            return false;
+        }
+
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            || modeSelected == (int)BallSpawner.Mode.dwellDirection
+            || modeSelected == (int)BallSpawner.Mode.speedDirection
+            || modeSelected == (int)BallSpawner.Mode.direction010
+            || modeSelected == (int)BallSpawner.Mode.direction010Test;
+    }
+
+    private float GetEntryDirectionCancelLowSpeedThreshold()
+    {
+        return ballSpawner != null ? Mathf.Max(0f, ballSpawner.speedMinThreshold) : 0.05f;
+    }
+
+    private float GetEntryDirectionCancelHighSpeedThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.05f;
+        }
+
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            ? GetPinchDirectionMinSpeedThreshold()
+            : GetDirection010MinSpeedThreshold();
+    }
+
+    private bool UpdateEntryDirectionCancelSpeedGate(float speed)
+    {
+        if (!IsEntryDirectionAxisMode())
+        {
+            return true;
+        }
+
+        return speed > GetEntryDirectionCancelHighSpeedThreshold();
+    }
+
+    private void CaptureDirectionCancelEntryAxisIfNeeded()
+    {
+        if (!IsEntryDirectionAxisMode()
+            || directionCancelEntryAxisCaptured)
+        {
+            return;
+        }
+
+        // The Fitts ring is generated in the world XY plane at a fixed Z depth.
+        // -Z is the one-sided normal from the ring toward the user.
+        directionCancelEntryAxis = Vector3.back;
+        directionCancelEntryAxisCaptured = true;
+    }
+
+    private static float GetDirectionAxisAngle(Vector3 movementDirection, Vector3 axisDirection)
+    {
+        return Vector3.Angle(movementDirection, axisDirection);
+    }
+
     private void ResetPinchDirectionObstacleCancelState()
     {
         pinchDirectionCancelTriggered = false;
         pinchDirectionReentryRequired = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
         ResetPinchDirectionObstacleTrackingWindow();
     }
 
@@ -3238,10 +3597,147 @@ public class S2Obstacles : MonoBehaviour
         pinchDirectionCenterPositionHistory.Clear();
         pinchDirectionHasSmoothedDirection = false;
         pinchDirectionSmoothedDirection = Vector3.zero;
+        directionCancelLowSpeedMet = false;
+        pinchDirectionHasRawPosition = false;
+        pinchDirectionPreviousRawPosition = Vector3.zero;
+        pinchDirectionHasAcceptedPosition = false;
+        pinchDirectionLastAcceptedPosition = Vector3.zero;
+    }
+
+    private void ApplyDirectionCDArrowVisibility()
+    {
+        if (ballSpawner == null || !ballSpawner.showDirectionCDArrow || !IsDirectionCDArrowMode())
+        {
+            HideDirectionCDArrow();
+            return;
+        }
+
+        if (directionCDArrowVisual == null)
+        {
+            directionCDArrowVisual = GetComponent<DirectionCDArrowVisual>();
+            if (directionCDArrowVisual == null)
+            {
+                directionCDArrowVisual = gameObject.AddComponent<DirectionCDArrowVisual>();
+            }
+        }
+
+        directionCDArrowVisual.Show(ballSpawner.transform);
+    }
+
+    private void HideDirectionCDArrow()
+    {
+        if (directionCDArrowVisual != null)
+        {
+            directionCDArrowVisual.Hide();
+        }
+    }
+
+    private bool IsDirectionCDArrowMode()
+    {
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            || modeSelected == (int)BallSpawner.Mode.dwellDirection
+            || modeSelected == (int)BallSpawner.Mode.speedDirection
+            || modeSelected == (int)BallSpawner.Mode.direction010
+            || modeSelected == (int)BallSpawner.Mode.direction010Test;
+    }
+
+    private void HandlePinchThumbSwipeObstacleEnter(bool enteredByIndex)
+    {
+        if (pinchThumbSwipeReentryRequired || triggered)
+        {
+            ballSpawner.area_type = triggered ? 4 : 3;
+            ballSpawner.index = -1;
+            return;
+        }
+
+        bool firstContact = !HasAnyPinchContact();
+        if (enteredByIndex)
+        {
+            inBall = true;
+        }
+        else
+        {
+            inBall2 = true;
+        }
+
+        if (firstContact)
+        {
+            Player.TurnShallow();
+            if (!pinchThumbSwipeTracking)
+            {
+                ballSpawner.errorInTimes++;
+            }
+        }
+
+        ballSpawner.area_type = 2;
+        ballSpawner.index = ballIndex;
+
+
+    }
+
+    private void HandlePinchThumbSwipeObstacleExit(bool exitedByIndex)
+    {
+        if (exitedByIndex)
+        {
+            inBall = false;
+        }
+        else
+        {
+            inBall2 = false;
+        }
+
+        if (HasAnyPinchContact()
+            && !pinchThumbSwipeReentryRequired
+            && !triggered
+            && !pinchThumbSwipeCanceled)
+        {
+            ballSpawner.area_type = 2;
+            ballSpawner.index = ballIndex;
+            return;
+        }
+
+        if (pinchThumbSwipeReentryRequired)
+        {
+            if (!HasAnyPinchContact())
+            {
+                // A canceled gesture is released only after both contact
+                // points have left the obstacle.
+                ClearPinchThumbSwipeReentry();
+            }
+            else
+            {
+                // Keep the canceled visual state while the other contact
+                // point is still inside.
+                ballSpawner.area_type = 3;
+                ballSpawner.index = -1;
+            }
+            return;
+        }
+
+        if (triggered || pinchThumbSwipeCanceled)
+        {
+            ResetPinchThumbSwipeTracking();
+            return;
+        }
+
+        ResetPinchThumbSwipeTracking();
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+        oldTime = Time.time;
+        if (!triggered)
+        {
+            Player.TurnYellowBack();
+        }
+        ballSpawner.triggered = false;
     }
 
     private bool TryCapturePinchThumbSwipeStart()
     {
+        if (!HasAnyPinchContact())
+        {
+            return false;
+        }
+
         if (!TryGetPinchThumbSwipeData(out _, out Vector3 thumbPosition, out _, out _, out _, out float thumbProjectionOnIndex))
         {
             return false;
@@ -3272,6 +3768,20 @@ public class S2Obstacles : MonoBehaviour
 
     private void ResolvePinchThumbSwipeObstacleEnd()
     {
+        if (!HasAnyPinchContact())
+        {
+            ResetPinchThumbSwipeTracking();
+            ballSpawner.area_type = 3;
+            ballSpawner.index = -1;
+            oldTime = Time.time;
+            if (!triggered)
+            {
+                Player.TurnYellowBack();
+            }
+            ballSpawner.triggered = false;
+            return;
+        }
+
         if (!UpdatePinchThumbSwipeContactDistance())
         {
             ResetPinchThumbSwipeTracking();
@@ -3326,7 +3836,9 @@ public class S2Obstacles : MonoBehaviour
         indexAxis = indexSegment.normalized;
         float segmentLength = indexSegment.magnitude;
         thumbProjectionOnIndex = Vector3.Dot(thumbTip - indexBase, indexAxis);
-        float t = Mathf.Clamp(thumbProjectionOnIndex, 0f, segmentLength);
+        // Extend the index axis past the distal joint toward the palm, while
+        // keeping the projection capped at the fingertip end.
+        float t = Mathf.Min(thumbProjectionOnIndex, segmentLength);
         closestPointOnIndex = indexBase + indexAxis * t;
         thumbDistanceToIndex = Vector3.Distance(thumbTip, closestPointOnIndex);
         return true;
@@ -3343,7 +3855,7 @@ public class S2Obstacles : MonoBehaviour
         triggered = true;
         Player.TurnYellow();
         source.Play();
-        ballSpawner.triggeredBy = "index";
+        ballSpawner.triggeredBy = inBall ? "index" : "thumb";
         ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
         ResetPinchThumbSwipeTracking();
     }
@@ -3963,7 +4475,6 @@ public class S2Obstacles : MonoBehaviour
         ballSpawner.index = -1;
         Player.TurnShallowBack();
     }
-
     private bool IsDirection010CancelMovement()
     {
         if (ballSpawner == null || Acce == null)
@@ -3971,41 +4482,139 @@ public class S2Obstacles : MonoBehaviour
             return false;
         }
 
-        // 用可调窗口内的累计位移表示“实际移动方向”，避免单帧手部追踪抖动直接触发取消。
+        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+        CaptureDirectionCancelEntryAxisIfNeeded();
+        Collider collider = GetComponent<Collider>();
+        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
+        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
+        float currentSpeed = Acce.IndexVelocity.magnitude;
         Vector3 windowMovement = GetDirection010WindowMovement();
+        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(currentSpeed);
         if (windowMovement.sqrMagnitude <= 0.0000001f)
         {
+            RecordDirection010Debug(
+                entryDirectionAxisMode && currentSpeed < GetEntryDirectionCancelLowSpeedThreshold()
+                    ? "entry_direction_frame_skipped_low_speed"
+                    : entryDirectionAxisMode && !speedGatePass
+                        ? "direction_speed_below_threshold"
+                    : direction010PositionHistory.Count < GetDirection010WindowFrameCount() ? "not_ready_window" : "zero_window_movement",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                entryDirectionAxisMode ? directionCancelEntryAxis : Vector3.zero,
+                float.NaN,
+                false,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
         float minSpeed = GetDirection010MinSpeedThreshold();
-        if (minSpeed > 0f && Acce.IndexVelocity.sqrMagnitude < minSpeed * minSpeed)
+        if (entryDirectionAxisMode)
         {
+            if (!speedGatePass)
+            {
+                RecordDirection010Debug(
+                    "direction_speed_below_threshold",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    directionCancelEntryAxis,
+                    float.NaN,
+                    false,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+        else if (minSpeed > 0f && Acce.IndexVelocity.sqrMagnitude < minSpeed * minSpeed)
+        {
+            RecordDirection010Debug(
+                "speed_too_low",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                Vector3.zero,
+                float.NaN,
+                false,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
-        Collider collider = GetComponent<Collider>();
-        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 ringCenter = ballSpawner.transform.position;
-        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
-        if (abDirection.sqrMagnitude <= 0.0000001f)
+        Vector3 referenceDirection = entryDirectionAxisMode
+            ? directionCancelEntryAxis
+            : -GetViewerBackDirection(ballCenter);
+        if (referenceDirection.sqrMagnitude <= 0.0000001f)
         {
+            RecordDirection010Debug(
+                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                referenceDirection,
+                float.NaN,
+                true,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
-        // 图中的 cd 方向：在菲茨环平面内，垂直于 a(环心)->b(球心) 的方向；正反方向都视为同一条 cd 线。
-        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
-        // 在窗口方向上再做 Slerp 平滑，过滤方向跳变。
-        Vector3 smoothedDirection = SmoothDirection010Direction(windowMovement.normalized);
-        float angle = Vector3.Angle(smoothedDirection, cdDirection);
-        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
-        if (cdAngleDelta <= GetDirection010AngleThreshold())
+        Vector3 currentDirection = entryDirectionAxisMode
+            ? windowMovement.normalized
+            : SmoothDirection010Direction(windowMovement.normalized);
+        Vector3 comparisonDirection = Vector3.zero;
+        Vector3 comparisonReferenceDirection = Vector3.zero;
+        if (entryDirectionAxisMode)
         {
-            return true;
+            comparisonDirection = currentDirection.normalized;
+            comparisonReferenceDirection = referenceDirection.normalized;
+        }
+        else
+        {
+            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
+            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
+            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
+            {
+                RecordDirection010Debug(
+                    "zero_horizontal_direction",
+                    false,
+                    windowMovement,
+                    comparisonDirection,
+                    true,
+                    comparisonReferenceDirection,
+                    float.NaN,
+                    false,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
         }
 
-        return IsDirection010TestMode()
-            && IsDirection010UserFacingCancelMovement(smoothedDirection, ballCenter);
+        float angle = entryDirectionAxisMode
+            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
+            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        bool anglePass = entryDirectionAxisMode
+            ? angle <= GetDirection010AngleThreshold()
+            : angle <= GetDirection010AngleThreshold();
+        RecordDirection010Debug(
+            entryDirectionAxisMode
+                ? (anglePass ? "inside_cancel_cone" : "angle_outside_cancel_cone")
+                : (anglePass ? "pass" : "angle_too_large"),
+            anglePass,
+            windowMovement,
+            comparisonDirection,
+            true,
+            comparisonReferenceDirection,
+            angle,
+            anglePass,
+            ballCenter,
+            viewerPosition);
+        return anglePass;
     }
 
     private Vector3 SmoothDirection010Direction(Vector3 currentDirection)
@@ -4023,24 +4632,62 @@ public class S2Obstacles : MonoBehaviour
         return direction010SmoothedDirection;
     }
 
-    private bool IsDirection010UserFacingCancelMovement(Vector3 smoothedDirection, Vector3 ballCenter)
-    {
-        Vector3 oppositeUserFacingDirection = GetViewerBackDirection(ballCenter);
-        if (oppositeUserFacingDirection.sqrMagnitude <= 0.000001f)
-        {
-            return false;
-        }
-
-        // OppositeUserFacing is the ball's back side, so toward the user-facing
-        // side is the inverse direction.
-        Vector3 userFacingDirection = -oppositeUserFacingDirection.normalized;
-        float angle = Vector3.Angle(smoothedDirection, userFacingDirection);
-        return angle <= GetDirection010AngleThreshold();
-    }
-
     private Vector3 GetDirection010WindowMovement()
     {
         Vector3 currentPosition = Acce.IndexTipPose2.Position;
+        if (IsEntryDirectionAxisMode())
+        {
+            if (!direction010HasAcceptedPosition)
+            {
+                direction010LastAcceptedPosition = Acce.IndexTipPose1.Position;
+                direction010HasAcceptedPosition = true;
+            }
+
+            if (Acce.IndexVelocity.magnitude < GetEntryDirectionCancelLowSpeedThreshold())
+            {
+                directionCancelLowSpeedMet = true;
+                return Vector3.zero;
+            }
+
+            Vector3 currentMovement = currentPosition - direction010LastAcceptedPosition;
+            direction010LastAcceptedPosition = currentPosition;
+            if (currentMovement.sqrMagnitude <= 0.0000001f)
+            {
+                return Vector3.zero;
+            }
+
+            int entryWindowFrameCount = GetDirection010WindowFrameCount();
+            direction010PositionHistory.Enqueue(currentPosition);
+            while (direction010PositionHistory.Count > entryWindowFrameCount)
+            {
+                direction010PositionHistory.Dequeue();
+            }
+
+            if (direction010PositionHistory.Count < entryWindowFrameCount)
+            {
+                return Vector3.zero;
+            }
+
+            Vector3[] entryPositions = direction010PositionHistory.ToArray();
+            Vector3 entryAverageDirection = Vector3.zero;
+            int entryValidSegmentCount = 0;
+            for (int i = 1; i < entryPositions.Length; i++)
+            {
+                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
+                if (segment.sqrMagnitude <= 0.0000001f)
+                {
+                    continue;
+                }
+
+                entryAverageDirection += segment.normalized;
+                entryValidSegmentCount++;
+            }
+
+            return entryValidSegmentCount > 0
+                ? entryAverageDirection / entryValidSegmentCount
+                : Vector3.zero;
+        }
+
         int windowFrameCount = GetDirection010WindowFrameCount();
         direction010PositionHistory.Enqueue(currentPosition);
 
@@ -4079,6 +4726,86 @@ public class S2Obstacles : MonoBehaviour
         return averageDirection / validSegmentCount;
     }
 
+    private void RecordDirection010Debug(
+        string failReason,
+        bool finalCancelPass,
+        Vector3 windowMovement,
+        Vector3 smoothedDirection,
+        bool hasSmoothedDirection,
+        Vector3 userFacingDirection,
+        float angleDeg,
+        bool anglePass,
+        Vector3 ballCenter,
+        Vector3 viewerPosition)
+    {
+        if (logWriter3 == null || Acce == null)
+        {
+            return;
+        }
+
+        int windowFrameCount = GetDirection010WindowFrameCount();
+        float minSpeed = GetDirection010MinSpeedThreshold();
+        float indexSpeed = Acce.IndexVelocity.magnitude;
+        bool speedPass = minSpeed <= 0f || indexSpeed >= minSpeed;
+        bool windowReady = direction010PositionHistory.Count >= windowFrameCount;
+        Vector3 indexPosition = Acce.IndexTipPose2.Position;
+
+        logWriter3.WriteDirectionDebug(
+            "S2Obstacles",
+            failReason,
+            finalCancelPass,
+            modeSelected,
+            ballIndex,
+            ballKind,
+            handInBall,
+            direction010ReentryRequired,
+            direction010CancelTriggered,
+            direction010PositionHistory.Count,
+            windowFrameCount,
+            windowReady,
+            windowMovement,
+            smoothedDirection,
+            hasSmoothedDirection,
+            userFacingDirection,
+            angleDeg,
+            GetDirection010AngleThreshold(),
+            anglePass,
+            indexSpeed,
+            minSpeed,
+            speedPass,
+            ballCenter,
+            indexPosition,
+            viewerPosition);
+    }
+
+    private Vector3 GetViewerPositionForDirectionDebug()
+    {
+        Transform viewerTransform = Camera.main != null ? Camera.main.transform : null;
+        if (viewerTransform == null)
+        {
+            GameObject centerEyeAnchor = GameObject.Find("CenterEyeAnchor");
+            if (centerEyeAnchor != null)
+            {
+                viewerTransform = centerEyeAnchor.transform;
+            }
+        }
+
+        return viewerTransform != null ? viewerTransform.position : Vector3.zero;
+    }
+
+    private bool TryProjectHorizontalDirection(Vector3 direction, out Vector3 horizontalDirection)
+    {
+        horizontalDirection = new Vector3(direction.x, 0f, direction.z);
+        if (horizontalDirection.sqrMagnitude <= 0.0000001f)
+        {
+            horizontalDirection = Vector3.zero;
+            return false;
+        }
+
+        horizontalDirection.Normalize();
+        return true;
+    }
+
     private int GetDirection010WindowFrameCount()
     {
         if (ballSpawner == null)
@@ -4095,6 +4822,13 @@ public class S2Obstacles : MonoBehaviour
 
     private float GetDirection010AngleThreshold()
     {
+        if (IsEntryDirectionAxisMode())
+        {
+            return ballSpawner != null
+                ? Mathf.Clamp(ballSpawner.entryDirectionConeHalfAngle, 0f, 180f)
+                : 45f;
+        }
+
         if (ballSpawner == null)
         {
             return 20f;
@@ -4146,6 +4880,9 @@ public class S2Obstacles : MonoBehaviour
         canceled = false;
         direction010CancelTriggered = false;
         direction010ReentryRequired = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
+        directionCancelLowSpeedMet = false;
         ResetDirection010ObstacleTrackingWindow();
         ResetRainbowState();
     }
@@ -4155,6 +4892,11 @@ public class S2Obstacles : MonoBehaviour
         direction010PositionHistory.Clear();
         direction010HasSmoothedDirection = false;
         direction010SmoothedDirection = Vector3.zero;
+        directionCancelLowSpeedMet = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
+        direction010HasAcceptedPosition = false;
+        direction010LastAcceptedPosition = Vector3.zero;
     }
 
     private void ShowRainbowArc()
@@ -4385,6 +5127,11 @@ public class S2Obstacles : MonoBehaviour
 
         return Mathf.Abs(localX) <= rainbowFrameHalfExtent
             && Mathf.Abs(localY) <= rainbowFrameHalfExtent;
+    }
+
+    private void OnDisable()
+    {
+        HideDirectionCDArrow();
     }
 
 }

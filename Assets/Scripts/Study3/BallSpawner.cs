@@ -106,10 +106,24 @@
          New = 1
      }
 
+     public enum TargetSelectionMode
+     {
+         [InspectorName("Legacy 15 Targets")]
+         Legacy15Targets = 0,
+         [InspectorName("Fitts 16 Targets")]
+         Fitts16Targets = 1
+     }
+
      public enum RainbowArcPlacement
      {
          OppositeEntry = 0,
          OppositeUserFacing = 1
+     }
+
+     public enum ExecutionMode
+     {
+         Study3Experiment = 0,
+         IntroPreview = 1
      }
 
      #endregion
@@ -117,8 +131,16 @@
 
      #region Serialized Fields & Public Variables
 
+     [Header("共享选择技术参数")]
+     [Tooltip("Study3 与 Intro 共用的选择技术阈值和反馈显示设置。")]
+     public Study3SelectionSettings SelectionSettings;
+     [Tooltip("Study3Experiment 运行原实验流程；IntroPreview 只提供参数和手部状态，不生成实验目标。")]
+     public ExecutionMode executionMode = ExecutionMode.Study3Experiment;
+
      [Header("实验模式与轮次")]
      public Mode modeSelected;
+     [Tooltip("目标球序列模式：Legacy为首球不计数后点击15个目标；Fitts16为首球不计数后继续到菲茨环下一个位置，共点击16个目标。")]
+     public TargetSelectionMode targetSelectionMode = TargetSelectionMode.Legacy15Targets;
      public bool able_to_process = true;
      public bool enable_preview = true;
      public bool enableMineBall = false;
@@ -134,29 +156,46 @@
      [InspectorName("Show Mode Ready Ring")]
      [Tooltip("开启后，Study3部分模式达到可触发准备状态时，在球面向用户的一侧显示灰色圆环")]
      public bool showModeReadyRing = true;
+     [InspectorName("Show Direction Arrow")]
+     [Tooltip("开启后，所有Direction相关模式会在球外显示灰色箭头，标出朝向用户的取消方向")]
+     public bool showDirectionCDArrow = false;
+     [InspectorName("Show Direction Cancel Cone")]
+     [Tooltip("开启后，在食指尖实时显示以世界-Z为轴的红色取消方向锥体；锥体半角使用Entry Direction Cone Half Angle，仅用于诊断显示。")]
+     public bool showDirectionCancelCone = false;
+     [InspectorName("Direction Cancel Cone Length")]
+     [Min(0.01f)]
+     [Tooltip("指尖取消方向锥体的显示长度，单位米。")]
+     public float directionCancelConeLength = 0.15f;
+     [InspectorName("Use Entry Direction Axis")]
+     [Tooltip("开启后，Direction相关模式使用绝对垂直于菲茨环平面的世界-Z单侧取消方向锥体；低于Speed-min-Threshold的帧不计入方向窗口，累计到对应Direction Window Frame Count后，以窗口平均方向进行取消判定。")]
+     public bool useEntryDirectionAxisForDirectionCancel = false;
+     [InspectorName("Entry Direction Cone Half Angle")]
+     [Range(0f, 180f)]
+     [Tooltip("Use Entry Direction Axis开启时的单侧取消锥体半角；当前方向与菲茨环平面世界-Z法线的夹角小于或等于该值时满足方向取消条件，单位度。")]
+     public float entryDirectionConeHalfAngle = 45f;
      [UnityEngine.Serialization.FormerlySerializedAs("direction010ParallelAngleThreshold")]
      [UnityEngine.Serialization.FormerlySerializedAs("direction010PerpendicularAngleThreshold")]
-     [Tooltip("010-direction取消阈值：球内移动方向与图中cd方向的最大偏差角，单位度")]
+     [Tooltip("010-direction取消阈值：球内移动方向与朝向用户方向的最大偏差角，单位度")]
      public float direction010CDAngleThreshold = 20f;
      [Range(0f, 1f)]
      [Tooltip("010-direction方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
      public float direction010SmoothingAlpha = 0.25f;
-     [Tooltip("010-direction取消速度阈值：食指速度低于该值时，即使方向接近cd也不取消，单位米/秒")]
+     [Tooltip("010-direction取消速度阈值：食指速度低于该值时，即使方向接近朝向用户方向也不取消，单位米/秒")]
      public float direction010MinSpeedThreshold = 0.05f;
      [Min(2)]
-     [Tooltip("010-direction方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     [Tooltip("010-direction方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧。Entry Direction Axis开启时，低速帧不计入，累计达到该值后才进行取消判定。")]
      public int direction010WindowFrameCount = 10;
-     [Tooltip("Pinch-Direction取消阈值：捏合后食指-拇指中心点移动方向与图中cd方向的最大偏差角，单位度")]
+     [Tooltip("Pinch-Direction取消阈值：捏合后食指-拇指中心点移动方向与朝向用户方向的最大偏差角，单位度")]
      public float pinchDirectionCDAngleThreshold = 20f;
      [Range(0f, 1f)]
      [Tooltip("Pinch-Direction中心点方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
      public float pinchDirectionSmoothingAlpha = 0.25f;
-     [Tooltip("Pinch-Direction取消速度阈值：捏合后食指-拇指中心点速度低于该值时，即使方向接近cd也不取消，单位米/秒")]
+     [Tooltip("Pinch-Direction取消速度阈值：捏合后食指-拇指中心点速度低于该值时，即使方向接近朝向用户方向也不取消，单位米/秒")]
      public float pinchDirectionMinSpeedThreshold = 0.05f;
      [Min(2)]
-     [Tooltip("Pinch-Direction中心点方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     [Tooltip("Pinch-Direction中心点方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧。Entry Direction Axis开启时，低速帧不计入，累计达到该值后才进行取消判定。")]
      public int pinchDirectionWindowFrameCount = 10;
-     [Tooltip("010-direction-test取消阈值：球内移动方向与图中cd方向或朝向用户方向的最大偏差角，单位度")]
+     [Tooltip("010-direction-test取消阈值：球内移动方向与朝向用户方向的最大偏差角，单位度")]
      public float direction010TestCDAngleThreshold = 20f;
      [Range(0f, 1f)]
      [Tooltip("010-direction-test方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
@@ -164,7 +203,7 @@
      [Tooltip("010-direction-test取消速度阈值：食指速度低于该值时，即使方向接近取消方向也不取消，单位米/秒")]
      public float direction010TestMinSpeedThreshold = 0.05f;
      [Min(2)]
-     [Tooltip("010-direction-test方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧")]
+     [Tooltip("010-direction-test方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧。Entry Direction Axis开启时，低速帧不计入，累计达到该值后才进行取消判定。")]
      public int direction010TestWindowFrameCount = 10;
      [Tooltip("010-Swing取消阈值：进入010-Time触发阶段后，食指尖-手腕连线方向变化达到该角度即取消，单位度；大于180时禁用")]
      public float swing010CancelAngleThreshold = 35f;
@@ -332,8 +371,14 @@
      public bool errorTrigered = false;
      public bool isReact = false;
      private readonly Queue<ErrorTriggerSnapshot> pendingErrorTriggerSnapshots = new Queue<ErrorTriggerSnapshot>();
+     private DirectionCancelConeVisual directionCancelConeVisual;
 
      #region Unity Lifecycle Methods
+
+    private void Awake()
+     {
+         ApplySelectionSettings();
+     }
 
     void Start()
      {
@@ -341,6 +386,13 @@
          ID = ClampID(ID);
          currentRoundID = ID;
          currentCaseNumber = 1;
+
+         if (executionMode == ExecutionMode.IntroPreview)
+         {
+             enable_trigger = true;
+             return;
+         }
+
          // 初始化UI和组件引用
          GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
          GoNext = GameObject.Find("GoNext");
@@ -389,10 +441,13 @@
 
         // 持续追踪手部关节点位置
         Handedness handedness = Handedness.Any;
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose))
+        bool hasIndexTipPose = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
+        if (hasIndexTipPose)
         {
             indexLoc = indexPose.Position;
         }
+
+        UpdateDirectionCancelConeVisual(hasIndexTipPose);
 
         if (HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose))
         {
@@ -412,6 +467,45 @@
         
      }
 
+     private void UpdateDirectionCancelConeVisual(bool hasIndexTipPose)
+     {
+         bool shouldShow = executionMode == ExecutionMode.Study3Experiment
+             && showDirectionCancelCone
+             && useEntryDirectionAxisForDirectionCancel
+             && IsDirectionCancelConeMode()
+             && hasIndexTipPose;
+
+         if (!shouldShow)
+         {
+             directionCancelConeVisual?.Hide();
+             return;
+         }
+
+         if (directionCancelConeVisual == null)
+         {
+             directionCancelConeVisual = GetComponent<DirectionCancelConeVisual>();
+             if (directionCancelConeVisual == null)
+             {
+                 directionCancelConeVisual = gameObject.AddComponent<DirectionCancelConeVisual>();
+             }
+         }
+
+         directionCancelConeVisual.Show(
+             indexLoc,
+             Vector3.back,
+             entryDirectionConeHalfAngle,
+             directionCancelConeLength);
+     }
+
+     private bool IsDirectionCancelConeMode()
+     {
+         return modeSelected == Mode.pinchDirection
+             || modeSelected == Mode.dwellDirection
+             || modeSelected == Mode.speedDirection
+             || modeSelected == Mode.direction010
+             || modeSelected == Mode.direction010Test;
+     }
+
      #endregion
 
      #region Experiment Flow & Control
@@ -425,7 +519,8 @@
          ID = ClampID(ID);
          currentRoundID = ID;
          UpdateExperimentMode();
-         currentCaseNumber = expRound * 15 + 1;
+         int targetCount = GetCountedTargetsPerRound();
+         currentCaseNumber = expRound * targetCount + 1;
          ConfigureRoundSettings();
 
          ClearAllGameObjects();
@@ -435,8 +530,8 @@
          startTime = Time.time;
 
          coordinates = PoissonDiscSampling.GeneratePoints(minD, 0, new Vector2(1, 1), 30); // 生成随机点
-         CheckBallFor16();
          GetStart();
+         CheckBallFor16();
 
          // ----- [修改] 在生成小球前确定雷球位置 -----
          if (enableMineBall) {
@@ -462,27 +557,28 @@
      /// </summary>
      public void getNewTarget()
      {
+         if (executionMode == ExecutionMode.IntroPreview)
+         {
+             return;
+         }
+
          EnsureErrorListsInitialized();
          usedTime = Time.time - startTime;
+         LogWriter3 logWriter = GetComponent<LogWriter3>();
+         if (logWriter != null)
+         {
+             logWriter.MarkRoundCompleted();
+         }
          RoundOverEvent.Invoke();
 
          ClearAllGameObjects();
 
-         if (expTime < 15) // 实验总共16次 (0-15)
+         int targetCount = GetCountedTargetsPerRound();
+         if (expTime < targetCount)
          {
              // 更新起始点和终点
              TargetTriggered.Add(TargetEnd);
-             TargetStart = TargetEnd;
-
-             if (rotationDirection == 0)
-             {
-                 start = (start + 7) % 16; // 顺时针
-             }
-             else
-             {
-                 start = (start - 7 + 16) % 16; // 逆时针
-             }
-             TargetEnd = start;
+             AdvanceTargetOnFittsRing();
              
              // 重新生成所有球体
              tatgetPos.Clear();
@@ -490,16 +586,16 @@
              SpawnOriBalls(CircleRadius, NumberOfBalls, transform.position.z);
 
              coordinates.Clear();
-             coordinates = PoissonDiscSampling.GeneratePoints(minD, seeds[expTime], new Vector2(1, 1), 30); // 生成随机点
+             coordinates = PoissonDiscSampling.GeneratePoints(minD, GetSeedForCurrentTarget(), new Vector2(1, 1), 30); // 生成随机点
              if (enabledOb)
              {
                  SpawnRandomBallsWithPy();
              }
              
              expTime++;
-             currentCaseNumber = (expRound - 1) * 15 + expTime;
+             currentCaseNumber = (expRound - 1) * targetCount + expTime;
          }
-         else // 完成一整轮 (15次)
+         else
          {
              ExpEndEvent.Invoke();
              expTime = 0;
@@ -530,19 +626,17 @@
 
      #region Ball Spawning
 
-     // ----- [新增] 决定雷球位置的方法 -----
      /// <summary>
-     /// 随机决定5个非目标球为雷球。
+     /// 随机决定本轮的雷球位置。
      /// </summary>
      private void DetermineMineBallIndices()
      {
          mineIndices.Clear();
          var candidateIndices = new List<int>();
 
-         // 目标球 (TargetEnd) 不会是雷球，将其余15个球的索引加入候选列表
          for (int i = 0; i < NumberOfBalls; i++)
          {
-             if (i != TargetEnd)
+             if (targetSelectionMode == TargetSelectionMode.Fitts16Targets || i != TargetEnd)
              {
                  candidateIndices.Add(i);
              }
@@ -556,13 +650,10 @@
              (candidateIndices[i], candidateIndices[randomIndex]) = (candidateIndices[randomIndex], candidateIndices[i]);
          }
 
-         // 从打乱后的列表中选取前5个作为雷球，确保每次都有5个
-         for (int i = 0; i < 5; i++)
+         int mineBallCount = Mathf.Min(GetMineBallCountForRound(), candidateIndices.Count);
+         for (int i = 0; i < mineBallCount; i++)
          {
-             if (i < candidateIndices.Count)
-             {
-                 mineIndices.Add(candidateIndices[i]);
-             }
+             mineIndices.Add(candidateIndices[i]);
          }
      }
 
@@ -587,7 +678,7 @@
              GameObject newBall;
              bool isTarget = (expStarted && TargetEnd == i) || (!expStarted && i == initialBall);
              bool isStartPoint = (expStarted && i == TargetStart);
-             bool isNextNextTarget = ((rotationDirection == 0 && (i == (TargetEnd + 7) % 16)) || (rotationDirection == 1 && (i == (TargetEnd - 7 + 16) % 16)));
+             bool isNextNextTarget = i == GetNextFittsTargetIndex(TargetEnd);
              
              if (isTarget)
              {
@@ -596,7 +687,7 @@
                  newBall.GetComponent<S2AccMode>().ballIndex = i;
                  newBall.GetComponent<MeshRenderer>().material = redBall;
                  // ----- [修改] 检查是否为雷球并设置状态 -----
-                 if (mineIndices.Contains(i))
+                 if (expStarted && mineIndices.Contains(i))
                  {
                      // 尝试获取S2AccMode组件。请确保您的目标球和障碍球预制件上都有这个组件。
                      S2AccMode s2AccMode = newBall.GetComponent<S2AccMode>();
@@ -657,7 +748,7 @@
                  newBall.GetComponent<ReactTap>().enabled = false;
                  newBall.GetComponent<AcceStudy3_2>().enabled = false;
                  newBall.GetComponent<Pinch>().enabled = false;
-                 if (mineIndices.Contains(i))
+                 if (expTime > 0 && mineIndices.Contains(i))
                  {
                      newBall.GetComponent<MeshRenderer>().material = yellowBall;
                  }
@@ -759,6 +850,50 @@
      #endregion
 
      #region Helper & Utility Methods
+
+     private int GetCountedTargetsPerRound()
+     {
+         return targetSelectionMode == TargetSelectionMode.Fitts16Targets ? 16 : 15;
+     }
+
+     private int GetMineBallCountForRound()
+     {
+         return targetSelectionMode == TargetSelectionMode.Fitts16Targets ? 8 : 5;
+     }
+
+     private int GetRingBallCount()
+     {
+         return NumberOfBalls > 0 ? NumberOfBalls : 16;
+     }
+
+     private int GetNextFittsTargetIndex(int currentIndex)
+     {
+         int ringBallCount = GetRingBallCount();
+         int step = 7 % ringBallCount;
+         if (rotationDirection == 0)
+         {
+             return (currentIndex + step) % ringBallCount;
+         }
+
+         return (currentIndex - step + ringBallCount) % ringBallCount;
+     }
+
+     private void AdvanceTargetOnFittsRing()
+     {
+         TargetStart = TargetEnd;
+         start = GetNextFittsTargetIndex(start);
+         TargetEnd = start;
+     }
+
+     private int GetSeedForCurrentTarget()
+     {
+         if (seeds == null || seeds.Count == 0)
+         {
+             return seed;
+         }
+
+         return seeds[expTime % seeds.Count];
+     }
 
      private int GetIDCycleMax()
      {
@@ -993,6 +1128,7 @@
      /// </summary>
      private void OnValidate()
      {
+         ApplySelectionSettings();
          ID = ClampID(ID);
          if (!Application.isPlaying)
          {
@@ -1204,16 +1340,7 @@
      void GetStart()
      {
          TargetStart = start;
-
-         if (rotationDirection == 0)
-         {
-             start = (start + 7) % 16; // 顺时针跳7个位置
-         }
-         else
-         {
-             start = (start - 7 + 16) % 16; // 逆时针跳7个位置
-         }
-
+         start = GetNextFittsTargetIndex(start);
          TargetEnd = start;
          initialBall = TargetEnd;
      }
@@ -1261,26 +1388,29 @@
      public void CheckBallFor16()
      {
          int tempStart = initialBall;
-         for (int j = 0; j < 15; j++)
+         int targetCount = GetCountedTargetsPerRound();
+         int ringBallCount = GetRingBallCount();
+         int step = 7 % ringBallCount;
+         for (int j = 0; j < targetCount; j++)
          {
              inBound = 0;
              int tempEnd;
              if (rotationDirection == 0)
              {
-                 tempEnd = (tempStart + 7) % 16;
+                 tempEnd = (tempStart + step) % ringBallCount;
              }
              else
              {
-                 tempEnd = (tempStart - 7 + 16) % 16;
+                 tempEnd = (tempStart - step + ringBallCount) % ringBallCount;
              }
 
              // 计算起始球和结束球的3D位置
-             float angle_start = tempStart * (360f / 16);
+             float angle_start = tempStart * (360f / ringBallCount);
              float x_start = transform.position.x + CircleRadius * Mathf.Cos(angle_start * Mathf.Deg2Rad);
              float y_start = transform.position.y + CircleRadius * Mathf.Sin(angle_start * Mathf.Deg2Rad);
              Vector3 startPosition = new Vector3(x_start, y_start, transform.position.z);
 
-             float angle_end = tempEnd * (360f / 16);
+             float angle_end = tempEnd * (360f / ringBallCount);
              float x_end = transform.position.x + CircleRadius * Mathf.Cos(angle_end * Mathf.Deg2Rad);
              float y_end = transform.position.y + CircleRadius * Mathf.Sin(angle_end * Mathf.Deg2Rad);
              Vector3 endPosition = new Vector3(x_end, y_end, transform.position.z);
@@ -1321,6 +1451,14 @@
          if (sourceWrong != null)
          {
              sourceWrong.Play();
+         }
+     }
+
+     public void ApplySelectionSettings()
+     {
+         if (SelectionSettings != null)
+         {
+             SelectionSettings.ApplyTo(this);
          }
      }
 

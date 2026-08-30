@@ -1021,7 +1021,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectionSettings: {fileID: 0}
+  executionMode: 0
   modeSelected: 0
+  targetSelectionMode: 0
   able_to_process: 1
   enable_preview: 1
   enableMineBall: 0
@@ -1030,6 +1033,11 @@ MonoBehaviour:
   rainbowArcPlacement: 0
   showContact010TriggerRegion: 0
   showModeReadyRing: 1
+  showDirectionCDArrow: 0
+  showDirectionCancelCone: 0
+  directionCancelConeLength: 0.15
+  useEntryDirectionAxisForDirectionCancel: 0
+  entryDirectionConeHalfAngle: 45
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
@@ -1042,6 +1050,7 @@ MonoBehaviour:
   direction010TestSmoothingAlpha: 0.25
   direction010TestMinSpeedThreshold: 0.05
   direction010TestWindowFrameCount: 10
+  swing010CancelAngleThreshold: 35
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.05
@@ -2220,6 +2229,7 @@ MonoBehaviour:
   successfully_Canceled: 0
   isReact: 0
   isMineBall: 0
+  stateOnly: 0
 --- !u!114 &1830579779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2248,44 +2258,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modeSelected: 27
+  SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
+  executionMode: 0
+  modeSelected: 16
+  targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
-  enableMineBall: 1
+  enableMineBall: 0
   enableMineBallRevealDelay: 0
   mineBallRevealDelayTime: 0.1
   rainbowArcPlacement: 1
-  showContact010TriggerRegion: 1
+  showContact010TriggerRegion: 0
   showModeReadyRing: 1
-  direction010CDAngleThreshold: 15
+  showDirectionCDArrow: 0
+  showDirectionCancelCone: 0
+  directionCancelConeLength: 0.15
+  useEntryDirectionAxisForDirectionCancel: 1
+  entryDirectionConeHalfAngle: 45
+  direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.65
-  direction010MinSpeedThreshold: 0.067
+  direction010MinSpeedThreshold: 0.196
   direction010WindowFrameCount: 4
-  pinchDirectionCDAngleThreshold: 15
+  pinchDirectionCDAngleThreshold: 20
   pinchDirectionSmoothingAlpha: 0.65
-  pinchDirectionMinSpeedThreshold: 0.067
+  pinchDirectionMinSpeedThreshold: 0.196
   pinchDirectionWindowFrameCount: 4
   direction010TestCDAngleThreshold: 20
   direction010TestSmoothingAlpha: 0.65
   direction010TestMinSpeedThreshold: 0.067
   direction010TestWindowFrameCount: 5
+  swing010CancelAngleThreshold: 20
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.067
   speedMaxThreshold: 0.375
   longPressTimeThreshold: 0.7
   pinchReleaseOpeningSpeedThreshold: 0.2
-  pinchEndDistanceThreshold: 0.023
+  pinchEndDistanceThreshold: 0.03
   pinchThumbSwipeDistanceThreshold: 0.013
-  pinchThumbSwipeContactDistanceThreshold: 0.017
+  pinchThumbSwipeContactDistanceThreshold: 0.022
   pinchThumbSwipeDirectionRatioThreshold: 0.75
   pinchDwellCancelTime: 0.7
   pinchWristTiltCancelAngleThreshold: 30
   pressSpeedThershold: 0.4
   dwellWithdrawCancelAngleThreshold: 160
   idLogicMode: 1
-  ID: 3
-  currentRoundID: 3
+  ID: 2
+  currentRoundID: 2
   currentCaseNumber: 1
   enabledOb: 0
   disableNonTargetBallTriggers: 1
@@ -3508,7 +3527,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectionSettings: {fileID: 0}
+  executionMode: 0
   modeSelected: 0
+  targetSelectionMode: 0
   able_to_process: 1
   enable_preview: 1
   enableMineBall: 0
@@ -3517,6 +3539,11 @@ MonoBehaviour:
   rainbowArcPlacement: 0
   showContact010TriggerRegion: 0
   showModeReadyRing: 1
+  showDirectionCDArrow: 0
+  showDirectionCancelCone: 0
+  directionCancelConeLength: 0.15
+  useEntryDirectionAxisForDirectionCancel: 0
+  entryDirectionConeHalfAngle: 45
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
@@ -3529,6 +3556,7 @@ MonoBehaviour:
   direction010TestSmoothingAlpha: 0.25
   direction010TestMinSpeedThreshold: 0.05
   direction010TestWindowFrameCount: 10
+  swing010CancelAngleThreshold: 35
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
   speedMinThreshold: 0.05

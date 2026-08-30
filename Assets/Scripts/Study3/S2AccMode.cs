@@ -1,4 +1,5 @@
 using Oculus.Platform.Samples.VrHoops;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -15,6 +16,13 @@ public class S2AccMode : MonoBehaviour
     public BallSpawner ballSpawner;
     public GameObject TargetPrefab;
     public int modeSelected;
+    [SerializeField] private bool useModeOverride;
+    [SerializeField] private BallSpawner.Mode modeOverride;
+    private bool standalonePreview;
+    private bool standaloneSelectionReported;
+    private BallSpawner configuredBallSpawner;
+    private LogWriter3 configuredStateWriter;
+    public event Action<S2AccMode> StandaloneSelectionSucceeded;
     bool inBall = false, inBall2 = false;
     public int ballIndex = 0;
     public int ballKind = 1;
@@ -85,6 +93,17 @@ public class S2AccMode : MonoBehaviour
     private readonly Queue<Vector3> direction010PositionHistory = new Queue<Vector3>();
     private bool direction010HasSmoothedDirection = false;
     private Vector3 direction010SmoothedDirection = Vector3.zero;
+    private int direction010FramesSinceEntry = 0;
+    private float lastDirection010AngleDelta = float.NaN;
+    private bool direction010HasEntryPosition = false;
+    private Vector3 direction010EntryPosition = Vector3.zero;
+    private bool direction010SpeedMinMet = false;
+    private int direction010SpeedMinFrame = -1;
+    private bool directionCancelLowSpeedMet = false;
+    private bool directionCancelEntryAxisCaptured = false;
+    private Vector3 directionCancelEntryAxis = Vector3.zero;
+    private bool direction010HasAcceptedPosition = false;
+    private Vector3 direction010LastAcceptedPosition = Vector3.zero;
     private bool swing010CancelTriggered = false;
     private bool swing010HasEntryDirection = false;
     private Vector3 swing010EntryDirection = Vector3.zero;
@@ -93,6 +112,15 @@ public class S2AccMode : MonoBehaviour
     private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
     private bool pinchDirectionHasSmoothedDirection = false;
     private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
+    private int pinchDirectionFramesSinceEntry = 0;
+    private float lastPinchDirectionAngleDelta = float.NaN;
+    private bool pinchDirectionSpeedMinMet = false;
+    private int pinchDirectionSpeedMinFrame = -1;
+    private bool pinchDirectionHasRawPosition = false;
+    private Vector3 pinchDirectionPreviousRawPosition = Vector3.zero;
+    private bool pinchDirectionHasAcceptedPosition = false;
+    private Vector3 pinchDirectionLastAcceptedPosition = Vector3.zero;
+    private float noTriggerEntryTimestamp = -1f;
     private GameObject rainbowArcRoot;
     private Vector3 rainbowEntryPosition;
     private bool rainbowEntryCaptured = false;
@@ -109,11 +137,29 @@ public class S2AccMode : MonoBehaviour
     private bool rainbowReentryRequiresExit = false;
     private float rainbowFrameDepth = 0.0015f;
     private FacingFeedbackRing modeReadyRing;
+    private DirectionCDArrowVisual directionCDArrowVisual;
     //public AudioSource source;
     //public AudioClip clip;
 
     void Update()
     {
+        if (modeSelected == (int)BallSpawner.Mode.pinchReleaseTrigger
+            && pinchReleaseTriggerArmed
+            && pinchob != null
+            && pinchob.isPinch)
+        {
+            WritePinchReleaseDistance("pinch_sample", "");
+        }
+        if (modeSelected == (int)BallSpawner.Mode.pinchThumbSwipe
+            && pinchThumbSwipeTracking
+            && !pinchThumbSwipeCompleted
+            && !pinchThumbSwipeCanceled
+            && pinchob != null
+            && pinchob.isPinch)
+        {
+            WritePinchReleaseDistance("pinch_sample", "");
+        }
+
         // FastTap模式:检查停留时间是否超过0.5秒
         if (modeSelected == 5 && handInBall && !fastTapCancelTriggered && !fastTapReentryRequired)
         {
@@ -176,7 +222,7 @@ public class S2AccMode : MonoBehaviour
             CheckPinchReleaseCancel();
         }
         if (modeSelected == 9
-            && inBall
+            && HasAnyPinchContact()
             && pinchob.isPinch
             && !pinchReleaseCancelTriggered
             && !pinchReleaseReentryRequired
@@ -201,6 +247,7 @@ public class S2AccMode : MonoBehaviour
             CheckDwellWithdrawCancel();
         }
         if (modeSelected == 16
+            && HasAnyPinchContact()
             && pinchThumbSwipeTracking
             && !pinchThumbSwipeCompleted
             && !pinchThumbSwipeCanceled)
@@ -237,10 +284,27 @@ public class S2AccMode : MonoBehaviour
         Acce2 = GetComponent<AcceStudy3_2>();
         reactTap = GetComponent<ReactTap>();
         Player = GetComponentInChildren<S2Player>();
-        ballSpawner = GameObject.Find("Spawner").GetComponent<BallSpawner>();
-        logWriter3 = GameObject.Find("Spawner").GetComponent<LogWriter3>();
-        logWriter2 = GameObject.Find("Spawner").GetComponent<LogWriter2>();
-        modeSelected = (int)ballSpawner.modeSelected;
+        GameObject spawnerObject = GameObject.Find("Spawner");
+        ballSpawner = configuredBallSpawner != null
+            ? configuredBallSpawner
+            : spawnerObject != null ? spawnerObject.GetComponent<BallSpawner>() : null;
+        logWriter3 = configuredStateWriter != null
+            ? configuredStateWriter
+            : GetComponent<LogWriter3>() != null
+                ? GetComponent<LogWriter3>()
+                : spawnerObject != null ? spawnerObject.GetComponent<LogWriter3>() : null;
+        logWriter2 = standalonePreview || spawnerObject == null
+            ? null
+            : spawnerObject.GetComponent<LogWriter2>();
+
+        if (ballSpawner == null || logWriter3 == null)
+        {
+            Debug.LogError($"{name}: S2AccMode requires a BallSpawner and LogWriter3 state container.");
+            enabled = false;
+            return;
+        }
+
+        modeSelected = useModeOverride ? (int)modeOverride : (int)ballSpawner.modeSelected;
         pinchob = GetComponent<Pinch>();
         ApplyPinchSettings();
         EnsureReleaseGesture();
@@ -347,15 +411,306 @@ public class S2AccMode : MonoBehaviour
                 break;
         }
 
+        ApplyDirectionCDArrowVisibility();
+
+        if (Acce != null)
+        {
+            Acce.InEvent.AddListener(RegisterNoTriggerSource);
+            Acce.AfterOutEvent.AddListener(ClearNoTriggerEntryTimestamp);
+        }
+        if (Acce2 != null)
+        {
+            Acce2.InEvent.AddListener(RegisterNoTriggerSource);
+            Acce2.AfterOutEvent.AddListener(ClearNoTriggerEntryTimestamp);
+        }
+        if (reactTap != null)
+        {
+            reactTap.InEvent.AddListener(RegisterNoTriggerSource);
+        }
+
         //clip = Resources.Load<AudioClip>("Audio/Assets_MRTK_StandardAssets_Audio_MRTK_Manipulation_Start");
         //source = GetComponent<AudioSource>();
         //source.clip = clip;
+    }
+
+    public void ConfigureStandalone(BallSpawner.Mode mode, BallSpawner host, int previewBallIndex)
+    {
+        standalonePreview = true;
+        standaloneSelectionReported = false;
+        useModeOverride = true;
+        modeOverride = mode;
+        modeSelected = (int)mode;
+        ballIndex = previewBallIndex;
+        configuredBallSpawner = host;
+
+        LogWriter3 stateWriter = GetComponent<LogWriter3>();
+        if (stateWriter == null)
+        {
+            stateWriter = gameObject.AddComponent<LogWriter3>();
+        }
+
+        stateWriter.InitializeStateOnly(host);
+        configuredStateWriter = stateWriter;
+    }
+
+    private void CompleteSelection()
+    {
+        if (!standalonePreview)
+        {
+            BallSpawner experimentSpawner = ballSpawner;
+            experimentSpawner.getNewTarget();
+            return;
+        }
+
+        if (standaloneSelectionReported)
+        {
+            return;
+        }
+
+        standaloneSelectionReported = true;
+        StandaloneSelectionSucceeded?.Invoke(this);
     }
     
     public void SetPinchReleaseMode()
     {
         ResetPinchReleaseState();
         SetPinchMode();
+    }
+
+    public string GetCurrentNoTriggerReason()
+    {
+        float elapsed = GetCurrentEntryElapsedTime();
+        string elapsedText = "; elapsed=" + elapsed.ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
+
+        switch ((BallSpawner.Mode)modeSelected)
+        {
+            case BallSpawner.Mode.Tap:
+                return "tap_entry_not_accepted";
+            case BallSpawner.Mode.dwell:
+                return "dwell_time_not_reached_before_exit" + elapsedText
+                    + "; required=" + GetDwellThresholdText();
+            case BallSpawner.Mode.magicTap:
+                return "acceleration_threshold_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.reactTap:
+                return logWriter3.isReact
+                    ? "react_exit_confirmation_not_completed" + elapsedText
+                    : "react_stage_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.reactRelease:
+                if (!reactReleaseSpeedAcceMet)
+                {
+                    return "react_precondition_not_reached_before_exit" + elapsedText;
+                }
+                return "index_speed_trigger_threshold_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.safeGate:
+                if (rainbowCancelTriggered || rainbowConfirmBlocked)
+                {
+                    return "safe_gate_cancel_region_crossed" + elapsedText;
+                }
+                return logWriter3.isReact
+                    ? "safe_gate_confirmation_not_completed" + elapsedText
+                    : "react_stage_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.press:
+                return "press_speed_threshold_not_reached_before_exit; speed="
+                    + Acce.v.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)
+                    + "; threshold=" + ballSpawner.pressSpeedThershold.ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
+            case BallSpawner.Mode.pinch:
+            case BallSpawner.Mode.pinchReleaseCancel:
+                return pinchob.isPinch
+                    ? "contact_exited_while_pinching" + elapsedText
+                    : "pinch_not_started_before_exit" + elapsedText;
+            case BallSpawner.Mode.pinchDwell:
+                if (pinchob.isPinch && pinchDwellEntryTimestamp >= 0f)
+                {
+                    return "contact_exited_while_pinching" + elapsedText;
+                }
+                return "pinch_not_started_before_exit" + elapsedText;
+            case BallSpawner.Mode.pinchReleaseTrigger:
+                return pinchReleaseTriggerArmed
+                    ? "contact_exited_while_pinching" + elapsedText
+                    : "pinch_not_started_before_exit" + elapsedText;
+            case BallSpawner.Mode.pinchDirection:
+                return GetPinchDirectionNoTriggerReason(elapsedText);
+            case BallSpawner.Mode.pinchThumbSwipe:
+                if (pinchThumbSwipeCanceled)
+                {
+                    return "thumb_contact_cancel_detected; distance="
+                        + pinchThumbSwipeCurrentContactDistance.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)
+                        + "; threshold=" + ballSpawner.pinchThumbSwipeContactDistanceThreshold.ToString("F4", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                return pinchThumbSwipeTracking
+                    ? "pinch_end_event_not_received" + elapsedText
+                    : "pinch_not_started_before_exit" + elapsedText;
+            case BallSpawner.Mode.pinchWristTilt:
+                return GetWristTiltNoTriggerReason("pinch_not_started_before_exit", elapsedText);
+            case BallSpawner.Mode.dwellWristTilt:
+                return GetWristTiltNoTriggerReason("dwell_time_not_reached_before_exit", elapsedText);
+            case BallSpawner.Mode.speedWristTilt:
+                return GetSpeedNoTriggerReason(elapsedText, true);
+            case BallSpawner.Mode.wristTilt010:
+                return GetWristTiltNoTriggerReason("wrist_tilt_confirmation_not_completed", elapsedText);
+            case BallSpawner.Mode.dwellRelease:
+                return "dwell_time_not_reached_before_exit" + elapsedText
+                    + "; required=" + GetDwellThresholdText();
+            case BallSpawner.Mode.dwellDirection:
+                return GetDirectionNoTriggerReason("dwell_time_not_reached_before_exit", elapsedText);
+            case BallSpawner.Mode.dwellWithdraw:
+                return dwellWithdrawCancelTriggered
+                    ? "withdraw_cancel_movement_detected" + elapsedText
+                    : "dwell_time_not_reached_before_exit" + elapsedText + "; required=" + GetDwellThresholdText();
+            case BallSpawner.Mode.speed:
+            case BallSpawner.Mode.speedDwell:
+            case BallSpawner.Mode.speedRelease:
+                return GetSpeedNoTriggerReason(elapsedText, false);
+            case BallSpawner.Mode.speedDirection:
+                if (direction010CancelTriggered)
+                {
+                    return "cancel_direction_detected" + GetDirectionDetails();
+                }
+                return GetSpeedNoTriggerReason(elapsedText, false);
+            case BallSpawner.Mode.release010:
+                return logWriter3.isReact
+                    ? "release_detected_before_exit_confirmation" + elapsedText
+                    : "react_stage_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.time010:
+                return fastTapCancelTriggered
+                    ? "dwell_cancel_timeout_reached" + elapsedText
+                    : "react_stage_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.direction010:
+            case BallSpawner.Mode.direction010Test:
+                return GetDirectionNoTriggerReason("exit_confirmation_not_completed", elapsedText);
+            case BallSpawner.Mode.contact010:
+                return "exit_outside_contact_trigger_region" + elapsedText;
+            case BallSpawner.Mode.swing010:
+                if (swing010CancelTriggered || fastTapCancelTriggered)
+                {
+                    return "swing_cancel_angle_exceeded" + elapsedText;
+                }
+                return swing010HasEntryDirection
+                    ? "swing_exit_confirmation_not_completed" + elapsedText
+                    : "swing_entry_direction_unavailable" + elapsedText;
+            default:
+                return "attempt_interrupted_before_resolution" + elapsedText;
+        }
+    }
+
+    private void RegisterNoTriggerSource()
+    {
+        if (noTriggerEntryTimestamp < 0f)
+        {
+            noTriggerEntryTimestamp = Time.time;
+        }
+        logWriter3?.SetActiveSelectionSource(this);
+    }
+
+    private void ClearNoTriggerEntryTimestamp()
+    {
+        noTriggerEntryTimestamp = -1f;
+    }
+
+    private string GetPinchDirectionNoTriggerReason(string elapsedText)
+    {
+        if (pinchDirectionCancelTriggered)
+        {
+            return "cancel_direction_detected" + GetPinchDirectionDetails();
+        }
+        if (!pinchReleaseTriggerArmed)
+        {
+            return "pinch_not_started_before_exit" + elapsedText;
+        }
+        if (pinchDirectionCenterPositionHistory.Count < GetPinchDirectionWindowFrameCount())
+        {
+            return "direction_window_not_ready_at_exit; samples=" + pinchDirectionCenterPositionHistory.Count
+                + "; required=" + GetPinchDirectionWindowFrameCount();
+        }
+        if (!pinchDirectionSpeedMinMet)
+        {
+            return "direction_speed_below_threshold_at_exit; threshold="
+                + GetPinchDirectionMinSpeedThreshold().ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        return "contact_exited_while_pinching" + GetPinchDirectionDetails();
+    }
+
+    private string GetDirectionNoTriggerReason(string fallback, string elapsedText)
+    {
+        if (direction010CancelTriggered)
+        {
+            return "cancel_direction_detected" + GetDirectionDetails();
+        }
+        if (direction010PositionHistory.Count < GetDirection010WindowFrameCount())
+        {
+            return "direction_window_not_ready_at_exit; samples=" + direction010PositionHistory.Count
+                + "; required=" + GetDirection010WindowFrameCount();
+        }
+        if (!direction010SpeedMinMet)
+        {
+            return "direction_speed_below_threshold_at_exit; threshold="
+                + GetDirection010MinSpeedThreshold().ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        return fallback + elapsedText + GetDirectionDetails();
+    }
+
+    private string GetSpeedNoTriggerReason(string elapsedText, bool includeWrist)
+    {
+        if (includeWrist && pinchWristTiltCanceled)
+        {
+            return "wrist_tilt_cancel_threshold_exceeded" + elapsedText;
+        }
+        return speedReleaseMinSpeedMet
+            ? "maximum_speed_not_reached_before_exit" + elapsedText
+            : "minimum_speed_not_reached_before_exit" + elapsedText;
+    }
+
+    private string GetWristTiltNoTriggerReason(string fallback, string elapsedText)
+    {
+        if (!pinchWristTiltHasEntryRotation)
+        {
+            return "wrist_entry_rotation_unavailable" + elapsedText;
+        }
+        if (pinchWristTiltCanceled || IsPinchWristTiltPastThreshold())
+        {
+            return "wrist_tilt_cancel_threshold_exceeded" + elapsedText
+                + "; threshold=" + ballSpawner.pinchWristTiltCancelAngleThreshold.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        return fallback + elapsedText;
+    }
+
+    private string GetDirectionDetails()
+    {
+        return "; angle=" + FormatOptionalFloat(lastDirection010AngleDelta)
+            + "; threshold=" + GetDirection010AngleThreshold().ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
+            + "; samples=" + direction010PositionHistory.Count;
+    }
+
+    private string GetPinchDirectionDetails()
+    {
+        return "; angle=" + FormatOptionalFloat(lastPinchDirectionAngleDelta)
+            + "; threshold=" + GetPinchDirectionAngleThreshold().ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
+            + "; samples=" + pinchDirectionCenterPositionHistory.Count;
+    }
+
+    private string FormatOptionalFloat(float value)
+    {
+        return float.IsNaN(value)
+            ? "NA"
+            : value.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private float GetCurrentEntryElapsedTime()
+    {
+        float timestamp = pinchReleaseTriggerEntryTimestamp >= 0f
+            ? pinchReleaseTriggerEntryTimestamp
+            : fastTapEntryTimestamp >= 0f
+                ? fastTapEntryTimestamp
+                : noTriggerEntryTimestamp;
+        return timestamp >= 0f ? Mathf.Max(0f, Time.time - timestamp) : 0f;
+    }
+
+    private string GetDwellThresholdText()
+    {
+        float threshold = Acce != null && Acce.WaitTime > 0f
+            ? Acce.WaitTime
+            : ballSpawner.longPressTimeThreshold;
+        return Mathf.Max(0f, threshold).ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
     }
 
     public void SetPinchDwellMode()
@@ -385,10 +740,14 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
-            if (inBall || inBall2)
+            if (HasAnyPinchContact())
             {
-                pinchReleaseTriggerArmed = true;
-                ShowModeReadyRing();
+                if (!pinchReleaseTriggerArmed)
+                {
+                    pinchReleaseTriggerArmed = true;
+                    WritePinchReleaseDistance("pinch_start", "pinch-start-in-ball");
+                    ShowModeReadyRing();
+                }
             }
         });
 
@@ -399,9 +758,17 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
-            if (pinchReleaseTriggerArmed && (inBall || inBall2))
+            bool hasPinchContact = HasAnyPinchContact();
+            if (pinchReleaseTriggerArmed && hasPinchContact)
             {
                 TriggerPinchReleaseTriggerSelection();
+            }
+            else if (pinchReleaseTriggerArmed && !hasPinchContact)
+            {
+                // A held-pinch exit is canceled by AfterOutEvent. If contact is
+                // missing here without that exit event, abort without selecting.
+                ResetPinchReleaseTriggerVisuals();
+                ResetPinchReleaseTriggerState();
             }
 
             pinchReleaseTriggerArmed = false;
@@ -452,7 +819,7 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
-            if (inBall || inBall2)
+            if (HasAnyPinchContact())
             {
                 pinchReleaseTriggerArmed = true;
                 ResetPinchDirectionTrackingWindow();
@@ -467,12 +834,24 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
+            bool hasPinchContact = HasAnyPinchContact();
             if (pinchReleaseTriggerArmed
-                && (inBall || inBall2)
+                && hasPinchContact
                 && !pinchDirectionCancelTriggered
                 && !pinchDirectionReentryRequired)
             {
+                RecordLastPinchDirectionAngleFrame();
+                RecordLastPinchDirectionSpeedMinFrame();
                 TriggerPinchReleaseTriggerSelection();
+                ResetPinchDirectionCancelState();
+            }
+            else if (pinchReleaseTriggerArmed
+                && !hasPinchContact
+                && !pinchDirectionCancelTriggered
+                && !pinchDirectionReentryRequired)
+            {
+                ResetPinchReleaseTriggerVisuals();
+                ResetPinchReleaseTriggerState();
                 ResetPinchDirectionCancelState();
             }
 
@@ -495,11 +874,16 @@ public class S2AccMode : MonoBehaviour
     {
         ResetPinchThumbSwipeState();
 
-        // Selection flow: index entry arms the target, PinchStart enables contact
-        // tracking, and PinchEnd resolves trigger/cancel from thumb-to-index distance.
+        // Only a fresh PinchStart inside begins tracking. Entering while
+        // already pinching only updates contact state.
         Acce.InEvent.AddListener(() =>
         {
             HandlePinchThumbSwipeIndexEnter();
+        });
+
+        Acce2.InEvent.AddListener(() =>
+        {
+            HandlePinchThumbSwipeThumbEnter();
         });
 
         pinchob.PinchStart.AddListener(() =>
@@ -509,9 +893,10 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
-            if (inBall && TryCapturePinchThumbSwipeStart())
+            if (HasAnyPinchContact() && TryCapturePinchThumbSwipeStart())
             {
                 pinchThumbSwipeTracking = true;
+                WritePinchReleaseDistance("pinch_start", "pinch-start-in-ball");
                 ShowModeReadyRing();
             }
         });
@@ -535,6 +920,11 @@ public class S2AccMode : MonoBehaviour
         Acce.AfterOutEvent.AddListener(() =>
         {
             HandlePinchThumbSwipeIndexExit();
+        });
+
+        Acce2.AfterOutEvent.AddListener(() =>
+        {
+            HandlePinchThumbSwipeThumbExit();
         });
     }
 
@@ -629,6 +1019,7 @@ public class S2AccMode : MonoBehaviour
                 logWriter3.handInBall = true;
                 logWriter3.isMineBall = isMineBall;
                 ConfigureContact010Frame();
+                ShowModeReadyRingOnIndexEntryIfNeeded();
             }
 
             if (isMineBall)
@@ -698,9 +1089,12 @@ public class S2AccMode : MonoBehaviour
                 inBall = true;
                 canceled = false;
                 direction010CancelTriggered = false;
+                CaptureDirection010EntryPosition();
+                CaptureDirectionCancelEntryAxisIfNeeded();
                 ballSpawner.intargetTimes++;
                 logWriter3.handInBall = true;
                 logWriter3.isMineBall = isMineBall;
+                ShowModeReadyRingOnIndexEntryIfNeeded();
             }
 
             if (isMineBall)
@@ -715,7 +1109,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
 
-            // 在球内每个 FixedUpdate 通过 InEvent 检测一次：可调窗口内的平滑方向接近 cd 时取消。
+            // 在球内每个 FixedUpdate 通过 InEvent 检测一次：可调窗口内的平滑方向接近朝向用户方向时取消。
             if (IsDirection010CancelMovement())
             {
                 TriggerDirection010Cancel();
@@ -739,8 +1133,10 @@ public class S2AccMode : MonoBehaviour
 
             if (!direction010CancelTriggered)
             {
-                // 离开目标球时，如果此前没有满足 cd 方向取消条件，则确认触发。
+                // 离开目标球时，如果此前没有满足朝向用户方向取消条件，则确认触发。
                 ballSpawner.triggerCondition = 'D';
+                RecordLastDirection010AngleFrame(true);
+                RecordLastDirection010SpeedMinFrame();
                 TriggerContact010Selection();
             }
             else if (!ballSpawner.triggered)
@@ -774,7 +1170,10 @@ public class S2AccMode : MonoBehaviour
                     canceled = false;
                     direction010CancelTriggered = false;
                     ResetDirection010TrackingWindow();
+                    CaptureDirection010EntryPosition();
+                    CaptureDirectionCancelEntryAxisIfNeeded();
                     ballSpawner.intargetTimes++;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
 
                 if (isMineBall)
@@ -807,16 +1206,20 @@ public class S2AccMode : MonoBehaviour
                 if (isMineBall)
                 {
                     logWriter3.successfully_Canceled = false;
+                    RecordLastDirection010AngleFrame(false);
+                    RecordLastDirection010SpeedMinFrame();
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
                 else
                 {
+                    RecordLastDirection010AngleFrame(false);
+                    RecordLastDirection010SpeedMinFrame();
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
 
@@ -835,6 +1238,7 @@ public class S2AccMode : MonoBehaviour
                 return;
             }
 
+            HideModeReadyRingOnIndexEntryIfNeeded();
             handInBall2 = false;
             handInBall = false;
             inBall = false;
@@ -876,11 +1280,14 @@ public class S2AccMode : MonoBehaviour
                     return;
                 }
 
-                if (!inBall && !inBall2)
+                if (!HasAnyPinchContact())
                 {
                     useIndex = false;
                     ResetPinchReleaseTracking();
-                    ResetPinchDwellTracking();
+                    if (!IsPinchDwellMode() || pinchob == null || !pinchob.isPinch)
+                    {
+                        ResetPinchDwellTracking();
+                    }
                 }
                 if (isMineBall)
                 {
@@ -927,7 +1334,7 @@ public class S2AccMode : MonoBehaviour
 
             if (IsPinchDwellMode())
             {
-                if (inBall)
+                if (HasAnyPinchContact())
                 {
                     StartPinchDwellTracking();
                 }
@@ -947,7 +1354,7 @@ public class S2AccMode : MonoBehaviour
                     print("����111");
                     print(Acce.IndexTipPose2.Position.x);
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                 }
             }
             else
@@ -960,7 +1367,7 @@ public class S2AccMode : MonoBehaviour
                     print("����111");
                     print(Acce.IndexTipPose2.Position.x);
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     //ballSpawner.triggeredBy = "index";
 
                 }
@@ -989,11 +1396,6 @@ public class S2AccMode : MonoBehaviour
             }
 
             inBall = false;
-            if (IsPinchDwellMode())
-            {
-                ResetPinchDwellTracking();
-            }
-
             if (UpdatePinchTargetExitVisualState())
             {
                 return;
@@ -1016,7 +1418,7 @@ public class S2AccMode : MonoBehaviour
                 logWriter3.RecordCancelReason("contact transition");
                 logWriter3.successfully_Canceled = true;
                 ballSpawner.PlaySound2();
-                ballSpawner.getNewTarget();
+                CompleteSelection();
                 Player.ChangeOpacityBack();
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
@@ -1056,11 +1458,14 @@ public class S2AccMode : MonoBehaviour
                     return;
                 }
 
-                if (!inBall && !inBall2)
+                if (!HasAnyPinchContact())
                 {
                     useIndex = false;
                     ResetPinchReleaseTracking();
-                    ResetPinchDwellTracking();
+                    if (!IsPinchDwellMode() || pinchob == null || !pinchob.isPinch)
+                    {
+                        ResetPinchDwellTracking();
+                    }
                 }
                 if (isMineBall)
                 {
@@ -1124,7 +1529,7 @@ public class S2AccMode : MonoBehaviour
                     print(Acce2.ThumbTipPose2.Position.x);
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
 
                 }
             }
@@ -1137,7 +1542,7 @@ public class S2AccMode : MonoBehaviour
                     handledByThumb = true;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
 
                 }
             }
@@ -1175,7 +1580,6 @@ public class S2AccMode : MonoBehaviour
             {
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
-                inBall2 = false;
                 ballSpawner.triggeredBy = "index";
                 Player.ChangeOpacityBack();
                 logWriter3.handInBall = false;
@@ -1192,7 +1596,7 @@ public class S2AccMode : MonoBehaviour
                 {
                     logWriter3.RecordCancelReason("contact transition");
                     logWriter3.successfully_Canceled = true;
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     Player.ChangeOpacityBack();
                     ballSpawner.area_type = 3;
                     ballSpawner.index = -1;
@@ -1246,6 +1650,7 @@ public class S2AccMode : MonoBehaviour
                     {
                         ballSpawner.intargetTimes++;
                         handInBall2 = true;
+                        ShowModeReadyRingOnIndexEntryIfNeeded();
                     }
                 }
                 else
@@ -1259,6 +1664,7 @@ public class S2AccMode : MonoBehaviour
                     {
                         ballSpawner.intargetTimes++;
                         handInBall2 = true;
+                        ShowModeReadyRingOnIndexEntryIfNeeded();
                     }
                 }
                 logWriter3.isMineBall = isMineBall;
@@ -1272,7 +1678,7 @@ public class S2AccMode : MonoBehaviour
                     logWriter3.successfully_Canceled = false;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     print("����111");
                     print(Acce.IndexTipPose2.Position.x);
                     print(Acce.condition);
@@ -1282,7 +1688,7 @@ public class S2AccMode : MonoBehaviour
                 {
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     print("����111");
                     print(Acce.IndexTipPose2.Position.x);
                     print(Acce.condition);
@@ -1290,6 +1696,7 @@ public class S2AccMode : MonoBehaviour
                 }
                 logWriter3.handInBall = false;
                 logWriter3.triggerTime = 0f;
+                HideModeReadyRingOnIndexEntryIfNeeded();
             });
 
         }
@@ -1297,13 +1704,14 @@ public class S2AccMode : MonoBehaviour
         {
             handInBall2 = false;
             inBall = false;
+            HideModeReadyRingOnIndexEntryIfNeeded();
             if (isMineBall)
             {
                 ballSpawner.PlaySound2();
                 logWriter3.successfully_Canceled = true;
                 logWriter3.RecordCancelReason("contact transition");
                 Player.ChangeOpacityBack();
-                ballSpawner.getNewTarget();
+                CompleteSelection();
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
                 
@@ -1348,6 +1756,7 @@ public class S2AccMode : MonoBehaviour
                     ResetReleaseGestureTracking();
                     ballSpawner.intargetTimes++;
                     handInBall2 = true;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
 
                 RecordDwellWithdrawFingerPosition();
@@ -1379,19 +1788,20 @@ public class S2AccMode : MonoBehaviour
                     logWriter3.successfully_Canceled = false;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
                 else
                 {
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
 
                 logWriter3.handInBall = false;
                 logWriter3.triggerTime = 0f;
+                HideModeReadyRingOnIndexEntryIfNeeded();
                 ResetDwellReleaseState();
             });
         }
@@ -1400,6 +1810,7 @@ public class S2AccMode : MonoBehaviour
         {
             handInBall2 = false;
             inBall = false;
+            HideModeReadyRingOnIndexEntryIfNeeded();
             dwellReleaseInside = false;
             dwellReleaseEntryTimestamp = -1f;
             dwellReleaseCancelTriggered = false;
@@ -1440,6 +1851,7 @@ public class S2AccMode : MonoBehaviour
                     dwellWithdrawPositionHistory.Clear();
                     ballSpawner.intargetTimes++;
                     handInBall2 = true;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
 
                 if (isMineBall)
@@ -1469,19 +1881,20 @@ public class S2AccMode : MonoBehaviour
                     logWriter3.successfully_Canceled = false;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
                 else
                 {
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     ballSpawner.triggerCondition = Acce.condition;
                 }
 
                 logWriter3.handInBall = false;
                 logWriter3.triggerTime = 0f;
+                HideModeReadyRingOnIndexEntryIfNeeded();
                 ResetDwellWithdrawState();
             });
         }
@@ -1492,6 +1905,7 @@ public class S2AccMode : MonoBehaviour
 
             handInBall2 = false;
             inBall = false;
+            HideModeReadyRingOnIndexEntryIfNeeded();
             dwellWithdrawInside = false;
             dwellWithdrawEntryTimestamp = -1f;
             dwellWithdrawCancelTriggered = false;
@@ -1507,7 +1921,7 @@ public class S2AccMode : MonoBehaviour
                 logWriter3.successfully_Canceled = true;
                 logWriter3.RecordCancelReason("contact transition");
                 Player.ChangeOpacityBack();
-                ballSpawner.getNewTarget();
+                CompleteSelection();
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
             }
@@ -1554,6 +1968,7 @@ public class S2AccMode : MonoBehaviour
                     fastTapReactTimestamp = -1f;
                     handInBall2 = true;
                     ballSpawner.intargetTimes++;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
             }
             else
@@ -1566,6 +1981,7 @@ public class S2AccMode : MonoBehaviour
                     fastTapReactTimestamp = -1f;
                     handInBall2 = true;
                     ballSpawner.intargetTimes++;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
             }
 
@@ -1602,6 +2018,7 @@ public class S2AccMode : MonoBehaviour
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
                 fastTapReactTimestamp = -1f;
+                ShowModeReadyRingOnIndexEntryIfNeeded();
 
                 if (isMineBall)
                 {
@@ -1717,7 +2134,7 @@ public class S2AccMode : MonoBehaviour
                 ballSpawner.PlaySound2();
             }
 
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             ResetFastTapTiming();
             logWriter3.triggerTime = 0f;
             logWriter3.reactTime = 0f;
@@ -1775,6 +2192,7 @@ public class S2AccMode : MonoBehaviour
                     fastTapReactTimestamp = -1f;
                     handInBall2 = true;
                     ballSpawner.intargetTimes++;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
             }
             else
@@ -1787,6 +2205,7 @@ public class S2AccMode : MonoBehaviour
                     fastTapReactTimestamp = -1f;
                     handInBall2 = true;
                     ballSpawner.intargetTimes++;
+                    ShowModeReadyRingOnIndexEntryIfNeeded();
                 }
             }
         });
@@ -1820,6 +2239,7 @@ public class S2AccMode : MonoBehaviour
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
                 fastTapReactTimestamp = -1f;
+                ShowModeReadyRingOnIndexEntryIfNeeded();
 
                 if (isMineBall)
                 {
@@ -1928,7 +2348,7 @@ public class S2AccMode : MonoBehaviour
                 ballSpawner.PlaySound2();
             }
 
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             ResetFastTapTiming();
             logWriter3.triggerTime = 0f;
             logWriter3.reactTime = 0f;
@@ -2179,9 +2599,9 @@ public class S2AccMode : MonoBehaviour
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
                 direction010CancelTriggered = false;
-                direction010PositionHistory.Clear();
-                direction010HasSmoothedDirection = false;
-                direction010SmoothedDirection = Vector3.zero;
+                ResetDirection010TrackingWindow();
+                CaptureDirection010EntryPosition();
+                CaptureDirectionCancelEntryAxisIfNeeded();
                 ballSpawner.intargetTimes++;
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
@@ -2199,6 +2619,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
 
+            RecordDirection010SpeedMinIfMet();
             CheckSpeedReleaseIndexTrigger();
 
             if (speedReleaseMinSpeedMet
@@ -2213,11 +2634,6 @@ public class S2AccMode : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
-            if (handInBall && !speedReleaseTriggered && !direction010CancelTriggered)
-            {
-                TriggerSpeedCancel(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
-            }
-
             ResetSpeedReleaseState();
             ResetDirection010State();
             ResetFastTapTiming();
@@ -2551,7 +2967,7 @@ public class S2AccMode : MonoBehaviour
 
             rainbowConfirmBlocked = false;
             canceled = false;
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.triggerTime = 0f;
             logWriter3.reactTime = 0f;
             logWriter3.cancelTime = 0f;
@@ -2562,7 +2978,10 @@ public class S2AccMode : MonoBehaviour
     {
         reactTap.ChangeEvent.AddListener(() =>
         {
-            logWriter2.currentInBallDistance = Vector3.Distance(reactTap.speedAcceMetPosition, reactTap.IndexTipPose2.Position);;
+            if (logWriter2 != null)
+            {
+                logWriter2.currentInBallDistance = Vector3.Distance(reactTap.speedAcceMetPosition, reactTap.IndexTipPose2.Position);
+            }
 
         });
         Acce.InEvent.AddListener(() =>
@@ -2613,7 +3032,7 @@ public class S2AccMode : MonoBehaviour
                     ballSpawner.caseTime++;
                     logWriter3.isMineBall = true;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
                     logWriter3.cancelTime = 0f;
                     logWriter3.triggerTime = 0f;
                     logWriter3.cancelTimes = 0;
@@ -2761,17 +3180,14 @@ public class S2AccMode : MonoBehaviour
                 ballSpawner.caseTime++;
                 logWriter3.isMineBall = true;
                 ballSpawner.PlaySound2();
-                ballSpawner.getNewTarget();
+                CompleteSelection();
                 logWriter3.cancelTime = 0f;
                 logWriter3.triggerTime = 0f;
                 logWriter3.cancelTimes = 0;
             }
             else if (ballSpawner.enable_trigger)
             {
-                if (ballSpawner.enableMineBall)
-                {
-                    ballSpawner.PlaySoundWrong();
-                }
+                PlayNonMineCancelSound();
                 if (ballSpawner.enable_preview)
                 {
                     if (ballSpawner.nextNextBall != null)
@@ -2856,7 +3272,7 @@ public class S2AccMode : MonoBehaviour
                     logWriter3.isMineBall = true;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySoundWrong();
-                    ballSpawner.getNewTarget();                
+                    CompleteSelection();
                 }
             }
             else if (ballSpawner.enable_trigger)
@@ -2867,7 +3283,7 @@ public class S2AccMode : MonoBehaviour
                     logWriter3.isMineBall = false;
                     ballSpawner.caseTime++;
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
 
                 }
 
@@ -2902,7 +3318,7 @@ public class S2AccMode : MonoBehaviour
                     print("����111");
                     print(Acce.IndexTipPose2.Position.x);
                     ballSpawner.PlaySound2();
-                    ballSpawner.getNewTarget();
+                    CompleteSelection();
 
                     inBall = true;
                     //print(111);
@@ -2983,7 +3399,7 @@ public class S2AccMode : MonoBehaviour
                         ballSpawner.index = -1;
                         logWriter3.handInBall = false;
                         logWriter3.triggerTime = 0f;
-                        ballSpawner.getNewTarget();
+                        CompleteSelection();
                         logWriter3.cancelTime = 0f;
                         logWriter3.cancelTimes = 0;
                         return;
@@ -3032,7 +3448,7 @@ public class S2AccMode : MonoBehaviour
 
         logWriter3.handInBall = false;
         logWriter3.triggerTime = 0f;
-        ballSpawner.getNewTarget();
+        CompleteSelection();
     }
 
     private void HandlePinchReleaseTriggerEnter(bool enteredByIndex)
@@ -3076,6 +3492,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.isMineBall = isMineBall;
         logWriter3.handInBall = true;
 
+
         if (isMineBall)
         {
             Player.TurnShallowYellowMineBall();
@@ -3097,7 +3514,7 @@ public class S2AccMode : MonoBehaviour
             inBall2 = false;
         }
 
-        if (inBall || inBall2)
+        if (HasAnyPinchContact())
         {
             ballSpawner.area_type = ballKind;
             ballSpawner.index = ballIndex;
@@ -3105,7 +3522,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (!pinchReleaseTriggerCompleted && (pinchReleaseTriggerArmed || pinchob.isPinch))
+        if (!pinchReleaseTriggerCompleted && pinchReleaseTriggerArmed)
         {
             CancelPinchReleaseTrigger("hold-contact-transition");
         }
@@ -3120,6 +3537,7 @@ public class S2AccMode : MonoBehaviour
     private void TriggerPinchReleaseTriggerSelection()
     {
         pinchReleaseTriggerCompleted = true;
+        WritePinchReleaseDistance("trigger", "pinch-end-in-ball");
         ballSpawner.triggerCondition = 'P';
 
         if (isMineBall)
@@ -3139,12 +3557,13 @@ public class S2AccMode : MonoBehaviour
 
         logWriter3.triggerTime = GetPinchReleaseTriggerElapsedTime();
         logWriter3.handInBall = false;
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         ResetPinchReleaseTriggerState();
     }
 
     private void CancelPinchReleaseTrigger(string cancelReason)
     {
+        WritePinchReleaseDistance("cancel", cancelReason);
         canceled = true;
         float elapsedTime = GetPinchReleaseTriggerElapsedTime();
         logWriter3.triggerTime = elapsedTime;
@@ -3159,7 +3578,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
             ResetPinchReleaseTriggerVisuals();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.cancelTimes = 0;
             return;
@@ -3199,6 +3618,69 @@ public class S2AccMode : MonoBehaviour
         return Mathf.Max(0f, Time.time - pinchReleaseTriggerEntryTimestamp);
     }
 
+    private void WritePinchReleaseDistance(string eventType, string reason)
+    {
+        bool isPinchReleaseTrigger = modeSelected == (int)BallSpawner.Mode.pinchReleaseTrigger;
+        bool isPinchThumbSwipe = modeSelected == (int)BallSpawner.Mode.pinchThumbSwipe;
+        if ((!isPinchReleaseTrigger && !isPinchThumbSwipe) || logWriter3 == null)
+        {
+            return;
+        }
+
+        bool hasIndexTip = HandJointUtils.TryGetJointPose(
+            TrackedHandJoint.IndexTip,
+            Handedness.Any,
+            out MixedRealityPose indexTipPose);
+        bool hasThumbTip = HandJointUtils.TryGetJointPose(
+            TrackedHandJoint.ThumbTip,
+            Handedness.Any,
+            out MixedRealityPose thumbTipPose);
+        bool poseValid = hasIndexTip && hasThumbTip;
+        Vector3 indexPosition = hasIndexTip ? indexTipPose.Position : Vector3.zero;
+        Vector3 thumbPosition = hasThumbTip ? thumbTipPose.Position : Vector3.zero;
+        float distanceMeters = poseValid
+            ? Vector3.Distance(indexPosition, thumbPosition)
+            : 0f;
+        float swipeContactDistanceMeters = 0f;
+        bool swipeContactValid = isPinchThumbSwipe
+            && TryGetPinchThumbSwipeData(
+                out _,
+                out _,
+                out _,
+                out swipeContactDistanceMeters,
+                out _,
+                out _);
+        float entryElapsed = isPinchThumbSwipe
+            ? GetPinchThumbSwipeElapsedTime()
+            : GetPinchReleaseTriggerElapsedTime();
+        bool pending = isPinchThumbSwipe
+            ? pinchThumbSwipeTracking
+            : pinchReleaseTriggerArmed;
+
+        logWriter3.WritePinchReleaseDistance(
+            eventType,
+            reason,
+            modeSelected,
+            ballIndex,
+            ballKind,
+            isMineBall,
+            pending,
+            pinchob != null && pinchob.isPinch,
+            inBall,
+            inBall2,
+            ballSpawner != null ? ballSpawner.triggeredBy : "",
+            entryElapsed,
+            poseValid,
+            pinchob != null ? pinchob.ActivateDistance : 0f,
+            pinchob != null ? pinchob.DeactivateDistance : 0f,
+            distanceMeters,
+            swipeContactValid,
+            swipeContactValid ? swipeContactDistanceMeters : 0f,
+            ballSpawner != null ? ballSpawner.pinchThumbSwipeContactDistanceThreshold : 0f,
+            indexPosition,
+            thumbPosition);
+    }
+
     private void HandlePinchDirectionEnter(bool enteredByIndex)
     {
         if (!ballSpawner.enable_trigger
@@ -3208,7 +3690,12 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        bool wasArmed = pinchReleaseTriggerArmed;
         HandlePinchReleaseTriggerEnter(enteredByIndex);
+        if (!wasArmed && pinchReleaseTriggerArmed)
+        {
+            ResetPinchDirectionTrackingWindow();
+        }
     }
 
     private void HandlePinchDirectionExit(bool exitedByIndex)
@@ -3222,7 +3709,7 @@ public class S2AccMode : MonoBehaviour
             inBall2 = false;
         }
 
-        if (inBall || inBall2)
+        if (HasAnyPinchContact())
         {
             if (!pinchDirectionCancelTriggered && !pinchDirectionReentryRequired)
             {
@@ -3257,6 +3744,7 @@ public class S2AccMode : MonoBehaviour
         pinchDirectionReentryRequired = true;
         pinchReleaseTriggerArmed = false;
         HideModeReadyRing();
+        RecordLastPinchDirectionSpeedMinFrame();
         TriggerSurfaceExitCancel("direction");
         ballSpawner.area_type = 3;
         ballSpawner.index = -1;
@@ -3269,32 +3757,164 @@ public class S2AccMode : MonoBehaviour
             return false;
         }
 
-        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
-        if (windowMovement.sqrMagnitude <= 0.0000001f)
-        {
-            return false;
-        }
-
-        float minSpeed = GetPinchDirectionMinSpeedThreshold();
-        if (minSpeed > 0f && centerSpeed < minSpeed)
-        {
-            return false;
-        }
-
+        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+        CaptureDirectionCancelEntryAxisIfNeeded();
         Collider collider = GetComponent<Collider>();
         Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 ringCenter = ballSpawner.transform.position;
-        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
-        if (abDirection.sqrMagnitude <= 0.0000001f)
+        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
+        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
+        RecordPinchDirectionSpeedMinIfMet(centerSpeed);
+        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(centerSpeed);
+        if (windowMovement.sqrMagnitude <= 0.0000001f)
         {
+            RecordPinchDirectionDebug(
+                entryDirectionAxisMode && centerSpeed < GetEntryDirectionCancelLowSpeedThreshold()
+                    ? "entry_direction_frame_skipped_low_speed"
+                    : entryDirectionAxisMode && !speedGatePass
+                        ? "direction_speed_below_threshold"
+                    : pinchDirectionCenterPositionHistory.Count < GetPinchDirectionWindowFrameCount() ? "not_ready_window" : "zero_window_movement",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                Vector3.zero,
+                float.NaN,
+                false,
+                centerSpeed,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
-        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
-        Vector3 smoothedDirection = SmoothPinchDirectionDirection(windowMovement.normalized);
-        float angle = Vector3.Angle(smoothedDirection, cdDirection);
-        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
-        return cdAngleDelta <= GetPinchDirectionAngleThreshold();
+        if (entryDirectionAxisMode)
+        {
+            if (!speedGatePass)
+            {
+                RecordPinchDirectionDebug(
+                    "direction_speed_below_threshold",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    directionCancelEntryAxis,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+        else
+        {
+            float minSpeed = GetPinchDirectionMinSpeedThreshold();
+            if (minSpeed > 0f && centerSpeed < minSpeed)
+            {
+                RecordPinchDirectionDebug(
+                    "speed_too_low",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    Vector3.zero,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        Vector3 referenceDirection = entryDirectionAxisMode
+            ? directionCancelEntryAxis
+            : -GetViewerBackDirection(ballCenter);
+        if (referenceDirection.sqrMagnitude <= 0.0000001f)
+        {
+            RecordPinchDirectionDebug(
+                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                Vector3.zero,
+                float.NaN,
+                true,
+                centerSpeed,
+                ballCenter,
+                viewerPosition);
+            return false;
+        }
+
+        Vector3 currentDirection = entryDirectionAxisMode
+            ? windowMovement.normalized
+            : SmoothPinchDirectionDirection(windowMovement.normalized);
+        Vector3 comparisonDirection = Vector3.zero;
+        Vector3 comparisonReferenceDirection = Vector3.zero;
+        if (entryDirectionAxisMode)
+        {
+            comparisonDirection = currentDirection.normalized;
+            comparisonReferenceDirection = referenceDirection.normalized;
+        }
+        else
+        {
+            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
+            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
+            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
+            {
+                RecordPinchDirectionDebug(
+                    "zero_horizontal_direction",
+                    false,
+                    windowMovement,
+                    comparisonDirection,
+                    true,
+                    comparisonReferenceDirection,
+                    float.NaN,
+                    false,
+                    centerSpeed,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        float angle = entryDirectionAxisMode
+            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
+            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        lastPinchDirectionAngleDelta = angle;
+        bool cancelPass = entryDirectionAxisMode
+            ? angle <= GetPinchDirectionAngleThreshold()
+            : angle <= GetPinchDirectionAngleThreshold();
+        if (cancelPass)
+        {
+            logWriter3?.RecordDirectionAngleFrame(angle, pinchDirectionFramesSinceEntry);
+            RecordPinchDirectionDebug(
+                entryDirectionAxisMode ? "inside_cancel_cone" : "pass",
+                true,
+                windowMovement,
+                comparisonDirection,
+                true,
+                comparisonReferenceDirection,
+                angle,
+                true,
+                centerSpeed,
+                ballCenter,
+                viewerPosition);
+            return true;
+        }
+        RecordPinchDirectionDebug(
+            entryDirectionAxisMode ? "angle_outside_cancel_cone" : "angle_too_large",
+            false,
+            windowMovement,
+            comparisonDirection,
+            true,
+            comparisonReferenceDirection,
+            angle,
+            false,
+            centerSpeed,
+            ballCenter,
+            viewerPosition);
+        return false;
     }
 
     private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
@@ -3305,6 +3925,76 @@ public class S2AccMode : MonoBehaviour
             return Vector3.zero;
         }
 
+        if (IsEntryDirectionAxisMode())
+        {
+            float entrySampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+            if (!pinchDirectionHasRawPosition)
+            {
+                pinchDirectionPreviousRawPosition = currentCenter;
+                pinchDirectionHasRawPosition = true;
+                pinchDirectionLastAcceptedPosition = currentCenter;
+                pinchDirectionHasAcceptedPosition = true;
+                return Vector3.zero;
+            }
+
+            Vector3 rawMovement = currentCenter - pinchDirectionPreviousRawPosition;
+            centerSpeed = rawMovement.magnitude / entrySampleDeltaTime;
+            pinchDirectionPreviousRawPosition = currentCenter;
+            pinchDirectionFramesSinceEntry++;
+
+            if (centerSpeed < GetEntryDirectionCancelLowSpeedThreshold())
+            {
+                directionCancelLowSpeedMet = true;
+                return Vector3.zero;
+            }
+
+            if (!pinchDirectionHasAcceptedPosition)
+            {
+                pinchDirectionLastAcceptedPosition = currentCenter;
+                pinchDirectionHasAcceptedPosition = true;
+                return Vector3.zero;
+            }
+
+            Vector3 acceptedMovement = currentCenter - pinchDirectionLastAcceptedPosition;
+            pinchDirectionLastAcceptedPosition = currentCenter;
+            if (acceptedMovement.sqrMagnitude <= 0.0000001f)
+            {
+                return Vector3.zero;
+            }
+
+            int entryWindowFrameCount = GetPinchDirectionWindowFrameCount();
+            pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+            while (pinchDirectionCenterPositionHistory.Count > entryWindowFrameCount)
+            {
+                pinchDirectionCenterPositionHistory.Dequeue();
+            }
+
+            if (pinchDirectionCenterPositionHistory.Count < entryWindowFrameCount)
+            {
+                return Vector3.zero;
+            }
+
+            Vector3[] entryPositions = pinchDirectionCenterPositionHistory.ToArray();
+            Vector3 entryAverageDirection = Vector3.zero;
+            int entryValidSegmentCount = 0;
+            for (int i = 1; i < entryPositions.Length; i++)
+            {
+                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
+                if (segment.sqrMagnitude <= 0.0000001f)
+                {
+                    continue;
+                }
+
+                entryAverageDirection += segment.normalized;
+                entryValidSegmentCount++;
+            }
+
+            return entryValidSegmentCount > 0
+                ? entryAverageDirection / entryValidSegmentCount
+                : Vector3.zero;
+        }
+
+        pinchDirectionFramesSinceEntry++;
         int windowFrameCount = GetPinchDirectionWindowFrameCount();
         pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
 
@@ -3313,12 +4003,23 @@ public class S2AccMode : MonoBehaviour
             pinchDirectionCenterPositionHistory.Dequeue();
         }
 
+        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
+        float currentSegmentSpeed = 0f;
+        if (positions.Length >= 2)
+        {
+            Vector3 currentSegment = positions[positions.Length - 1] - positions[positions.Length - 2];
+            currentSegmentSpeed = currentSegment.magnitude / Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+        }
+
         if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
         {
+            if (IsEntryDirectionAxisMode())
+            {
+                centerSpeed = currentSegmentSpeed;
+            }
             return Vector3.zero;
         }
 
-        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
         Vector3 averageDirection = Vector3.zero;
         float totalSegmentDistance = 0f;
         int validSegmentCount = 0;
@@ -3342,7 +4043,9 @@ public class S2AccMode : MonoBehaviour
         }
 
         float sampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
-        centerSpeed = (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
+        centerSpeed = IsEntryDirectionAxisMode()
+            ? currentSegmentSpeed
+            : (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
         return averageDirection / validSegmentCount;
     }
 
@@ -3374,6 +4077,65 @@ public class S2AccMode : MonoBehaviour
         return pinchDirectionSmoothedDirection;
     }
 
+    private void RecordPinchDirectionDebug(
+        string failReason,
+        bool finalCancelPass,
+        Vector3 windowMovement,
+        Vector3 smoothedDirection,
+        bool hasSmoothedDirection,
+        Vector3 userFacingDirection,
+        float angleDeg,
+        bool anglePass,
+        float centerSpeed,
+        Vector3 ballCenter,
+        Vector3 viewerPosition)
+    {
+        if (logWriter3 == null)
+        {
+            return;
+        }
+
+        int windowFrameCount = GetPinchDirectionWindowFrameCount();
+        float minSpeed = GetPinchDirectionMinSpeedThreshold();
+        bool speedPass = minSpeed <= 0f || centerSpeed >= minSpeed;
+        bool windowReady = pinchDirectionCenterPositionHistory.Count >= windowFrameCount;
+        Vector3 centerPosition = GetCurrentPinchDirectionCenterForDebug();
+
+        logWriter3.WriteDirectionDebug(
+            "S2AccMode.pinchDirection",
+            failReason,
+            finalCancelPass,
+            modeSelected,
+            ballIndex,
+            ballKind,
+            handInBall,
+            pinchDirectionReentryRequired,
+            pinchDirectionCancelTriggered,
+            pinchDirectionCenterPositionHistory.Count,
+            windowFrameCount,
+            windowReady,
+            windowMovement,
+            smoothedDirection,
+            hasSmoothedDirection,
+            userFacingDirection,
+            angleDeg,
+            GetPinchDirectionAngleThreshold(),
+            anglePass,
+            centerSpeed,
+            minSpeed,
+            speedPass,
+            ballCenter,
+            centerPosition,
+            viewerPosition);
+    }
+
+    private Vector3 GetCurrentPinchDirectionCenterForDebug()
+    {
+        return TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
+            ? centerPoint
+            : Vector3.zero;
+    }
+
     private int GetPinchDirectionWindowFrameCount()
     {
         if (ballSpawner == null)
@@ -3386,6 +4148,13 @@ public class S2AccMode : MonoBehaviour
 
     private float GetPinchDirectionAngleThreshold()
     {
+        if (IsEntryDirectionAxisMode())
+        {
+            return ballSpawner != null
+                ? Mathf.Clamp(ballSpawner.entryDirectionConeHalfAngle, 0f, 180f)
+                : 45f;
+        }
+
         if (ballSpawner == null)
         {
             return 20f;
@@ -3414,10 +4183,72 @@ public class S2AccMode : MonoBehaviour
         return Mathf.Max(0f, ballSpawner.pinchDirectionMinSpeedThreshold);
     }
 
+    private bool IsEntryDirectionAxisMode()
+    {
+        if (ballSpawner == null || !ballSpawner.useEntryDirectionAxisForDirectionCancel)
+        {
+            return false;
+        }
+
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            || modeSelected == (int)BallSpawner.Mode.dwellDirection
+            || modeSelected == (int)BallSpawner.Mode.speedDirection
+            || modeSelected == (int)BallSpawner.Mode.direction010
+            || modeSelected == (int)BallSpawner.Mode.direction010Test;
+    }
+
+    private float GetEntryDirectionCancelLowSpeedThreshold()
+    {
+        return ballSpawner != null ? Mathf.Max(0f, ballSpawner.speedMinThreshold) : 0.05f;
+    }
+
+    private float GetEntryDirectionCancelHighSpeedThreshold()
+    {
+        if (ballSpawner == null)
+        {
+            return 0.05f;
+        }
+
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            ? GetPinchDirectionMinSpeedThreshold()
+            : GetDirection010MinSpeedThreshold();
+    }
+
+    private bool UpdateEntryDirectionCancelSpeedGate(float speed)
+    {
+        if (!IsEntryDirectionAxisMode())
+        {
+            return true;
+        }
+
+        return speed > GetEntryDirectionCancelHighSpeedThreshold();
+    }
+
+    private void CaptureDirectionCancelEntryAxisIfNeeded()
+    {
+        if (!IsEntryDirectionAxisMode()
+            || directionCancelEntryAxisCaptured)
+        {
+            return;
+        }
+
+        // The Fitts ring is generated in the world XY plane at a fixed Z depth.
+        // -Z is the one-sided normal from the ring toward the user.
+        directionCancelEntryAxis = Vector3.back;
+        directionCancelEntryAxisCaptured = true;
+    }
+
+    private static float GetDirectionAxisAngle(Vector3 movementDirection, Vector3 axisDirection)
+    {
+        return Vector3.Angle(movementDirection, axisDirection);
+    }
+
     private void ResetPinchDirectionCancelState()
     {
         pinchDirectionCancelTriggered = false;
         pinchDirectionReentryRequired = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
         ResetPinchDirectionTrackingWindow();
     }
 
@@ -3426,18 +4257,79 @@ public class S2AccMode : MonoBehaviour
         pinchDirectionCenterPositionHistory.Clear();
         pinchDirectionHasSmoothedDirection = false;
         pinchDirectionSmoothedDirection = Vector3.zero;
+        pinchDirectionFramesSinceEntry = 0;
+        lastPinchDirectionAngleDelta = float.NaN;
+        pinchDirectionSpeedMinMet = false;
+        pinchDirectionSpeedMinFrame = -1;
+        directionCancelLowSpeedMet = false;
+        pinchDirectionHasRawPosition = false;
+        pinchDirectionPreviousRawPosition = Vector3.zero;
+        pinchDirectionHasAcceptedPosition = false;
+        pinchDirectionLastAcceptedPosition = Vector3.zero;
     }
 
-    private void HandlePinchThumbSwipeIndexEnter()
+    private void RecordLastPinchDirectionAngleFrame()
     {
-        if (!ballSpawner.enable_trigger || pinchThumbSwipeCompleted || pinchThumbSwipeCanceled || pinchThumbSwipeReentryRequired)
+        if (logWriter3 != null && !float.IsNaN(lastPinchDirectionAngleDelta))
+        {
+            logWriter3.RecordDirectionAngleFrame(lastPinchDirectionAngleDelta, pinchDirectionFramesSinceEntry);
+        }
+    }
+
+    private void RecordPinchDirectionSpeedMinIfMet(float centerSpeed)
+    {
+        if (pinchDirectionSpeedMinMet || ballSpawner == null)
         {
             return;
         }
 
-        if (!inBall)
+        float minSpeed = GetPinchDirectionMinSpeedThreshold();
+        if (minSpeed <= 0f || centerSpeed >= minSpeed)
+        {
+            pinchDirectionSpeedMinMet = true;
+            pinchDirectionSpeedMinFrame = pinchDirectionFramesSinceEntry;
+        }
+    }
+
+    private void RecordLastPinchDirectionSpeedMinFrame()
+    {
+        logWriter3?.RecordDirectionSpeedMinFrame(pinchDirectionSpeedMinMet, pinchDirectionSpeedMinFrame);
+    }
+
+    private void HandlePinchThumbSwipeIndexEnter()
+    {
+        HandlePinchThumbSwipeContactEnter(true);
+    }
+
+    private void HandlePinchThumbSwipeThumbEnter()
+    {
+        HandlePinchThumbSwipeContactEnter(false);
+    }
+
+    private void HandlePinchThumbSwipeContactEnter(bool enteredByIndex)
+    {
+        if (!ballSpawner.enable_trigger
+            || pinchThumbSwipeCompleted
+            || pinchThumbSwipeCanceled
+            || pinchThumbSwipeReentryRequired)
+        {
+            return;
+        }
+
+        bool firstContact = !HasAnyPinchContact();
+        if (enteredByIndex)
         {
             inBall = true;
+            ballSpawner.triggeredBy = "index";
+        }
+        else
+        {
+            inBall2 = true;
+            ballSpawner.triggeredBy = "thumb";
+        }
+
+        if (firstContact && pinchThumbSwipeEntryTimestamp < 0f)
+        {
             ballSpawner.intargetTimes++;
             pinchThumbSwipeEntryTimestamp = Time.time;
             logWriter3.triggerTime = 0f;
@@ -3445,9 +4337,9 @@ public class S2AccMode : MonoBehaviour
 
         ballSpawner.area_type = ballKind;
         ballSpawner.index = ballIndex;
-        ballSpawner.triggeredBy = "index";
         logWriter3.isMineBall = isMineBall;
         logWriter3.handInBall = true;
+
 
         if (isMineBall)
         {
@@ -3463,27 +4355,87 @@ public class S2AccMode : MonoBehaviour
     {
         inBall = false;
 
+        if (HasAnyPinchContact()
+            && !pinchThumbSwipeCompleted
+            && !pinchThumbSwipeCanceled)
+        {
+            ballSpawner.area_type = ballKind;
+            ballSpawner.index = ballIndex;
+            logWriter3.handInBall = true;
+            return;
+        }
+
         if (pinchThumbSwipeReentryRequired)
         {
-            ClearPinchThumbSwipeReentry();
+            if (!HasAnyPinchContact())
+            {
+                // A canceled gesture is released only after both contact
+                // points have left the ball.
+                ClearPinchThumbSwipeReentry();
+            }
+            else
+            {
+                // Keep the canceled visual state while the other contact
+                // point is still inside.
+                ResetPinchThumbSwipeVisuals();
+            }
             return;
         }
 
         if (pinchThumbSwipeCompleted || pinchThumbSwipeCanceled)
         {
+            ResetPinchThumbSwipeTracking();
             return;
         }
 
-        if (!pinchThumbSwipeTracking && !pinchob.isPinch)
+        ResetPinchThumbSwipeVisuals();
+        ResetPinchThumbSwipeState();
+    }
+
+    private void HandlePinchThumbSwipeThumbExit()
+    {
+        inBall2 = false;
+
+        if (HasAnyPinchContact()
+            && !pinchThumbSwipeCompleted
+            && !pinchThumbSwipeCanceled)
         {
-            ResetPinchThumbSwipeVisuals();
-            ResetPinchThumbSwipeState();
+            ballSpawner.area_type = ballKind;
+            ballSpawner.index = ballIndex;
+            logWriter3.handInBall = true;
+            return;
         }
+
+        if (pinchThumbSwipeReentryRequired)
+        {
+            if (!HasAnyPinchContact())
+            {
+                // A canceled gesture is released only after both contact
+                // points have left the ball.
+                ClearPinchThumbSwipeReentry();
+            }
+            else
+            {
+                // Keep the canceled visual state while the other contact
+                // point is still inside.
+                ResetPinchThumbSwipeVisuals();
+            }
+            return;
+        }
+
+        if (pinchThumbSwipeCompleted || pinchThumbSwipeCanceled)
+        {
+            ResetPinchThumbSwipeTracking();
+            return;
+        }
+
+        ResetPinchThumbSwipeVisuals();
+        ResetPinchThumbSwipeState();
     }
 
     private bool TryCapturePinchThumbSwipeStart()
     {
-        if (!inBall)
+        if (!HasAnyPinchContact())
         {
             return false;
         }
@@ -3520,6 +4472,13 @@ public class S2AccMode : MonoBehaviour
 
     private void ResolvePinchThumbSwipeEnd()
     {
+        if (!HasAnyPinchContact())
+        {
+            ResetPinchThumbSwipeVisuals();
+            ResetPinchThumbSwipeState();
+            return;
+        }
+
         if (!UpdatePinchThumbSwipeContactDistance())
         {
             ResetPinchThumbSwipeVisuals();
@@ -3575,7 +4534,9 @@ public class S2AccMode : MonoBehaviour
         indexAxis = indexSegment.normalized;
         float segmentLength = indexSegment.magnitude;
         thumbProjectionOnIndex = Vector3.Dot(thumbTip - indexBase, indexAxis);
-        float t = Mathf.Clamp(thumbProjectionOnIndex, 0f, segmentLength);
+        // Extend the index axis past the distal joint toward the palm, while
+        // keeping the projection capped at the fingertip end.
+        float t = Mathf.Min(thumbProjectionOnIndex, segmentLength);
         closestPointOnIndex = indexBase + indexAxis * t;
         thumbDistanceToIndex = Vector3.Distance(thumbTip, closestPointOnIndex);
         return true;
@@ -3585,6 +4546,7 @@ public class S2AccMode : MonoBehaviour
     {
         pinchThumbSwipeCompleted = true;
         pinchThumbSwipeReentryRequired = true;
+        WritePinchReleaseDistance("trigger", "thumb-contact-above-threshold");
         ballSpawner.triggerCondition = 'P';
 
         if (isMineBall)
@@ -3604,7 +4566,7 @@ public class S2AccMode : MonoBehaviour
 
         logWriter3.triggerTime = GetPinchThumbSwipeElapsedTime();
         logWriter3.handInBall = false;
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         ResetPinchThumbSwipeTracking();
     }
 
@@ -3615,6 +4577,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        WritePinchReleaseDistance("cancel", cancelReason);
         pinchThumbSwipeCanceled = true;
         pinchThumbSwipeReentryRequired = true;
         canceled = true;
@@ -3631,7 +4594,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
             ResetPinchThumbSwipeVisuals();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.cancelTimes = 0;
             ResetPinchThumbSwipeTracking();
@@ -3723,6 +4686,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.isMineBall = isMineBall;
         logWriter3.handInBall = true;
 
+
         if (isMineBall)
         {
             Player.TurnShallowYellowMineBall();
@@ -3770,6 +4734,7 @@ public class S2AccMode : MonoBehaviour
             pinchWristTiltHasEntryRotation = TryGetWristRotation(out pinchWristTiltEntryRotation);
             ballSpawner.intargetTimes++;
             logWriter3.triggerTime = 0f;
+            ShowModeReadyRingOnIndexEntryIfNeeded();
         }
 
         ballSpawner.area_type = ballKind;
@@ -3831,6 +4796,7 @@ public class S2AccMode : MonoBehaviour
             pinchWristTiltHasEntryRotation = TryGetWristRotation(out pinchWristTiltEntryRotation);
             ballSpawner.intargetTimes++;
             logWriter3.triggerTime = 0f;
+            ShowModeReadyRingOnIndexEntryIfNeeded();
         }
 
         ballSpawner.area_type = ballKind;
@@ -3971,7 +4937,7 @@ public class S2AccMode : MonoBehaviour
 
         logWriter3.triggerTime = GetPinchWristTiltElapsedTime();
         logWriter3.handInBall = false;
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         ResetPinchWristTiltTracking();
     }
 
@@ -3998,7 +4964,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
             ResetPinchWristTiltVisuals();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.cancelTimes = 0;
             ResetPinchWristTiltTracking();
@@ -4012,7 +4978,8 @@ public class S2AccMode : MonoBehaviour
 
     private void PlayNonMineCancelSound()
     {
-        if (ballSpawner != null && ballSpawner.enableMineBall)
+        if (ballSpawner != null
+            && (standalonePreview || ballSpawner.enableMineBall))
         {
             ballSpawner.PlaySoundWrong();
         }
@@ -4190,6 +5157,7 @@ public class S2AccMode : MonoBehaviour
 
     private void ResetFastTapTiming()
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         fastTapEntryTimestamp = -1f;
         fastTapReactTimestamp = -1f;
     }
@@ -4243,7 +5211,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.PlaySound2();
         }
 
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         ResetReactReleaseState();
         ResetReleaseGestureTracking();
         ResetFastTapTiming();
@@ -4342,6 +5310,12 @@ public class S2AccMode : MonoBehaviour
         ballSpawner.triggerCondition = 'S';
         logWriter3.handInBall = false;
 
+        if (modeSelected == (int)BallSpawner.Mode.speedDirection)
+        {
+            RecordLastDirection010AngleFrame(false);
+            RecordLastDirection010SpeedMinFrame();
+        }
+
         if (isMineBall)
         {
             logWriter3.successfully_Canceled = false;
@@ -4357,7 +5331,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.PlaySound2();
         }
 
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         ResetSpeedReleaseState();
         ResetReleaseGestureTracking();
         ResetFastTapTiming();
@@ -4445,9 +5419,14 @@ public class S2AccMode : MonoBehaviour
         return modeSelected == 4 || modeSelected == 8 || modeSelected == 9;
     }
 
+    private bool HasAnyPinchContact()
+    {
+        return inBall || inBall2;
+    }
+
     private bool UpdatePinchTargetExitVisualState()
     {
-        if (!IsPinchModeFamily() || (!inBall && !inBall2))
+        if (!IsPinchModeFamily() || !HasAnyPinchContact())
         {
             return false;
         }
@@ -4500,7 +5479,10 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        pinchDwellEntryTimestamp = Time.time;
+        if (pinchDwellEntryTimestamp < 0f)
+        {
+            pinchDwellEntryTimestamp = Time.time;
+        }
         ShowModeReadyRing();
     }
 
@@ -4512,6 +5494,15 @@ public class S2AccMode : MonoBehaviour
         }
 
         pinchDwellEntryTimestamp = -1f;
+    }
+
+    private void ResetPinchDwellExitVisuals()
+    {
+        Player.ChangeOpacityBack();
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+        logWriter3.handInBall = false;
+        logWriter3.triggerTime = 0f;
     }
 
     private bool HasPinchDwellTimedOut()
@@ -4543,7 +5534,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (pinchDwellEntryTimestamp < 0f || !inBall)
+        if (pinchDwellEntryTimestamp < 0f || !HasAnyPinchContact())
         {
             ResetPinchDwellTracking();
             return;
@@ -4574,7 +5565,7 @@ public class S2AccMode : MonoBehaviour
         inBall2 = false;
         useIndex = false;
         ResetPinchDwellTracking();
-        ballSpawner.getNewTarget();
+        CompleteSelection();
     }
 
     private void CheckPinchReleaseCancel()
@@ -4626,17 +5617,14 @@ public class S2AccMode : MonoBehaviour
             logWriter3.isMineBall = true;
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.triggerTime = 0f;
             logWriter3.cancelTimes = 0;
             ResetPinchReleaseState();
             return;
         }
 
-        if (ballSpawner.enableMineBall)
-        {
-            ballSpawner.PlaySoundWrong();
-        }
+        PlayNonMineCancelSound();
 
         if (ballSpawner.enable_preview && ballSpawner.nextNextBall != null)
         {
@@ -4716,12 +5704,81 @@ public class S2AccMode : MonoBehaviour
         modeReadyRing.Show();
     }
 
+    private void ShowModeReadyRingOnIndexEntryIfNeeded()
+    {
+        if (IsModeReadyRingOnIndexEntryMode())
+        {
+            ShowModeReadyRing();
+        }
+    }
+
+    private void HideModeReadyRingOnIndexEntryIfNeeded()
+    {
+        if (IsModeReadyRingOnIndexEntryMode())
+        {
+            HideModeReadyRing();
+        }
+    }
+
+    private bool IsModeReadyRingOnIndexEntryMode()
+    {
+        return modeSelected == (int)BallSpawner.Mode.dwell
+            || modeSelected == (int)BallSpawner.Mode.dwellRelease
+            || modeSelected == (int)BallSpawner.Mode.dwellWithdraw
+            || modeSelected == (int)BallSpawner.Mode.dwellWristTilt
+            || modeSelected == (int)BallSpawner.Mode.dwellDirection
+            || modeSelected == (int)BallSpawner.Mode.time010
+            || modeSelected == (int)BallSpawner.Mode.release010
+            || modeSelected == (int)BallSpawner.Mode.wristTilt010
+            || modeSelected == (int)BallSpawner.Mode.contact010
+            || modeSelected == (int)BallSpawner.Mode.direction010
+            || modeSelected == (int)BallSpawner.Mode.direction010Test
+            || modeSelected == (int)BallSpawner.Mode.swing010;
+    }
+
     private void HideModeReadyRing()
     {
         if (modeReadyRing != null)
         {
             modeReadyRing.Hide();
         }
+    }
+
+    private void ApplyDirectionCDArrowVisibility()
+    {
+        if (ballSpawner == null || !ballSpawner.showDirectionCDArrow || !IsDirectionCDArrowMode())
+        {
+            HideDirectionCDArrow();
+            return;
+        }
+
+        if (directionCDArrowVisual == null)
+        {
+            directionCDArrowVisual = GetComponent<DirectionCDArrowVisual>();
+            if (directionCDArrowVisual == null)
+            {
+                directionCDArrowVisual = gameObject.AddComponent<DirectionCDArrowVisual>();
+            }
+        }
+
+        directionCDArrowVisual.Show(ballSpawner.transform);
+    }
+
+    private void HideDirectionCDArrow()
+    {
+        if (directionCDArrowVisual != null)
+        {
+            directionCDArrowVisual.Hide();
+        }
+    }
+
+    private bool IsDirectionCDArrowMode()
+    {
+        return modeSelected == (int)BallSpawner.Mode.pinchDirection
+            || modeSelected == (int)BallSpawner.Mode.dwellDirection
+            || modeSelected == (int)BallSpawner.Mode.speedDirection
+            || modeSelected == (int)BallSpawner.Mode.direction010
+            || modeSelected == (int)BallSpawner.Mode.direction010Test;
     }
 
     private bool HasDwellReleaseTimedOut()
@@ -4746,6 +5803,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        HideModeReadyRingOnIndexEntryIfNeeded();
         dwellReleaseCancelTriggered = true;
         dwellReleaseReentryRequired = true;
         dwellReleaseInside = false;
@@ -4772,7 +5830,7 @@ public class S2AccMode : MonoBehaviour
             logWriter3.successfully_Canceled = true;
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.triggerTime = 0f;
             logWriter3.cancelTimes = 0;
@@ -4780,10 +5838,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (ballSpawner.enableMineBall)
-        {
-            ballSpawner.PlaySoundWrong();
-        }
+        PlayNonMineCancelSound();
 
         if (ballSpawner.enable_preview && ballSpawner.nextNextBall != null)
         {
@@ -4793,6 +5848,7 @@ public class S2AccMode : MonoBehaviour
 
     private void ResetDwellReleaseState()
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         dwellReleaseCancelTriggered = false;
         dwellReleaseReentryRequired = false;
         dwellReleaseInside = false;
@@ -4835,6 +5891,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        HideModeReadyRingOnIndexEntryIfNeeded();
         dwellWithdrawCancelTriggered = true;
         dwellWithdrawReentryRequired = true;
         dwellWithdrawInside = false;
@@ -4863,7 +5920,7 @@ public class S2AccMode : MonoBehaviour
             logWriter3.successfully_Canceled = true;
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.triggerTime = 0f;
             logWriter3.cancelTimes = 0;
@@ -4871,10 +5928,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (ballSpawner.enableMineBall)
-        {
-            ballSpawner.PlaySoundWrong();
-        }
+        PlayNonMineCancelSound();
 
         if (ballSpawner.enable_preview && ballSpawner.nextNextBall != null)
         {
@@ -4884,6 +5938,7 @@ public class S2AccMode : MonoBehaviour
 
     private void ResetDwellWithdrawState()
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         dwellWithdrawCancelTriggered = false;
         dwellWithdrawReentryRequired = false;
         dwellWithdrawInside = false;
@@ -4998,10 +6053,7 @@ public class S2AccMode : MonoBehaviour
         Player.hideCircle();
         Player.ChangeOpacityBack();
 
-        if (ballSpawner.enableMineBall)
-        {
-            ballSpawner.PlaySoundWrong();
-        }
+        PlayNonMineCancelSound();
 
         if (ballSpawner.enable_preview && ballSpawner.nextNextBall != null)
         {
@@ -5011,6 +6063,7 @@ public class S2AccMode : MonoBehaviour
 
     private void TriggerSurfaceExitCancel(string cancelReason = "contact transition")
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -5030,17 +6083,14 @@ public class S2AccMode : MonoBehaviour
             logWriter3.RecordCancelReason(cancelReason);
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
-            ballSpawner.getNewTarget();
+            CompleteSelection();
             logWriter3.cancelTime = 0f;
             logWriter3.triggerTime = 0f;
             logWriter3.cancelTimes = 0;
         }
         else
         {
-            if (ballSpawner.enableMineBall)
-            {
-                ballSpawner.PlaySoundWrong();
-            }
+            PlayNonMineCancelSound();
 
             if (ballSpawner.enable_preview && ballSpawner.nextNextBall != null)
             {
@@ -5061,6 +6111,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        HideModeReadyRingOnIndexEntryIfNeeded();
         canceled = false;
         handInBall = false;
         handInBall2 = false;
@@ -5082,7 +6133,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.PlaySound2();
         }
 
-        ballSpawner.getNewTarget();
+        CompleteSelection();
         logWriter3.triggerTime = 0f;
         logWriter3.reactTime = 0f;
         logWriter3.cancelTime = 0f;
@@ -5096,8 +6147,10 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        HideModeReadyRingOnIndexEntryIfNeeded();
         direction010CancelTriggered = true;
         direction010ReentryRequired = true;
+        RecordLastDirection010SpeedMinFrame();
         TriggerSurfaceExitCancel("direction");
         ballSpawner.area_type = 3;
         ballSpawner.index = -1;
@@ -5110,41 +6163,159 @@ public class S2AccMode : MonoBehaviour
             return false;
         }
 
-        // 用可调窗口内的累计位移表示“实际移动方向”，避免单帧手部追踪抖动直接触发取消。
-        Vector3 windowMovement = GetDirection010WindowMovement();
-        if (windowMovement.sqrMagnitude <= 0.0000001f)
-        {
-            return false;
-        }
-
-        float minSpeed = GetDirection010MinSpeedThreshold();
-        if (minSpeed > 0f && Acce.IndexVelocity.sqrMagnitude < minSpeed * minSpeed)
-        {
-            return false;
-        }
-
+        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+        CaptureDirectionCancelEntryAxisIfNeeded();
         Collider collider = GetComponent<Collider>();
         Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 ringCenter = ballSpawner.transform.position;
-        Vector3 abDirection = new Vector3(ballCenter.x - ringCenter.x, ballCenter.y - ringCenter.y, 0f);
-        if (abDirection.sqrMagnitude <= 0.0000001f)
+        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
+        float currentSpeed = Acce.IndexVelocity.magnitude;
+        Vector3 windowMovement = GetDirection010WindowMovement();
+        RecordDirection010SpeedMinIfMet();
+        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(currentSpeed);
+        if (windowMovement.sqrMagnitude <= 0.0000001f)
         {
+            RecordDirection010Debug(
+                entryDirectionAxisMode && currentSpeed < GetEntryDirectionCancelLowSpeedThreshold()
+                    ? "entry_direction_frame_skipped_low_speed"
+                    : entryDirectionAxisMode && !speedGatePass
+                        ? "direction_speed_below_threshold"
+                    : direction010PositionHistory.Count < GetDirection010WindowFrameCount() ? "not_ready_window" : "zero_window_movement",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                Vector3.zero,
+                float.NaN,
+                false,
+                ballCenter,
+                viewerPosition);
             return false;
         }
 
-        // 图中的 cd 方向：在菲茨环平面内，垂直于 a(环心)->b(球心) 的方向；正反方向都视为同一条 cd 线。
-        Vector3 cdDirection = new Vector3(-abDirection.y, abDirection.x, 0f).normalized;
-        // 在窗口方向上再做 Slerp 平滑，过滤方向跳变。
-        Vector3 smoothedDirection = SmoothDirection010Direction(windowMovement.normalized);
-        float angle = Vector3.Angle(smoothedDirection, cdDirection);
-        float cdAngleDelta = Mathf.Min(angle, 180f - angle);
-        if (cdAngleDelta <= GetDirection010AngleThreshold())
+        if (entryDirectionAxisMode)
         {
+            if (!speedGatePass)
+            {
+                RecordDirection010Debug(
+                    "direction_speed_below_threshold",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    directionCancelEntryAxis,
+                    float.NaN,
+                    false,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+        else
+        {
+            float minSpeed = GetDirection010MinSpeedThreshold();
+            if (minSpeed > 0f && currentSpeed < minSpeed)
+            {
+                RecordDirection010Debug(
+                    "speed_too_low",
+                    false,
+                    windowMovement,
+                    Vector3.zero,
+                    false,
+                    Vector3.zero,
+                    float.NaN,
+                    false,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        Vector3 referenceDirection = entryDirectionAxisMode
+            ? directionCancelEntryAxis
+            : -GetViewerBackDirection(ballCenter);
+        if (referenceDirection.sqrMagnitude <= 0.0000001f)
+        {
+            RecordDirection010Debug(
+                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
+                false,
+                windowMovement,
+                Vector3.zero,
+                false,
+                Vector3.zero,
+                float.NaN,
+                true,
+                ballCenter,
+                viewerPosition);
+            return false;
+        }
+
+        Vector3 currentDirection = entryDirectionAxisMode
+            ? windowMovement.normalized
+            : SmoothDirection010Direction(windowMovement.normalized);
+        Vector3 comparisonDirection = Vector3.zero;
+        Vector3 comparisonReferenceDirection = Vector3.zero;
+        if (entryDirectionAxisMode)
+        {
+            comparisonDirection = currentDirection.normalized;
+            comparisonReferenceDirection = referenceDirection.normalized;
+        }
+        else
+        {
+            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
+            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
+            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
+            {
+                RecordDirection010Debug(
+                    "zero_horizontal_direction",
+                    false,
+                    windowMovement,
+                    comparisonDirection,
+                    true,
+                    comparisonReferenceDirection,
+                    float.NaN,
+                    false,
+                    ballCenter,
+                    viewerPosition);
+                return false;
+            }
+        }
+
+        float angle = entryDirectionAxisMode
+            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
+            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        lastDirection010AngleDelta = angle;
+        bool cancelPass = entryDirectionAxisMode
+            ? angle <= GetDirection010AngleThreshold()
+            : angle <= GetDirection010AngleThreshold();
+        if (cancelPass)
+        {
+            logWriter3?.RecordDirectionAngleFrame(angle, direction010FramesSinceEntry);
+            RecordDirection010Debug(
+                entryDirectionAxisMode ? "inside_cancel_cone" : "pass",
+                true,
+                windowMovement,
+                comparisonDirection,
+                true,
+                comparisonReferenceDirection,
+                angle,
+                true,
+                ballCenter,
+                viewerPosition);
             return true;
         }
 
-        return IsDirection010TestMode()
-            && IsDirection010UserFacingCancelMovement(smoothedDirection, ballCenter);
+        RecordDirection010Debug(
+            entryDirectionAxisMode ? "angle_outside_cancel_cone" : "angle_too_large",
+            false,
+            windowMovement,
+            comparisonDirection,
+            true,
+            comparisonReferenceDirection,
+            angle,
+            false,
+            ballCenter,
+            viewerPosition);
+        return false;
     }
 
     private Vector3 SmoothDirection010Direction(Vector3 currentDirection)
@@ -5157,29 +6328,70 @@ public class S2AccMode : MonoBehaviour
         }
 
         float alpha = GetDirection010SmoothingAlpha();
-        // alpha 越小越平滑但反应越慢；越大越接近当前窗口方向。
         direction010SmoothedDirection = Vector3.Slerp(direction010SmoothedDirection, currentDirection, alpha).normalized;
         return direction010SmoothedDirection;
-    }
-
-    private bool IsDirection010UserFacingCancelMovement(Vector3 smoothedDirection, Vector3 ballCenter)
-    {
-        Vector3 oppositeUserFacingDirection = GetViewerBackDirection(ballCenter);
-        if (oppositeUserFacingDirection.sqrMagnitude <= 0.000001f)
-        {
-            return false;
-        }
-
-        // OppositeUserFacing is the ball's back side, so toward the user-facing
-        // side is the inverse direction.
-        Vector3 userFacingDirection = -oppositeUserFacingDirection.normalized;
-        float angle = Vector3.Angle(smoothedDirection, userFacingDirection);
-        return angle <= GetDirection010AngleThreshold();
     }
 
     private Vector3 GetDirection010WindowMovement()
     {
         Vector3 currentPosition = Acce.IndexTipPose2.Position;
+        direction010FramesSinceEntry++;
+
+        if (IsEntryDirectionAxisMode())
+        {
+            if (!direction010HasAcceptedPosition)
+            {
+                direction010LastAcceptedPosition = direction010HasEntryPosition
+                    ? direction010EntryPosition
+                    : Acce.IndexTipPose1.Position;
+                direction010HasAcceptedPosition = true;
+            }
+
+            if (Acce.IndexVelocity.magnitude < GetEntryDirectionCancelLowSpeedThreshold())
+            {
+                directionCancelLowSpeedMet = true;
+                return Vector3.zero;
+            }
+
+            Vector3 currentMovement = currentPosition - direction010LastAcceptedPosition;
+            direction010LastAcceptedPosition = currentPosition;
+            if (currentMovement.sqrMagnitude <= 0.0000001f)
+            {
+                return Vector3.zero;
+            }
+
+            int entryWindowFrameCount = GetDirection010WindowFrameCount();
+            direction010PositionHistory.Enqueue(currentPosition);
+            while (direction010PositionHistory.Count > entryWindowFrameCount)
+            {
+                direction010PositionHistory.Dequeue();
+            }
+
+            if (direction010PositionHistory.Count < entryWindowFrameCount)
+            {
+                return Vector3.zero;
+            }
+
+            Vector3[] entryPositions = direction010PositionHistory.ToArray();
+            Vector3 entryAverageDirection = Vector3.zero;
+            int entryValidSegmentCount = 0;
+            for (int i = 1; i < entryPositions.Length; i++)
+            {
+                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
+                if (segment.sqrMagnitude <= 0.0000001f)
+                {
+                    continue;
+                }
+
+                entryAverageDirection += segment.normalized;
+                entryValidSegmentCount++;
+            }
+
+            return entryValidSegmentCount > 0
+                ? entryAverageDirection / entryValidSegmentCount
+                : Vector3.zero;
+        }
+
         int windowFrameCount = GetDirection010WindowFrameCount();
         direction010PositionHistory.Enqueue(currentPosition);
 
@@ -5218,6 +6430,86 @@ public class S2AccMode : MonoBehaviour
         return averageDirection / validSegmentCount;
     }
 
+    private void RecordDirection010Debug(
+        string failReason,
+        bool finalCancelPass,
+        Vector3 windowMovement,
+        Vector3 smoothedDirection,
+        bool hasSmoothedDirection,
+        Vector3 userFacingDirection,
+        float angleDeg,
+        bool anglePass,
+        Vector3 ballCenter,
+        Vector3 viewerPosition)
+    {
+        if (logWriter3 == null || Acce == null)
+        {
+            return;
+        }
+
+        int windowFrameCount = GetDirection010WindowFrameCount();
+        float minSpeed = GetDirection010MinSpeedThreshold();
+        float indexSpeed = Acce.IndexVelocity.magnitude;
+        bool speedPass = minSpeed <= 0f || indexSpeed >= minSpeed;
+        bool windowReady = direction010PositionHistory.Count >= windowFrameCount;
+        Vector3 indexPosition = Acce.IndexTipPose2.Position;
+
+        logWriter3.WriteDirectionDebug(
+            "S2AccMode",
+            failReason,
+            finalCancelPass,
+            modeSelected,
+            ballIndex,
+            ballKind,
+            handInBall,
+            direction010ReentryRequired,
+            direction010CancelTriggered,
+            direction010PositionHistory.Count,
+            windowFrameCount,
+            windowReady,
+            windowMovement,
+            smoothedDirection,
+            hasSmoothedDirection,
+            userFacingDirection,
+            angleDeg,
+            GetDirection010AngleThreshold(),
+            anglePass,
+            indexSpeed,
+            minSpeed,
+            speedPass,
+            ballCenter,
+            indexPosition,
+            viewerPosition);
+    }
+
+    private Vector3 GetViewerPositionForDirectionDebug()
+    {
+        Transform viewerTransform = Camera.main != null ? Camera.main.transform : null;
+        if (viewerTransform == null)
+        {
+            GameObject centerEyeAnchor = GameObject.Find("CenterEyeAnchor");
+            if (centerEyeAnchor != null)
+            {
+                viewerTransform = centerEyeAnchor.transform;
+            }
+        }
+
+        return viewerTransform != null ? viewerTransform.position : Vector3.zero;
+    }
+
+    private bool TryProjectHorizontalDirection(Vector3 direction, out Vector3 horizontalDirection)
+    {
+        horizontalDirection = new Vector3(direction.x, 0f, direction.z);
+        if (horizontalDirection.sqrMagnitude <= 0.0000001f)
+        {
+            horizontalDirection = Vector3.zero;
+            return false;
+        }
+
+        horizontalDirection.Normalize();
+        return true;
+    }
+
     private int GetDirection010WindowFrameCount()
     {
         if (ballSpawner == null)
@@ -5234,6 +6526,13 @@ public class S2AccMode : MonoBehaviour
 
     private float GetDirection010AngleThreshold()
     {
+        if (IsEntryDirectionAxisMode())
+        {
+            return ballSpawner != null
+                ? Mathf.Clamp(ballSpawner.entryDirectionConeHalfAngle, 0f, 180f)
+                : 45f;
+        }
+
         if (ballSpawner == null)
         {
             return 20f;
@@ -5449,6 +6748,7 @@ public class S2AccMode : MonoBehaviour
 
     private void ResetContact010State()
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         handInBall = false;
         handInBall2 = false;
         inBall = false;
@@ -5459,12 +6759,15 @@ public class S2AccMode : MonoBehaviour
 
     private void ResetDirection010State()
     {
+        HideModeReadyRingOnIndexEntryIfNeeded();
         handInBall = false;
         handInBall2 = false;
         inBall = false;
         canceled = false;
         direction010CancelTriggered = false;
         direction010ReentryRequired = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
         ResetDirection010TrackingWindow();
         logWriter3.handInBall = false;
         logWriter3.isReact = false;
@@ -5478,6 +6781,113 @@ public class S2AccMode : MonoBehaviour
         direction010PositionHistory.Clear();
         direction010HasSmoothedDirection = false;
         direction010SmoothedDirection = Vector3.zero;
+        direction010FramesSinceEntry = 0;
+        lastDirection010AngleDelta = float.NaN;
+        direction010HasEntryPosition = false;
+        direction010EntryPosition = Vector3.zero;
+        direction010SpeedMinMet = false;
+        direction010SpeedMinFrame = -1;
+        directionCancelLowSpeedMet = false;
+        directionCancelEntryAxisCaptured = false;
+        directionCancelEntryAxis = Vector3.zero;
+        direction010HasAcceptedPosition = false;
+        direction010LastAcceptedPosition = Vector3.zero;
+    }
+
+    private void RecordLastDirection010AngleFrame(bool includeExitFrame)
+    {
+        if (logWriter3 == null)
+        {
+            return;
+        }
+
+        int frameFromEntry = direction010FramesSinceEntry + (includeExitFrame ? 1 : 0);
+        if (TryCalculateDirection010AngleFromEntry(out float entryToCurrentAngleDelta))
+        {
+            logWriter3.RecordDirectionAngleFrame(entryToCurrentAngleDelta, frameFromEntry);
+            return;
+        }
+
+        if (!float.IsNaN(lastDirection010AngleDelta))
+        {
+            logWriter3.RecordDirectionAngleFrame(lastDirection010AngleDelta, frameFromEntry);
+        }
+    }
+
+    private void RecordDirection010SpeedMinIfMet()
+    {
+        if (direction010SpeedMinMet || Acce == null)
+        {
+            return;
+        }
+
+        float minSpeed = GetDirection010MinSpeedThreshold();
+        if (minSpeed <= 0f || Acce.IndexVelocity.sqrMagnitude >= minSpeed * minSpeed)
+        {
+            direction010SpeedMinMet = true;
+            direction010SpeedMinFrame = direction010FramesSinceEntry;
+        }
+    }
+
+    private void RecordLastDirection010SpeedMinFrame()
+    {
+        logWriter3?.RecordDirectionSpeedMinFrame(direction010SpeedMinMet, direction010SpeedMinFrame);
+    }
+
+    private void CaptureDirection010EntryPosition()
+    {
+        direction010EntryPosition = Acce != null ? Acce.IndexTipPose2.Position : transform.position;
+        direction010HasEntryPosition = true;
+    }
+
+    private bool TryCalculateDirection010AngleFromEntry(out float angleDelta)
+    {
+        angleDelta = 0f;
+        if (!direction010HasEntryPosition || Acce == null || ballSpawner == null)
+        {
+            return false;
+        }
+
+        Vector3 movement = Acce.IndexTipPose2.Position - direction010EntryPosition;
+        if (movement.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+        Collider collider = GetComponent<Collider>();
+        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
+        Vector3 referenceDirection = entryDirectionAxisMode && directionCancelEntryAxisCaptured
+            ? directionCancelEntryAxis
+            : -GetViewerBackDirection(ballCenter);
+        if (referenceDirection.sqrMagnitude <= 0.0000001f)
+        {
+            return false;
+        }
+
+        Vector3 comparisonDirection = Vector3.zero;
+        Vector3 comparisonReferenceDirection = Vector3.zero;
+        if (entryDirectionAxisMode)
+        {
+            comparisonDirection = movement.normalized;
+            comparisonReferenceDirection = referenceDirection.normalized;
+        }
+        else
+        {
+            bool hasMovementHorizontal = TryProjectHorizontalDirection(movement, out comparisonDirection);
+            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
+            if (!hasMovementHorizontal || !hasReferenceHorizontal)
+            {
+                return false;
+            }
+        }
+
+        float angle = entryDirectionAxisMode
+            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
+            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        angleDelta = angle;
+        lastDirection010AngleDelta = angleDelta;
+        return true;
     }
 
     private void ShowRainbowArc()
@@ -5713,6 +7123,7 @@ public class S2AccMode : MonoBehaviour
     private void OnDisable()
     {
         HideModeReadyRing();
+        HideDirectionCDArrow();
     }
 
 

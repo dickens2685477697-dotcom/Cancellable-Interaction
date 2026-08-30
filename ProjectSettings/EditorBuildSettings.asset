@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/show.unity
     guid: 516ffbf7bb0eff04f9a58d8293cf2e02
+  - enabled: 1
+    path: Assets/Scenes/Study3/intro.unity
+    guid: de53e196e54c4a4d96df9c98879392a2
   - enabled: 0
     path: Assets/Scenes/fast_tap_thershold/pilot_fast_tap.unity
     guid: 17fb1661265046928d070182d87266e8

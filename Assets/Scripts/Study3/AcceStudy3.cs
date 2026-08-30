@@ -91,6 +91,18 @@ public class AcceStudy3 : MonoBehaviour
     public Vector3 SurfaceEntryPoint;
     public bool HasSurfaceEntryPoint;
     private Vector3 previousDistalPosition;
+    private Vector3 indexTipPositionPreviousFrame;
+    private Vector3 indexTipPositionTwoFramesAgo;
+    private int indexTipSampleCount;
+    private Vector3 entryTwoFramesAgoIndexTipPosition;
+    private Vector3 entryPreviousIndexTipPosition;
+    private Vector3 entryCurrentIndexTipPosition;
+    private bool hasEntryIndexTipDirectionSamples;
+
+    public Vector3 EntryTwoFramesAgoIndexTipPosition => entryTwoFramesAgoIndexTipPosition;
+    public Vector3 EntryPreviousIndexTipPosition => entryPreviousIndexTipPosition;
+    public Vector3 EntryCurrentIndexTipPosition => entryCurrentIndexTipPosition;
+    public bool HasEntryIndexTipDirectionSamples => hasEntryIndexTipDirectionSamples;
 
     // Set Condition C's bound to Acceleration instead of Velocity.
     public bool useAcce = false;
@@ -118,6 +130,13 @@ public class AcceStudy3 : MonoBehaviour
         IndexVelocityDirection = Vector3.zero;
         SurfaceEntryPoint = Vector3.zero;
         HasSurfaceEntryPoint = false;
+        indexTipPositionPreviousFrame = Vector3.zero;
+        indexTipPositionTwoFramesAgo = Vector3.zero;
+        indexTipSampleCount = 0;
+        entryTwoFramesAgoIndexTipPosition = Vector3.zero;
+        entryPreviousIndexTipPosition = Vector3.zero;
+        entryCurrentIndexTipPosition = Vector3.zero;
+        hasEntryIndexTipDirectionSamples = false;
 
         Bounds = gameObject.GetComponent<Collider>().bounds;
         meshRenderer = gameObject.GetComponent<MeshRenderer>();
@@ -153,6 +172,9 @@ public class AcceStudy3 : MonoBehaviour
             {
                 Init = false;
                 IndexTipPose1 = IndexTipPose2;
+                indexTipPositionPreviousFrame = IndexTipPose2.Position;
+                indexTipPositionTwoFramesAgo = IndexTipPose2.Position;
+                indexTipSampleCount = 1;
                 HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
                 previousDistalPosition = IndexDistalPose.Position;
                 return;
@@ -164,6 +186,7 @@ public class AcceStudy3 : MonoBehaviour
             IndexVelocity = Time.fixedDeltaTime > 0f ? indexDelta / Time.fixedDeltaTime : Vector3.zero;
             IndexVelocityDirection = indexDelta.sqrMagnitude > 0f ? indexDelta.normalized : Vector3.zero;
             v = Distance / Time.fixedDeltaTime;
+            indexTipSampleCount = Mathf.Min(indexTipSampleCount + 1, 3);
             //print("P1  " + IndexTipPose1.Position.ToString("F5"));
             //print("P2  " + IndexTipPose2.Position.ToString("F5"));
             //if (v > Vb)
@@ -202,6 +225,10 @@ public class AcceStudy3 : MonoBehaviour
                 // print(Vector3.Distance(Bounds.center, IndexTipPose2.Position));
                 if (!Entered)
                 {
+                    entryTwoFramesAgoIndexTipPosition = indexTipPositionTwoFramesAgo;
+                    entryPreviousIndexTipPosition = indexTipPositionPreviousFrame;
+                    entryCurrentIndexTipPosition = IndexTipPose2.Position;
+                    hasEntryIndexTipDirectionSamples = indexTipSampleCount >= 3;
                     Vector3 candidateCurrent = tipInside ? IndexTipPose2.Position : IndexDistalPose.Position;
                     Vector3 candidatePrevious = tipInside ? IndexTipPose1.Position : previousDistalPosition;
                     SurfaceEntryPoint = EstimateSurfaceEntryPoint(candidatePrevious, candidateCurrent);
@@ -371,6 +398,8 @@ public class AcceStudy3 : MonoBehaviour
                 CloseSti = false;
                 condition = ' ';
             }
+            indexTipPositionTwoFramesAgo = indexTipPositionPreviousFrame;
+            indexTipPositionPreviousFrame = IndexTipPose2.Position;
             previousDistalPosition = IndexDistalPose.Position;
             #endregion
         }
