@@ -51,6 +51,9 @@ public class S2AccMode : MonoBehaviour
     private bool speedReleaseMinSpeedMet = false;
     private bool speedReleaseTriggered = false;
     private bool speedReleaseReentryRequired = false;
+    private float speedBoundaryLastInsideSpeed = float.NaN;
+    private bool speedBoundaryMaxObservedInside = false;
+    private float speedBoundaryEntryTimestamp = -1f;
     public bool isMineBall = false; // 是否为雷球
     private bool fastTapCancelTriggered = false; // FastTap模式下是否已触发取消
     private bool rainbowCancelTriggered = false;
@@ -2486,6 +2489,7 @@ public class S2AccMode : MonoBehaviour
                 inBall = true;
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
+                BeginSpeedBoundaryEntry();
                 ballSpawner.intargetTimes++;
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
@@ -2503,11 +2507,13 @@ public class S2AccMode : MonoBehaviour
 
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
+            CaptureSpeedBoundaryInsideSample();
             CheckSpeedReleaseIndexTrigger();
         });
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            RecordSpeedBoundaryExit();
             ResetSpeedReleaseState();
             ResetReleaseGestureTracking();
             ResetFastTapTiming();
@@ -2540,6 +2546,7 @@ public class S2AccMode : MonoBehaviour
                 inBall = true;
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
+                BeginSpeedBoundaryEntry();
                 ballSpawner.intargetTimes++;
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
@@ -2556,11 +2563,13 @@ public class S2AccMode : MonoBehaviour
 
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
+            CaptureSpeedBoundaryInsideSample();
             CheckSpeedReleaseIndexTrigger();
         });
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            RecordSpeedBoundaryExit();
             if (handInBall && !speedReleaseTriggered)
             {
                 TriggerSpeedCancel(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
@@ -2598,6 +2607,7 @@ public class S2AccMode : MonoBehaviour
                 inBall = true;
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
+                BeginSpeedBoundaryEntry();
                 direction010CancelTriggered = false;
                 ResetDirection010TrackingWindow();
                 CaptureDirection010EntryPosition();
@@ -2619,6 +2629,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
 
+            CaptureSpeedBoundaryInsideSample();
             RecordDirection010SpeedMinIfMet();
             CheckSpeedReleaseIndexTrigger();
 
@@ -2634,6 +2645,7 @@ public class S2AccMode : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            RecordSpeedBoundaryExit();
             ResetSpeedReleaseState();
             ResetDirection010State();
             ResetFastTapTiming();
@@ -2666,6 +2678,7 @@ public class S2AccMode : MonoBehaviour
                 inBall = true;
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
+                BeginSpeedBoundaryEntry();
                 ballSpawner.intargetTimes++;
                 logWriter3.handInBall = true;
                 fastTapEntryTimestamp = Time.time;
@@ -2682,11 +2695,13 @@ public class S2AccMode : MonoBehaviour
 
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
+            CaptureSpeedBoundaryInsideSample();
             CheckSpeedReleaseIndexTrigger();
         });
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            RecordSpeedBoundaryExit();
             ResetSpeedReleaseState();
             ResetFastTapTiming();
             logWriter3.handInBall = false;
@@ -5299,6 +5314,44 @@ public class S2AccMode : MonoBehaviour
         return 0f;
     }
 
+    private void BeginSpeedBoundaryEntry()
+    {
+        speedBoundaryLastInsideSpeed = float.NaN;
+        speedBoundaryMaxObservedInside = false;
+        speedBoundaryEntryTimestamp = Time.time;
+    }
+
+    private void CaptureSpeedBoundaryInsideSample()
+    {
+        float indexSpeed = GetCurrentIndexSpeed();
+        speedBoundaryLastInsideSpeed = indexSpeed;
+        if (indexSpeed >= Mathf.Max(0f, ballSpawner.speedMaxThreshold))
+        {
+            speedBoundaryMaxObservedInside = true;
+        }
+    }
+
+    private void RecordSpeedBoundaryExit()
+    {
+        string reason = !speedReleaseMinSpeedMet
+            ? "min-not-observed-before-exit"
+            : speedBoundaryMaxObservedInside
+                ? "max-observed-inside-but-not-triggered"
+                : "max-not-observed-before-exit";
+        logWriter3?.RecordSpeedBoundaryEvent(
+            "exit",
+            reason,
+            Acce,
+            ballIndex,
+            ballKind,
+            isMineBall,
+            speedReleaseMinSpeedMet,
+            speedBoundaryMaxObservedInside,
+            speedReleaseTriggered,
+            speedBoundaryLastInsideSpeed,
+            speedBoundaryEntryTimestamp);
+    }
+
     private void TriggerSpeedRelease()
     {
         if (speedReleaseTriggered || speedReleaseReentryRequired || !ballSpawner.enable_trigger)
@@ -5307,6 +5360,18 @@ public class S2AccMode : MonoBehaviour
         }
 
         speedReleaseTriggered = true;
+        logWriter3?.RecordSpeedBoundaryEvent(
+            "trigger",
+            "speed-max-met-inside",
+            Acce,
+            ballIndex,
+            ballKind,
+            isMineBall,
+            speedReleaseMinSpeedMet,
+            speedBoundaryMaxObservedInside,
+            true,
+            speedBoundaryLastInsideSpeed,
+            speedBoundaryEntryTimestamp);
         ballSpawner.triggerCondition = 'S';
         logWriter3.handInBall = false;
 
@@ -5393,6 +5458,9 @@ public class S2AccMode : MonoBehaviour
         speedReleaseMinSpeedMet = false;
         speedReleaseTriggered = false;
         speedReleaseReentryRequired = false;
+        speedBoundaryLastInsideSpeed = float.NaN;
+        speedBoundaryMaxObservedInside = false;
+        speedBoundaryEntryTimestamp = -1f;
         handInBall = false;
         handInBall2 = false;
         inBall = false;

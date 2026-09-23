@@ -12,6 +12,7 @@ public class LogWriter3 : MonoBehaviour
     public BallSpawner ballSpawner;
     private string date, filePath, fileName, fileFullPath, directionDebugFileName, directionDebugFileFullPath;
     private string pinchReleaseDistanceFileName, pinchReleaseDistanceFileFullPath;
+    private string speedBoundaryDebugFileName, speedBoundaryDebugFileFullPath;
     private GameObject[] Targets, Obstacles;
     private FileStream fs;
     private StreamWriter sw;
@@ -99,6 +100,7 @@ public class LogWriter3 : MonoBehaviour
         fileFullPath = null;
         directionDebugFileFullPath = null;
         pinchReleaseDistanceFileFullPath = null;
+        speedBoundaryDebugFileFullPath = null;
     }
 
     void Start()
@@ -121,6 +123,8 @@ public class LogWriter3 : MonoBehaviour
         directionDebugFileFullPath = filePath + directionDebugFileName;
         pinchReleaseDistanceFileName = date + "-" + "pinch-release-distance" + ".csv";
         pinchReleaseDistanceFileFullPath = filePath + pinchReleaseDistanceFileName;
+        speedBoundaryDebugFileName = date + "-" + "speed-boundary-debug" + ".csv";
+        speedBoundaryDebugFileFullPath = filePath + speedBoundaryDebugFileName;
         Debug.Log(fileFullPath);
         //acce = gameObject.GetComponent<AcceStimulate>();
         InitialPath();
@@ -236,6 +240,84 @@ public class LogWriter3 : MonoBehaviour
             sw.Close();
             fs.Close();
         }
+        if (!File.Exists(speedBoundaryDebugFileFullPath))
+        {
+            fs = new FileStream(speedBoundaryDebugFileFullPath, FileMode.Create, FileAccess.Write);
+            sw = new StreamWriter(fs);
+            sw.WriteLine("frame,time,case,id,mode,event,reason,entrySequence,ballIndex,ballKind,isMineBall,handInBall,speedMinArmed,speedMaxObservedInside,speedTriggered,lastInsideSpeed,exitFrameSpeed,minSpeedThreshold,maxSpeedThreshold,entryElapsed,tipInside,distalInside,indexX,indexY,indexZ,distalX,distalY,distalZ");
+            sw.Close();
+            fs.Close();
+        }
+    }
+
+    public void RecordSpeedBoundaryEvent(
+        string eventName,
+        string reason,
+        AcceStudy3 acce,
+        int ballIndex,
+        int ballKind,
+        bool mineBall,
+        bool speedMinArmed,
+        bool speedMaxObservedInside,
+        bool speedTriggered,
+        float lastInsideSpeed,
+        float entryTimestamp)
+    {
+        if (stateOnly || string.IsNullOrEmpty(speedBoundaryDebugFileFullPath) || acce == null)
+        {
+            return;
+        }
+
+        Collider collider = acce.GetComponent<Collider>();
+        Vector3 indexPosition = acce.IndexTipPose2.Position;
+        Vector3 distalPosition = acce.IndexDistalPose.Position;
+        bool tipInside = collider != null && collider.bounds.Contains(indexPosition);
+        bool distalInside = collider != null && collider.bounds.Contains(distalPosition);
+        float exitFrameSpeed = acce.v != float.MaxValue ? Mathf.Max(0f, acce.v) : float.NaN;
+        float elapsed = entryTimestamp >= 0f ? Mathf.Max(0f, Time.time - entryTimestamp) : float.NaN;
+
+        fs = new FileStream(speedBoundaryDebugFileFullPath, FileMode.Append, FileAccess.Write);
+        sw = new StreamWriter(fs);
+        sw.WriteLine(string.Join(",", new string[]
+        {
+            Time.frameCount.ToString(CultureInfo.InvariantCulture),
+            Time.time.ToString("F6", CultureInfo.InvariantCulture),
+            ballSpawner.currentCaseNumber.ToString(CultureInfo.InvariantCulture),
+            ballSpawner.currentRoundID.ToString(CultureInfo.InvariantCulture),
+            EscapeCsv(ballSpawner.modeSelected),
+            EscapeCsv(eventName),
+            EscapeCsv(reason),
+            noTriggerEntrySequence.ToString(CultureInfo.InvariantCulture),
+            ballIndex.ToString(CultureInfo.InvariantCulture),
+            ballKind.ToString(CultureInfo.InvariantCulture),
+            mineBall ? "1" : "0",
+            handInBall ? "1" : "0",
+            speedMinArmed ? "1" : "0",
+            speedMaxObservedInside ? "1" : "0",
+            speedTriggered ? "1" : "0",
+            FloatForCsv(lastInsideSpeed),
+            FloatForCsv(exitFrameSpeed),
+            FloatForCsv(ballSpawner.speedMinThreshold),
+            FloatForCsv(ballSpawner.speedMaxThreshold),
+            FloatForCsv(elapsed),
+            tipInside ? "1" : "0",
+            distalInside ? "1" : "0",
+            FloatForCsv(indexPosition.x),
+            FloatForCsv(indexPosition.y),
+            FloatForCsv(indexPosition.z),
+            FloatForCsv(distalPosition.x),
+            FloatForCsv(distalPosition.y),
+            FloatForCsv(distalPosition.z)
+        }));
+        sw.Close();
+        fs.Close();
+    }
+
+    private string FloatForCsv(float value)
+    {
+        return float.IsNaN(value) || float.IsInfinity(value)
+            ? "NA"
+            : value.ToString("F6", CultureInfo.InvariantCulture);
     }
     public void Write()
     {
