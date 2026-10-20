@@ -41,6 +41,32 @@ public sealed class Study3SelectionSettings : ScriptableObject
     public float speedMaxThreshold = 0.2f;
     public float longPressTimeThreshold = 0.5f;
 
+    [Header("Dynamic Stop (demo motion logic)")]
+    [InspectorName("Sample Interval (ms)"), Min(0.1f)]
+    [Tooltip("最短运动测量间隔，单位毫秒；使用实际经过时间计算速度，不是长按等待时间。")]
+    public float dynamicStopSampleMs = 16f;
+    [InspectorName("Speed Minimum (m/s)"), Min(0.0001f)]
+    [Tooltip("速度阈值的非零下限，单位米/秒。动态阈值 = min(上限, 下限 + 近期速度 × Speed Gain)。")]
+    public float dynamicStopSpeedMin = 0.02f;
+    [InspectorName("Speed Maximum (m/s)"), Min(0.0001f)]
+    [Tooltip("动态速度阈值的上限，单位米/秒；计算时不会小于 Speed Minimum。")]
+    public float dynamicStopSpeedMax = 0.12f;
+    [InspectorName("Speed Gain"), Min(0f)]
+    [Tooltip("近期速度对速度阈值的增量比例，无单位；设为0则使用固定速度下限。")]
+    public float dynamicStopSpeedGain = 0.10f;
+    [InspectorName("Acceleration Minimum (m/s²)"), Min(0.0001f)]
+    [Tooltip("加速度阈值的非零下限，单位米/秒²。动态阈值 = min(上限, 下限 + 近期速度 × Acceleration Gain)。")]
+    public float dynamicStopAccelMin = 0.5f;
+    [InspectorName("Acceleration Maximum (m/s²)"), Min(0.0001f)]
+    [Tooltip("动态加速度阈值的上限，单位米/秒²；计算时不会小于 Acceleration Minimum。")]
+    public float dynamicStopAccelMax = 4f;
+    [InspectorName("Acceleration Gain (1/s)"), Min(0f)]
+    [Tooltip("近期速度对加速度阈值的增量系数，单位1/秒；设为0则使用固定加速度下限。")]
+    public float dynamicStopAccelGain = 3f;
+    [InspectorName("Speed History Decay (s)"), Min(0.001f)]
+    [Tooltip("高速历史的指数衰减时间尺度，单位秒；不是停止后必须等待的时间。")]
+    public float dynamicStopHistorySeconds = 0.18f;
+
     [Header("Pinch")]
     public float pinchReleaseOpeningSpeedThreshold = 0.6f;
     public float pinchEndDistanceThreshold = 0.05f;
@@ -91,6 +117,15 @@ public sealed class Study3SelectionSettings : ScriptableObject
         target.speedMinThreshold = speedMinThreshold;
         target.speedMaxThreshold = speedMaxThreshold;
         target.longPressTimeThreshold = longPressTimeThreshold;
+
+        target.dynamicStopSampleMs = dynamicStopSampleMs;
+        target.dynamicStopSpeedMin = dynamicStopSpeedMin;
+        target.dynamicStopSpeedMax = dynamicStopSpeedMax;
+        target.dynamicStopSpeedGain = dynamicStopSpeedGain;
+        target.dynamicStopAccelMin = dynamicStopAccelMin;
+        target.dynamicStopAccelMax = dynamicStopAccelMax;
+        target.dynamicStopAccelGain = dynamicStopAccelGain;
+        target.dynamicStopHistorySeconds = dynamicStopHistorySeconds;
 
         target.pinchReleaseOpeningSpeedThreshold = pinchReleaseOpeningSpeedThreshold;
         target.pinchEndDistanceThreshold = pinchEndDistanceThreshold;

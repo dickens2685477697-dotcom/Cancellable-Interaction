@@ -20,6 +20,9 @@ public class S2AccMode : MonoBehaviour
     [SerializeField] private BallSpawner.Mode modeOverride;
     private bool standalonePreview;
     private bool standaloneSelectionReported;
+    private readonly DynamicStopMotionTracker dynamicStopMotion = new DynamicStopMotionTracker();
+    private Collider dynamicStopCollider;
+    public DynamicStopMotionTracker DynamicStopMotion => dynamicStopMotion;
     private BallSpawner configuredBallSpawner;
     private LogWriter3 configuredStateWriter;
     public event Action<S2AccMode> StandaloneSelectionSucceeded;
@@ -143,6 +146,11 @@ public class S2AccMode : MonoBehaviour
 
     void Update()
     {
+        if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
+        {
+            UpdateDynamicStopSelection();
+            return;
+        }
         if (modeSelected == (int)BallSpawner.Mode.pinchReleaseTrigger
             && pinchReleaseTriggerArmed
             && pinchob != null
@@ -409,21 +417,24 @@ public class S2AccMode : MonoBehaviour
             case 25:
                 SetDirection010Mode();
                 break;
+            case (int)BallSpawner.Mode.dynamicStop:
+                SetDynamicStopMode();
+                break;
         }
 
         ApplyDirectionCDArrowVisibility();
 
-        if (Acce != null)
+        if (Acce != null && modeSelected != (int)BallSpawner.Mode.dynamicStop)
         {
             Acce.InEvent.AddListener(RegisterNoTriggerSource);
             Acce.AfterOutEvent.AddListener(ClearNoTriggerEntryTimestamp);
         }
-        if (Acce2 != null)
+        if (Acce2 != null && modeSelected != (int)BallSpawner.Mode.dynamicStop)
         {
             Acce2.InEvent.AddListener(RegisterNoTriggerSource);
             Acce2.AfterOutEvent.AddListener(ClearNoTriggerEntryTimestamp);
         }
-        if (reactTap != null)
+        if (reactTap != null && modeSelected != (int)BallSpawner.Mode.dynamicStop)
         {
             reactTap.InEvent.AddListener(RegisterNoTriggerSource);
         }
@@ -491,6 +502,13 @@ public class S2AccMode : MonoBehaviour
                     + "; required=" + GetDwellThresholdText();
             case BallSpawner.Mode.magicTap:
                 return "acceleration_threshold_not_reached_before_exit" + elapsedText;
+            case BallSpawner.Mode.dynamicStop:
+                return "dynamic_stop_threshold_not_reached_before_exit" + elapsedText
+                    + "; accelerationReady=" + dynamicStopMotion.HasAcceleration
+                    + "; speed=" + dynamicStopMotion.Speed.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)
+                    + "; speedLimit=" + dynamicStopMotion.SpeedLimit.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)
+                    + "; acceleration=" + dynamicStopMotion.Acceleration.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)
+                    + "; accelerationLimit=" + dynamicStopMotion.AccelLimit.ToString("F4", System.Globalization.CultureInfo.InvariantCulture);
             case BallSpawner.Mode.reactTap:
                 return logWriter3.isReact
                     ? "react_exit_confirmation_not_completed" + elapsedText
@@ -1633,6 +1651,108 @@ public class S2AccMode : MonoBehaviour
 
 
     }
+    public void SetDynamicStopMode()
+    {
+        dynamicStopCollider = GetComponent<Collider>();
+        dynamicStopMotion.Reset();
+    }
+
+    private void UpdateDynamicStopSelection()
+    {
+        if (ballSpawner == null || logWriter3 == null || Acce == null || !Acce.enabled
+            || !ballSpawner.enable_trigger)
+        {
+            EndDynamicStopContact("");
+            dynamicStopMotion.Reset();
+            return;
+        }
+
+        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
+        {
+            EndDynamicStopContact("tracking lost");
+            dynamicStopMotion.Reset();
+            return;
+        }
+
+        bool inside = DynamicStopMotionTracker.ContainsPoint(dynamicStopCollider, pose.Position);
+        if (!inside && dynamicStopMotion.IsInside)
+        {
+            EndDynamicStopContact("contact transition");
+        }
+        else if (inside && !dynamicStopMotion.IsInside)
+        {
+            handInBall = handInBall2 = inBall = true;
+            canceled = false;
+            RegisterNoTriggerSource();
+            logWriter3.isMineBall = isMineBall;
+            logWriter3.handInBall = true;
+            ballSpawner.intargetTimes++;
+            if (isMineBall) Player.TurnShallowYellowMineBall();
+            else Player.TurnShallowGreenMineBall();
+            ShowModeReadyRing();
+        }
+
+        if (inside)
+        {
+            ballSpawner.indexLoc = pose.Position;
+            ballSpawner.area_type = 1;
+            ballSpawner.index = ballIndex;
+        }
+
+        if (dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings()))
+        {
+            ballSpawner.triggeredBy = "index";
+            ballSpawner.triggerCondition = 'M';
+            logWriter3.successfully_Canceled = false;
+            logWriter3.isMineBall = isMineBall;
+            logWriter3.handInBall = false;
+            ballSpawner.caseTime++;
+            if (isMineBall)
+            {
+                Player.TurnYellowMineBall();
+                ballSpawner.PlaySoundWrong();
+            }
+            else
+            {
+                Player.TurnGreenMineBall();
+                ballSpawner.PlaySound2();
+            }
+            CompleteSelection();
+        }
+    }
+
+    private void EndDynamicStopContact(string reason)
+    {
+        if (!handInBall)
+        {
+            return;
+        }
+
+        bool canceledBeforeTrigger = !dynamicStopMotion.IsActive && !string.IsNullOrEmpty(reason);
+        if (canceledBeforeTrigger)
+        {
+            canceled = true;
+            logWriter3.cancelTimes++;
+            logWriter3.RecordCancelReason(reason);
+        }
+        handInBall = handInBall2 = inBall = false;
+        logWriter3.handInBall = false;
+        Player.ChangeOpacityBack();
+        HideModeReadyRing();
+        ClearNoTriggerEntryTimestamp();
+        ballSpawner.area_type = 3;
+        ballSpawner.index = -1;
+
+        if (canceledBeforeTrigger && isMineBall && reason == "contact transition")
+        {
+            logWriter3.successfully_Canceled = true;
+            logWriter3.isMineBall = true;
+            ballSpawner.caseTime++;
+            ballSpawner.PlaySound2();
+            CompleteSelection();
+        }
+    }
+
     public void SetHesMode()
     {
         if (ballSpawner != null)
@@ -2620,16 +2740,22 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.index = ballIndex;
 
             RecordDirection010SpeedMinIfMet();
-            CheckSpeedReleaseIndexTrigger();
-
-            if (speedReleaseMinSpeedMet
+            bool directionDecisionReady = false;
+            bool shouldCancelForDirection = speedReleaseMinSpeedMet
                 && !speedReleaseTriggered
                 && !speedReleaseReentryRequired
-                && IsDirection010CancelMovement())
+                && IsDirection010CancelMovement(out directionDecisionReady);
+
+            if (shouldCancelForDirection)
             {
                 HideModeReadyRing();
                 TriggerDirection010Cancel();
+                return;
             }
+
+            // Do not allow a high-speed selection until the movement direction has
+            // been classified and confirmed to be outside the cancellation cone.
+            CheckSpeedReleaseIndexTrigger(directionDecisionReady);
         });
 
         Acce.AfterOutEvent.AddListener(() =>
@@ -5245,7 +5371,7 @@ public class S2AccMode : MonoBehaviour
         canceled = false;
     }
 
-    private void CheckSpeedReleaseIndexTrigger()
+    private void CheckSpeedReleaseIndexTrigger(bool allowHighSpeedTrigger = true)
     {
         if (speedReleaseTriggered || speedReleaseReentryRequired || !ballSpawner.enable_trigger)
         {
@@ -5265,7 +5391,8 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (indexSpeed >= Mathf.Max(0f, ballSpawner.speedMaxThreshold))
+        if (allowHighSpeedTrigger
+            && indexSpeed >= Mathf.Max(0f, ballSpawner.speedMaxThreshold))
         {
             TriggerSpeedRelease();
         }
@@ -6158,6 +6285,12 @@ public class S2AccMode : MonoBehaviour
 
     private bool IsDirection010CancelMovement()
     {
+        return IsDirection010CancelMovement(out _);
+    }
+
+    private bool IsDirection010CancelMovement(out bool directionDecisionReady)
+    {
+        directionDecisionReady = false;
         if (ballSpawner == null || Acce == null)
         {
             return false;
@@ -6283,6 +6416,7 @@ public class S2AccMode : MonoBehaviour
         float angle = entryDirectionAxisMode
             ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
             : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        directionDecisionReady = true;
         lastDirection010AngleDelta = angle;
         bool cancelPass = entryDirectionAxisMode
             ? angle <= GetDirection010AngleThreshold()
@@ -7122,6 +7256,7 @@ public class S2AccMode : MonoBehaviour
 
     private void OnDisable()
     {
+        dynamicStopMotion.Reset();
         HideModeReadyRing();
         HideDirectionCDArrow();
     }

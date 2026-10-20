@@ -35,6 +35,14 @@ public sealed class BallSpawnerEditor : Editor
         "speedMinThreshold",
         "speedMaxThreshold",
         "longPressTimeThreshold",
+        "dynamicStopSampleMs",
+        "dynamicStopSpeedMin",
+        "dynamicStopSpeedMax",
+        "dynamicStopSpeedGain",
+        "dynamicStopAccelMin",
+        "dynamicStopAccelMax",
+        "dynamicStopAccelGain",
+        "dynamicStopHistorySeconds",
         "pinchReleaseOpeningSpeedThreshold",
         "pinchEndDistanceThreshold",
         "pinchThumbSwipeDistanceThreshold",
@@ -69,7 +77,9 @@ public sealed class BallSpawnerEditor : Editor
 
         EditorGUILayout.Space();
         serializedObject.Update();
-        DrawPropertiesExcluding(serializedObject, SharedFieldNames);
+        DrawPropertiesExcluding(serializedObject, settings != null
+            ? SharedFieldNames
+            : new[] { "m_Script", "SelectionSettings" });
         serializedObject.ApplyModifiedProperties();
     }
 

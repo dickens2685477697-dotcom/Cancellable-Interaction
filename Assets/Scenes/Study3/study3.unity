@@ -1056,6 +1056,14 @@ MonoBehaviour:
   speedMinThreshold: 0.05
   speedMaxThreshold: 0.2
   longPressTimeThreshold: 0.5
+  dynamicStopSampleMs: 16
+  dynamicStopSpeedMin: 0.02
+  dynamicStopSpeedMax: 0.12
+  dynamicStopSpeedGain: 0.1
+  dynamicStopAccelMin: 0.5
+  dynamicStopAccelMax: 4
+  dynamicStopAccelGain: 3
+  dynamicStopHistorySeconds: 0.18
   pinchReleaseOpeningSpeedThreshold: 0.6
   pinchEndDistanceThreshold: 0.05
   pinchThumbSwipeDistanceThreshold: 0.03
@@ -2260,7 +2268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
   executionMode: 0
-  modeSelected: 16
+  modeSelected: 13
   targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
@@ -2293,8 +2301,16 @@ MonoBehaviour:
   speedMinThreshold: 0.067
   speedMaxThreshold: 0.375
   longPressTimeThreshold: 0.7
+  dynamicStopSampleMs: 16
+  dynamicStopSpeedMin: 0.067
+  dynamicStopSpeedMax: 0.196
+  dynamicStopSpeedGain: 0.1
+  dynamicStopAccelMin: 0.975
+  dynamicStopAccelMax: 12.043
+  dynamicStopAccelGain: 3
+  dynamicStopHistorySeconds: 0.18
   pinchReleaseOpeningSpeedThreshold: 0.2
-  pinchEndDistanceThreshold: 0.03
+  pinchEndDistanceThreshold: 0.024
   pinchThumbSwipeDistanceThreshold: 0.013
   pinchThumbSwipeContactDistanceThreshold: 0.022
   pinchThumbSwipeDirectionRatioThreshold: 0.75
@@ -3562,6 +3578,14 @@ MonoBehaviour:
   speedMinThreshold: 0.05
   speedMaxThreshold: 0.2
   longPressTimeThreshold: 0.5
+  dynamicStopSampleMs: 16
+  dynamicStopSpeedMin: 0.02
+  dynamicStopSpeedMax: 0.12
+  dynamicStopSpeedGain: 0.1
+  dynamicStopAccelMin: 0.5
+  dynamicStopAccelMax: 4
+  dynamicStopAccelGain: 3
+  dynamicStopHistorySeconds: 0.18
   pinchReleaseOpeningSpeedThreshold: 0.6
   pinchEndDistanceThreshold: 0.05
   pinchThumbSwipeDistanceThreshold: 0.03

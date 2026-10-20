@@ -113,6 +113,19 @@ public class LogWriter2 : MonoBehaviour
         float aVec = activeReactTap != null ? activeReactTap.A_vec : 0f;
         float vVec = activeReactTap != null ? activeReactTap.V_vec : 0f;
 
+        if (ballSpawner.modeSelected == BallSpawner.Mode.dynamicStop)
+        {
+            S2AccMode targetMode = activeReactTap != null ? activeReactTap.GetComponent<S2AccMode>() : null;
+            S2Obstacles obstacleMode = activeReactTap != null ? activeReactTap.GetComponent<S2Obstacles>() : null;
+            DynamicStopMotionTracker motion = targetMode != null
+                ? targetMode.DynamicStopMotion
+                : obstacleMode != null ? obstacleMode.DynamicStopMotion : null;
+            isAOK = motion != null && motion.AccelerationConditionMet;
+            isVOK = motion != null && motion.SpeedConditionMet;
+            aVec = motion != null && motion.HasAcceleration ? motion.Acceleration : 0f;
+            vVec = motion != null ? motion.Speed : 0f;
+        }
+
         return ballSpawner.currentCaseNumber + "," + ballSpawner.currentRoundID + "," + activeIndexLoc.x + "," + activeIndexLoc.y + "," + activeIndexLoc.z + "," + acceStimulate.a + "," + acceStimulate.v + "," + ballSpawner.modeSelected + "," + activeBallKind + "," + activeBallIndex
             + "," + angeleAC_CD + "," + wristPosition.x + "," + wristPosition.y + "," + wristPosition.z + "," + wristSpeed + "," + isAOK + "," + isVOK + "," + aVec + "," + vVec + "," + errorTriggered + "," + ballSpawner.isReact + "," + currentInBallDistance
             + "," + activeThumbLoc.x + "," + activeThumbLoc.y + "," + activeThumbLoc.z;

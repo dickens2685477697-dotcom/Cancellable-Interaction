@@ -18,6 +18,10 @@ public class S2Obstacles : MonoBehaviour
     public S2Player Player;
     public BallSpawner ballSpawner;
     public int modeSelected;
+    private readonly DynamicStopMotionTracker dynamicStopMotion = new DynamicStopMotionTracker();
+    private Collider dynamicStopCollider;
+    private Material dynamicStopIdleMaterial;
+    public DynamicStopMotionTracker DynamicStopMotion => dynamicStopMotion;
     float oldTime;
     public AudioSource source;
     public AudioClip clip;
@@ -228,6 +232,9 @@ public class S2Obstacles : MonoBehaviour
                 break;
             case 25:
                 SetDirection010Mode();
+                break;
+            case (int)BallSpawner.Mode.dynamicStop:
+                SetDynamicStopMode();
                 break;
 
 
@@ -503,12 +510,16 @@ public class S2Obstacles : MonoBehaviour
             case 25:
                 SetDirection010Mode();
                 break;
+            case (int)BallSpawner.Mode.dynamicStop:
+                SetDynamicStopMode();
+                break;
         }
 
         ApplyDirectionCDArrowVisibility();
     }
     public void ClearMode()
     {
+        dynamicStopMotion.Reset();
         ResetReactReleaseState();
         ResetSpeedReleaseState();
         ResetRainbowState();
@@ -1220,15 +1231,21 @@ public class S2Obstacles : MonoBehaviour
                 ballSpawner.index = ballIndex;
             }
 
-            CheckSpeedReleaseIndexTrigger();
-
-            if (speedReleaseMinSpeedMet
+            bool directionDecisionReady = false;
+            bool shouldCancelForDirection = speedReleaseMinSpeedMet
                 && !speedReleaseTriggered
                 && !speedReleaseReentryRequired
-                && IsDirection010CancelMovement())
+                && IsDirection010CancelMovement(out directionDecisionReady);
+
+            if (shouldCancelForDirection)
             {
                 TriggerDirection010ObstacleCancel();
+                return;
             }
+
+            // Keep target and obstacle behavior consistent: movement in the
+            // cancellation direction cannot produce a high-speed trigger.
+            CheckSpeedReleaseIndexTrigger(directionDecisionReady);
         });
 
         Acce.AfterOutEvent.AddListener(() =>
@@ -1489,6 +1506,84 @@ public class S2Obstacles : MonoBehaviour
             source.Play();
             ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
         });
+    }
+
+    public void SetDynamicStopMode()
+    {
+        dynamicStopCollider = GetComponent<Collider>();
+        dynamicStopMotion.Reset();
+        handInBall = handInBall2 = inBall = false;
+    }
+
+    private void UpdateDynamicStopObstacle()
+    {
+        // Previously selected start balls have Acce disabled by BallSpawner.
+        if (ballSpawner == null || Acce == null || !Acce.enabled)
+        {
+            EndDynamicStopObstacleContact();
+            dynamicStopMotion.Reset();
+            return;
+        }
+        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
+        {
+            EndDynamicStopObstacleContact();
+            dynamicStopMotion.Reset();
+            return;
+        }
+
+        bool inside = DynamicStopMotionTracker.ContainsPoint(dynamicStopCollider, pose.Position);
+        if (!inside && dynamicStopMotion.IsInside)
+        {
+            EndDynamicStopObstacleContact();
+        }
+        else if (inside && !dynamicStopMotion.IsInside)
+        {
+            handInBall = handInBall2 = inBall = true;
+            if (!triggered)
+            {
+                dynamicStopIdleMaterial = Player.GetComponent<MeshRenderer>().sharedMaterial;
+                ballSpawner.errorInTimes++;
+                Player.TurnShallow();
+            }
+        }
+
+        if (inside)
+        {
+            ballSpawner.indexLoc = pose.Position;
+            ballSpawner.area_type = triggered ? 4 : 2;
+            ballSpawner.index = ballIndex;
+        }
+
+        if (dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings())
+            && !triggered)
+        {
+            ballSpawner.triggeredBy = "index";
+            ballSpawner.triggerCondition = 'M';
+            Player.TurnYellow();
+            if (source != null) source.Play();
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        }
+    }
+
+    private void EndDynamicStopObstacleContact()
+    {
+        if (!handInBall)
+        {
+            return;
+        }
+        handInBall = handInBall2 = inBall = false;
+        if (!triggered)
+        {
+            // Reset activation feedback immediately, including after an error trigger.
+            Player.Acced = false;
+            if (dynamicStopIdleMaterial != null)
+            {
+                Player.GetComponent<MeshRenderer>().sharedMaterial = dynamicStopIdleMaterial;
+            }
+            oldTime = Time.time;
+            ballSpawner.area_type = 3;
+            ballSpawner.index = -1;
+        }
     }
 
     public void SetHesMode()
@@ -2474,6 +2569,11 @@ public class S2Obstacles : MonoBehaviour
 
     private void Update()
     {
+        if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
+        {
+            UpdateDynamicStopObstacle();
+            return;
+        }
         if (modeSelected == 5
             && handInBall
             && !fastTapCancelTriggered
@@ -2795,7 +2895,7 @@ public class S2Obstacles : MonoBehaviour
         canceled = false;
     }
 
-    private void CheckSpeedReleaseIndexTrigger()
+    private void CheckSpeedReleaseIndexTrigger(bool allowHighSpeedTrigger = true)
     {
         if (speedReleaseTriggered || speedReleaseReentryRequired)
         {
@@ -2814,7 +2914,8 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
-        if (indexSpeed >= Mathf.Max(0f, ballSpawner.speedMaxThreshold))
+        if (allowHighSpeedTrigger
+            && indexSpeed >= Mathf.Max(0f, ballSpawner.speedMaxThreshold))
         {
             TriggerSpeedReleaseObstacle();
         }
@@ -4477,6 +4578,12 @@ public class S2Obstacles : MonoBehaviour
     }
     private bool IsDirection010CancelMovement()
     {
+        return IsDirection010CancelMovement(out _);
+    }
+
+    private bool IsDirection010CancelMovement(out bool directionDecisionReady)
+    {
+        directionDecisionReady = false;
         if (ballSpawner == null || Acce == null)
         {
             return false;
@@ -4598,6 +4705,7 @@ public class S2Obstacles : MonoBehaviour
         float angle = entryDirectionAxisMode
             ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
             : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
+        directionDecisionReady = true;
         bool anglePass = entryDirectionAxisMode
             ? angle <= GetDirection010AngleThreshold()
             : angle <= GetDirection010AngleThreshold();
@@ -5131,6 +5239,11 @@ public class S2Obstacles : MonoBehaviour
 
     private void OnDisable()
     {
+        dynamicStopMotion.Reset();
+        if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
+        {
+            handInBall = handInBall2 = inBall = false;
+        }
         HideDirectionCDArrow();
     }
 

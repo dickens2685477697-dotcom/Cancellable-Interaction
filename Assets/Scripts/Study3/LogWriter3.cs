@@ -507,6 +507,8 @@ public class LogWriter3 : MonoBehaviour
                 return "dwell_cancel_timeout_reached";
             case BallSpawner.Mode.magicTap:
                 return "acceleration_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.dynamicStop:
+                return "dynamic_stop_threshold_not_reached_before_exit";
             case BallSpawner.Mode.reactTap:
                 return "react_cancel_condition_detected";
             case BallSpawner.Mode.reactRelease:
@@ -590,6 +592,8 @@ public class LogWriter3 : MonoBehaviour
                 return "react_stage_not_reached_before_exit";
             case BallSpawner.Mode.magicTap:
                 return "acceleration_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.dynamicStop:
+                return "dynamic_stop_threshold_not_reached_before_exit";
             case BallSpawner.Mode.reactTap:
                 return "react_stage_not_reached_before_exit";
             case BallSpawner.Mode.reactRelease:
