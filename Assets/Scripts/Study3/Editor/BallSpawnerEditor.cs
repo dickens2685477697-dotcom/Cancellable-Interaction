@@ -8,6 +8,7 @@ public sealed class BallSpawnerEditor : Editor
     private static readonly string[] SharedFieldNames =
     {
         "m_Script",
+        "fixedSamplingMode",
         "SelectionSettings",
         "rainbowArcPlacement",
         "showContact010TriggerRegion",
@@ -49,6 +50,24 @@ public sealed class BallSpawnerEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+
+        EditorGUILayout.LabelField("Fixed Sampling / 采样频率", EditorStyles.boldLabel);
+        using (new EditorGUI.DisabledScope(Application.isPlaying))
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("fixedSamplingMode"),
+                new GUIContent("Fixed Sampling Mode"));
+        }
+        EditorGUILayout.HelpBox(
+            "运行前选择 30 Hz 或 50 Hz。控制整个场景的 FixedUpdate；设备追踪和显示刷新率由设备决定。"
+            + "多个 Spawner 中只给一个设置覆盖频率，其余使用 Project Default。",
+            MessageType.Info);
+        if (Application.isPlaying)
+        {
+            EditorGUILayout.LabelField("Active Fixed Sampling",
+                (1f / Time.fixedDeltaTime).ToString("F2") + " Hz ("
+                + (Time.fixedDeltaTime * 1000f).ToString("F2") + " ms)");
+        }
+        EditorGUILayout.Space();
 
         SerializedProperty settingsProperty = serializedObject.FindProperty("SelectionSettings");
         EditorGUILayout.LabelField("Shared Selection Technique Settings", EditorStyles.boldLabel);

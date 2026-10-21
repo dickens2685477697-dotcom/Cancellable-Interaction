@@ -244,7 +244,7 @@ public class LogWriter3 : MonoBehaviour
         {
             fs = new FileStream(speedBoundaryDebugFileFullPath, FileMode.Create, FileAccess.Write);
             sw = new StreamWriter(fs);
-            sw.WriteLine("frame,time,case,id,mode,event,reason,entrySequence,ballIndex,ballKind,isMineBall,handInBall,speedMinArmed,speedMaxObservedInside,speedTriggered,lastInsideSpeed,exitFrameSpeed,minSpeedThreshold,maxSpeedThreshold,entryElapsed,tipInside,distalInside,indexX,indexY,indexZ,distalX,distalY,distalZ");
+            sw.WriteLine("frame,time,case,id,mode,event,reason,entrySequence,ballIndex,ballKind,isMineBall,handInBall,speedMinArmed,speedMaxObservedInside,speedTriggered,lastInsideSpeed,exitFrameSpeed,minSpeedThreshold,maxSpeedThreshold,entryElapsed,tipInside,distalInside,indexX,indexY,indexZ,distalX,distalY,distalZ,fixedTime,fixedDeltaTime,fixedSamplingHz,samplingMode");
             sw.Close();
             fs.Close();
         }
@@ -307,7 +307,11 @@ public class LogWriter3 : MonoBehaviour
             FloatForCsv(indexPosition.z),
             FloatForCsv(distalPosition.x),
             FloatForCsv(distalPosition.y),
-            FloatForCsv(distalPosition.z)
+            FloatForCsv(distalPosition.z),
+            FloatForCsv(Time.fixedTime),
+            Time.fixedDeltaTime.ToString("F9", CultureInfo.InvariantCulture),
+            (1f / Time.fixedDeltaTime).ToString("F3", CultureInfo.InvariantCulture),
+            ballSpawner.FixedSamplingMode.ToString()
         }));
         sw.Close();
         fs.Close();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
@@ -115,7 +116,13 @@ public class LogWriter2 : MonoBehaviour
 
         return ballSpawner.currentCaseNumber + "," + ballSpawner.currentRoundID + "," + activeIndexLoc.x + "," + activeIndexLoc.y + "," + activeIndexLoc.z + "," + acceStimulate.a + "," + acceStimulate.v + "," + ballSpawner.modeSelected + "," + activeBallKind + "," + activeBallIndex
             + "," + angeleAC_CD + "," + wristPosition.x + "," + wristPosition.y + "," + wristPosition.z + "," + wristSpeed + "," + isAOK + "," + isVOK + "," + aVec + "," + vVec + "," + errorTriggered + "," + ballSpawner.isReact + "," + currentInBallDistance
-            + "," + activeThumbLoc.x + "," + activeThumbLoc.y + "," + activeThumbLoc.z;
+            + "," + activeThumbLoc.x + "," + activeThumbLoc.y + "," + activeThumbLoc.z
+            + "," + Time.frameCount.ToString(CultureInfo.InvariantCulture)
+            + "," + Time.time.ToString("F6", CultureInfo.InvariantCulture)
+            + "," + Time.fixedTime.ToString("F6", CultureInfo.InvariantCulture)
+            + "," + Time.fixedDeltaTime.ToString("F9", CultureInfo.InvariantCulture)
+            + "," + (1f / Time.fixedDeltaTime).ToString("F3", CultureInfo.InvariantCulture)
+            + "," + ballSpawner.FixedSamplingMode;
     }
 
     public void InitialPath()
@@ -128,7 +135,7 @@ public class LogWriter2 : MonoBehaviour
         {
             fs = new FileStream(fileFullPath, FileMode.Create, FileAccess.Write);
             sw = new StreamWriter(fs);
-            sw.WriteLine("Case,ID,indexLocX,indexLocY,indexLocZ,ori_a,ori_v,modeSelected,area_type,index,angle,wristX,wristY,wristZ,wristSpeed,isAOK,isVOK,A_vec,V_vec,errorTriggered,isReact,currentInBallDistance,thumbX,thumbY,thumbZ");
+            sw.WriteLine("Case,ID,indexLocX,indexLocY,indexLocZ,ori_a,ori_v,modeSelected,area_type,index,angle,wristX,wristY,wristZ,wristSpeed,isAOK,isVOK,A_vec,V_vec,errorTriggered,isReact,currentInBallDistance,thumbX,thumbY,thumbZ,frame,time,fixedTime,fixedDeltaTime,fixedSamplingHz,samplingMode");
             sw.Close();
             fs.Close();
         }

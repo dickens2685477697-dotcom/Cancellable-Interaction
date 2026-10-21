@@ -131,6 +131,12 @@
 
      #region Serialized Fields & Public Variables
 
+     [SerializeField]
+     [Tooltip("Controls the scene-wide FixedUpdate frequency during play. Select before starting Play Mode; does not change device tracking or display refresh rate.")]
+     private Study3SamplingMode fixedSamplingMode = Study3SamplingMode.ProjectDefault;
+
+     public Study3SamplingMode FixedSamplingMode => fixedSamplingMode;
+
      [Header("共享选择技术参数")]
      [Tooltip("Study3 与 Intro 共用的选择技术阈值和反馈显示设置。")]
      public Study3SelectionSettings SelectionSettings;
@@ -378,6 +384,16 @@
     private void Awake()
      {
          ApplySelectionSettings();
+     }
+
+     private void OnEnable()
+     {
+         Study3FixedSampling.Apply(this, fixedSamplingMode);
+     }
+
+     private void OnDisable()
+     {
+         Study3FixedSampling.Release(this);
      }
 
     void Start()
