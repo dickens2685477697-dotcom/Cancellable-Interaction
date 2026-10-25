@@ -1,0 +1,20 @@
+{
+  "input_files": [
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-speed-entry-summary.csv"
+  ],
+  "entry_count": 78,
+  "quality_counts": {
+    "warmup_entries_excluded": 6
+  },
+  "entries_missing_outcome": [],
+  "definition": "trigger_rate = trigger entries / (trigger + cancel + exit entries). Aborted entries are excluded.",
+  "hazard_interpretation": "For obstacle rows or is_mine_ball=1, a trigger is an unintended activation.",
+  "cautions": [
+    "This is an entry-level rate, not the previous trial-level reentry rate.",
+    "Warmup and entries with changing sampling rate/thresholds/time scale are excluded from group summaries.",
+    "Tracking-loss entries are retained in trigger_rate; clean_trigger_rate excludes them.",
+    "Compare the cancellation settings in session-settings.csv before pooling sessions.",
+    "A boundary candidate identifies an observed crossing; it does not prove when the continuous motion crossed the speed threshold.",
+    "Configured FixedUpdate Hz is not the device's hardware tracking refresh rate."
+  ]
+}

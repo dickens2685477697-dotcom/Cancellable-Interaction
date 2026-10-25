@@ -1,0 +1,57 @@
+{
+  "source_directory": "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID",
+  "source_sha256": {
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-direction-debug.csv": "679d872e22c16d87cf46a85edbb888083cbbbc65cd3a41d47e5126051c72b328",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-errorLoc.csv": "e7d7a80c90194766082c55387594f3bd1154847171496ee0b7f07ddbb8ada582",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-pinch-release-distance.csv": "f73f27fe83ec30ba9760518b67915a4d257fc612afd2705e7cbc4e18835c54ad",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-session-settings.csv": "83a0909b8d15bdea05d1245e7c685082d9cc1f8d6df24d53fe8cd53504559184",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-speed-boundary-debug.csv": "d2f0b2ff0bbee209a78e34674c1db27496bdcbf3cffe0ba70c2bbc6c01f68081",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-speed-entry-summary.csv": "920c9d536647ae111445c56a377ed35ceac93072d7d6468c578d4c988db83fdd",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-time.csv": "cf1071a55f6e2efd8c355d26fb04d1160ea2a9b4e5641828675c8d01fd9018e5",
+    "D:\\2026.7.18PilotStudy\\30hz_50hz_analysis\\speed正常选择3ID\\20261025-20-15-08-trajectory.csv": "743097207b1b7e770059eeb57a6ccd22b4afe884a1fd218272e78ebb75026b72"
+  },
+  "all_entries": 78,
+  "formal_entries": 72,
+  "warmup_entries_excluded": 6,
+  "warmup_candidates_excluded": 2,
+  "formal_failure_categories": {
+    "boundary_high_speed_candidate": 13,
+    "not_armed": 7,
+    "armed_but_exit_below_threshold": 4
+  },
+  "all_enter_events_have_summary": true,
+  "trial_entries_reconcile_with_time_csv": true,
+  "candidate_flags_recomputed": true,
+  "source_coordinates_reproduce_exit_speed": true,
+  "time_header_columns": 75,
+  "time_body_column_counts": {
+    "81": 48
+  },
+  "time_parse_policy": "Only the first 26 scalar columns were used; trailing target coordinate headers are misaligned.",
+  "configured_hz": [
+    50.0
+  ],
+  "thresholds_m_s": [
+    [
+      0.067,
+      0.375
+    ]
+  ],
+  "tracking_loss_formal_entries": 0,
+  "consecutive_observation_count": 1687,
+  "consecutive_observation_wall_gap_ms_mean": 20.0355005334856,
+  "consecutive_observation_wall_gap_ms_median": 14.020799997524591,
+  "consecutive_observation_render_frame_gaps": {
+    "1": 914,
+    "2": 715,
+    "0": 36,
+    "3": 22
+  },
+  "candidate_wall_gap_ms_range": [
+    27.275399999780348,
+    28.26630000345176
+  ],
+  "candidate_render_frame_gaps": [
+    2
+  ]
+}

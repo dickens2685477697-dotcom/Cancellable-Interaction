@@ -1,0 +1,3 @@
+# Optional chart dependency for analyze_session.py.
+# Install into this directory's .plot_dependencies folder to reproduce the figure.
+matplotlib==3.11.2

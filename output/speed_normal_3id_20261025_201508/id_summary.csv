@@ -1,0 +1,4 @@
+﻿id,fixed_hz,target_width_mm,trials,entries,trigger_entries,failed_entries,entry_trigger_rate,reentry_trials,trial_reentry_rate,boundary_candidates,candidate_share_of_failed_entries,candidate_trials,not_armed_failures,armed_exit_below_threshold_failures,mean_trial_time_s,median_trial_time_s,median_successful_entry_time_s
+1,50,90.0,16,16,16,0,1.0,0,0.0,0,,0,0,0,1.04749989375,1.0400005,0.5799999870359898
+2,50,60.0,16,19,16,3,0.8421052631578947,3,0.1875,2,0.6666666666666666,2,1,0,1.4074997875,1.220001,0.549999987706542
+3,50,30.0,16,37,16,21,0.43243243243243246,8,0.5,11,0.5238095238095238,7,6,4,3.7224999375000003,3.4400025,0.4899999890476465
