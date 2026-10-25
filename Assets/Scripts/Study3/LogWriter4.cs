@@ -19,7 +19,7 @@ public class LogWriter4 : MonoBehaviour
     void Start()
     {
         ballSpawner = GetComponent<BallSpawner>();
-        date = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss");
+        date = ballSpawner.LogSessionTimestamp;
         filePath = Application.persistentDataPath + "/Logs/" + date + "/";
         fileName = date + "-" + "errorLoc" + ".csv";
         fileFullPath = filePath + fileName;

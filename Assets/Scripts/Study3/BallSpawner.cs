@@ -31,6 +31,8 @@
          Tap = 0,
          [InspectorName("Magic Tap")]
          magicTap = 2,
+         [InspectorName("Magic Tap 2.0")]
+         magicTap2 = 32,
          [InspectorName("React Tap")]
          reactTap = 3,
          [InspectorName("React Release")]
@@ -91,7 +93,9 @@
          [InspectorName("010-Swing")]
          swing010 = 29,
          [InspectorName("16. Dynamic Stop")]
-         dynamicStop = 30
+         dynamicStop = 30,
+         [InspectorName("17.IxDL Dynamic")]
+         ixdlDynamic = 31
      }
 
      public enum ID_kind
@@ -138,6 +142,14 @@
      public Study3SelectionSettings SelectionSettings;
      [Tooltip("Study3Experiment 运行原实验流程；IntroPreview 只提供参数和手部状态，不生成实验目标。")]
      public ExecutionMode executionMode = ExecutionMode.Study3Experiment;
+
+     [Header("采样设置")]
+     [InspectorName("Sampling Rate (Hz)"), Min(1f)]
+     [Tooltip("Study3Experiment 的 FixedUpdate 采样率，单位 Hz；同时影响手部运动计算和 trajectory 轨迹日志。运行时可调整，实际手部新数据频率受设备限制。")]
+     public float samplingRateHz = 50f;
+     private string logSessionTimestamp;
+     public string LogSessionTimestamp => logSessionTimestamp
+         ?? (logSessionTimestamp = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss"));
 
      [Header("实验模式与轮次")]
      public Mode modeSelected;
@@ -223,6 +235,13 @@
      public float speedMaxThreshold = 0.2f;
      [Tooltip("Dwell触发阈值：食指进入目标区域后需要停留的时间，单位秒")]
      public float longPressTimeThreshold = 0.5f;
+     [Header("Magic Tap 2.0")]
+     [InspectorName("Speed Threshold (m/s)"), Min(0f)]
+     [Tooltip("食指速度向量的模长必须严格小于此值，并同时满足加速度条件。独立于 React Tap。")]
+     public float magicTap2SpeedThreshold = 0.2f;
+     [InspectorName("Acceleration Threshold (m/s²)"), Min(0f)]
+     [Tooltip("相邻速度向量之差除以 fixedDeltaTime 的模长必须严格小于此值；不是有符号的速率变化。")]
+     public float magicTap2AccelerationThreshold = 11.661f;
      [Header("Dynamic Stop (demo motion logic)")]
      [InspectorName("Sample Interval (ms)"), Min(0.1f)]
      [Tooltip("最短运动测量间隔，单位毫秒；使用实际经过时间计算速度，不是长按等待时间。")]
@@ -248,6 +267,19 @@
      [InspectorName("Speed History Decay (s)"), Min(0.001f)]
      [Tooltip("高速历史的指数衰减时间尺度，单位秒；不是停止后必须等待的时间。")]
      public float dynamicStopHistorySeconds = 0.18f;
+     [Header("IxDL Dynamic (previous fixed sample)")]
+     [InspectorName("Acceleration Threshold (m/s²)")]
+     [Tooltip("使用有符号加速度 (本次速率 - 前次速率) / fixedDeltaTime；严格小于此值才满足条件。")]
+     public float ixdlAccelerationThreshold = 0.375f;
+     [InspectorName("Input Speed Start (m/s)"), Min(0f)]
+     public float ixdlInputSpeedMin = 0f;
+     [InspectorName("Input Speed End (m/s)"), Min(0.0001f)]
+     public float ixdlInputSpeedMax = 0.6f;
+     [InspectorName("Speed Threshold Start (m/s)"), Min(0f)]
+     public float ixdlSpeedThresholdMin = 0.03f;
+     [InspectorName("Speed Threshold End (m/s)"), Min(0f)]
+     [Tooltip("前一次 FixedUpdate 的速率线性映射为本次速度阈值，超出输入范围时截到端点。本次速率严格小于阈值才满足条件。")]
+     public float ixdlSpeedThresholdMax = 0.06f;
      [Header("Pinch and release")]
      [Tooltip("Pinch Release Cancel取消阈值：食指尖到拇指尖张开速度，单位米/秒")]
      public float pinchReleaseOpeningSpeedThreshold = 0.6f;
@@ -400,12 +432,74 @@
      public bool isReact = false;
      private readonly Queue<ErrorTriggerSnapshot> pendingErrorTriggerSnapshots = new Queue<ErrorTriggerSnapshot>();
      private DirectionCancelConeVisual directionCancelConeVisual;
+     private bool samplingRateApplied;
+     private float originalFixedDeltaTime;
+     private float appliedFixedDeltaTime;
 
      #region Unity Lifecycle Methods
 
     private void Awake()
      {
          ApplySelectionSettings();
+     }
+
+     private void OnEnable()
+     {
+         ApplySamplingRate();
+     }
+
+     private void Update()
+     {
+         ApplySamplingRate();
+     }
+
+     private void OnDisable()
+     {
+         RestoreSamplingRate();
+     }
+
+     private void ApplySamplingRate()
+     {
+         if (executionMode != ExecutionMode.Study3Experiment)
+         {
+             RestoreSamplingRate();
+             return;
+         }
+
+         ValidateSamplingRate();
+         if (!samplingRateApplied)
+         {
+             originalFixedDeltaTime = Time.fixedDeltaTime;
+             samplingRateApplied = true;
+         }
+
+         appliedFixedDeltaTime = 1f / samplingRateHz;
+         if (Time.fixedDeltaTime != appliedFixedDeltaTime)
+         {
+             Time.fixedDeltaTime = appliedFixedDeltaTime;
+         }
+     }
+
+     private void RestoreSamplingRate()
+     {
+         if (!samplingRateApplied)
+         {
+             return;
+         }
+
+         if (Mathf.Approximately(Time.fixedDeltaTime, appliedFixedDeltaTime))
+         {
+             Time.fixedDeltaTime = originalFixedDeltaTime;
+         }
+
+         samplingRateApplied = false;
+     }
+
+     private void ValidateSamplingRate()
+     {
+         samplingRateHz = float.IsNaN(samplingRateHz) || float.IsInfinity(samplingRateHz)
+             ? 50f
+             : Mathf.Max(1f, samplingRateHz);
      }
 
     void Start()
@@ -1150,6 +1244,12 @@
                  case Mode.dynamicStop:
                      Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Dynamic Stop\".\r\nMove into the target and slow down to select it.\r\n";
                      break;
+                 case Mode.ixdlDynamic:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"IxDL Dynamic\".\r\nMove into the target and slow down to select it.\r\n";
+                     break;
+                 case Mode.magicTap2:
+                     Got.GetComponentInChildren<TMP_Text>().text = "In this task, selection technique is \"Magic Tap 2.0\".\r\nMove into the target and slow down to select it.\r\n";
+                     break;
              }
          }
      }
@@ -1159,6 +1259,7 @@
      /// </summary>
      private void OnValidate()
      {
+         ValidateSamplingRate();
          ApplySelectionSettings();
          ID = ClampID(ID);
          if (!Application.isPlaying)
@@ -1499,6 +1600,12 @@
              dynamicStopSpeedMin, dynamicStopSpeedMax, dynamicStopSpeedGain,
              dynamicStopAccelMin, dynamicStopAccelMax, dynamicStopAccelGain,
              dynamicStopHistorySeconds);
+     }
+
+     public IxDLDynamicMotionSettings GetIxDLDynamicMotionSettings()
+     {
+         return new IxDLDynamicMotionSettings(ixdlAccelerationThreshold,
+             ixdlInputSpeedMin, ixdlInputSpeedMax, ixdlSpeedThresholdMin, ixdlSpeedThresholdMax);
      }
 
      #endregion

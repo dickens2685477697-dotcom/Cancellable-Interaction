@@ -1,4 +1,4 @@
-﻿using Oculus.Platform.Samples.VrHoops;
+using Oculus.Platform.Samples.VrHoops;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -22,6 +22,16 @@ public class S2Obstacles : MonoBehaviour
     private Collider dynamicStopCollider;
     private Material dynamicStopIdleMaterial;
     public DynamicStopMotionTracker DynamicStopMotion => dynamicStopMotion;
+    private readonly IxDLDynamicMotionTracker ixdlDynamicMotion = new IxDLDynamicMotionTracker();
+    public IxDLDynamicMotionTracker IxDLDynamicMotion => ixdlDynamicMotion;
+    private bool UsesIxDLDynamic => modeSelected == (int)BallSpawner.Mode.ixdlDynamic;
+    private bool UsesDynamicMotion => UsesIxDLDynamic || modeSelected == (int)BallSpawner.Mode.dynamicStop;
+    private bool DynamicMotionInside => UsesIxDLDynamic ? ixdlDynamicMotion.IsInside : dynamicStopMotion.IsInside;
+    private readonly MagicTap2MotionTracker magicTap2Motion = new MagicTap2MotionTracker();
+    private Collider magicTap2Collider;
+    private Material magicTap2IdleMaterial;
+    public MagicTap2MotionTracker MagicTap2Motion => magicTap2Motion;
+    private bool UsesMagicTap2 => modeSelected == (int)BallSpawner.Mode.magicTap2;
     float oldTime;
     public AudioSource source;
     public AudioClip clip;
@@ -46,6 +56,7 @@ public class S2Obstacles : MonoBehaviour
     private bool reactReleaseSpeedAcceMet = false;
     private bool reactReleaseTriggered = false;
     private bool reactReleaseReentryRequired = false;
+    private SpeedStudyTelemetry speedStudyTelemetry;
     private bool speedReleaseMinSpeedMet = false;
     private bool speedReleaseTriggered = false;
     private bool speedReleaseReentryRequired = false;
@@ -149,6 +160,9 @@ public class S2Obstacles : MonoBehaviour
             case 3:
                 SetReactTapMode();
                 break;
+            case (int)BallSpawner.Mode.magicTap2:
+                SetMagicTap2Mode();
+                break;
             case 14:
                 SetReactReleaseMode();
                 break;
@@ -234,6 +248,7 @@ public class S2Obstacles : MonoBehaviour
                 SetDirection010Mode();
                 break;
             case (int)BallSpawner.Mode.dynamicStop:
+            case (int)BallSpawner.Mode.ixdlDynamic:
                 SetDynamicStopMode();
                 break;
 
@@ -426,6 +441,9 @@ public class S2Obstacles : MonoBehaviour
             case 3:
                 SetReactTapMode();
                 break;
+            case (int)BallSpawner.Mode.magicTap2:
+                SetMagicTap2Mode();
+                break;
             case 14:
                 SetReactReleaseMode();
                 break;
@@ -511,6 +529,7 @@ public class S2Obstacles : MonoBehaviour
                 SetDirection010Mode();
                 break;
             case (int)BallSpawner.Mode.dynamicStop:
+            case (int)BallSpawner.Mode.ixdlDynamic:
                 SetDynamicStopMode();
                 break;
         }
@@ -519,7 +538,9 @@ public class S2Obstacles : MonoBehaviour
     }
     public void ClearMode()
     {
+        magicTap2Motion.Reset();
         dynamicStopMotion.Reset();
+        ixdlDynamicMotion.Reset();
         ResetReactReleaseState();
         ResetSpeedReleaseState();
         ResetRainbowState();
@@ -1100,6 +1121,8 @@ public class S2Obstacles : MonoBehaviour
                 ResetReleaseGestureTracking();
             }
 
+            LogSpeedStudy("sample");
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1116,6 +1139,7 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            LogSpeedStudy("exit");
             handInBall = false;
             handInBall2 = false;
 
@@ -1156,6 +1180,8 @@ public class S2Obstacles : MonoBehaviour
                 fastTapEntryTimestamp = Time.time;
             }
 
+            LogSpeedStudy("sample");
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1172,6 +1198,7 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            LogSpeedStudy("exit");
             if (handInBall && !speedReleaseTriggered)
             {
                 TriggerSpeedObstacleCancel();
@@ -1220,6 +1247,8 @@ public class S2Obstacles : MonoBehaviour
 
             CaptureDirectionCancelEntryAxisIfNeeded();
 
+            LogSpeedStudy("sample");
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1250,6 +1279,7 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            LogSpeedStudy("exit");
             if (!triggered)
             {
                 oldTime = Time.time;
@@ -1287,6 +1317,8 @@ public class S2Obstacles : MonoBehaviour
                 fastTapEntryTimestamp = Time.time;
             }
 
+            LogSpeedStudy("sample");
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1303,6 +1335,7 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            LogSpeedStudy("exit");
             if (!triggered)
             {
                 oldTime = Time.time;
@@ -1344,6 +1377,8 @@ public class S2Obstacles : MonoBehaviour
                 fastTapEntryTimestamp = Time.time;
             }
 
+            LogSpeedStudy("sample");
+
             if (!triggered)
             {
                 ballSpawner.area_type = 2;
@@ -1361,6 +1396,7 @@ public class S2Obstacles : MonoBehaviour
 
         Acce.AfterOutEvent.AddListener(() =>
         {
+            LogSpeedStudy("exit");
             handInBall = false;
             handInBall2 = false;
             pinchWristTiltInside = false;
@@ -1508,10 +1544,86 @@ public class S2Obstacles : MonoBehaviour
         });
     }
 
+    public void SetMagicTap2Mode()
+    {
+        magicTap2Collider = GetComponent<Collider>();
+        magicTap2Motion.Reset();
+        handInBall = handInBall2 = inBall = false;
+    }
+
+    private void UpdateMagicTap2Obstacle()
+    {
+        if (ballSpawner == null || Acce == null || !Acce.enabled)
+        {
+            EndMagicTap2ObstacleContact();
+            magicTap2Motion.Reset();
+            return;
+        }
+        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose tip)
+            || !HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose distal))
+        {
+            EndMagicTap2ObstacleContact();
+            magicTap2Motion.Reset();
+            return;
+        }
+
+        bool inside = MagicTap2MotionTracker.ContainsFinger(magicTap2Collider, tip.Position, distal.Position);
+        if (!inside && magicTap2Motion.IsInside)
+        {
+            EndMagicTap2ObstacleContact();
+        }
+        else if (inside && !magicTap2Motion.IsInside)
+        {
+            handInBall = handInBall2 = inBall = true;
+            if (!triggered)
+            {
+                magicTap2IdleMaterial = Player.GetComponent<MeshRenderer>().sharedMaterial;
+                ballSpawner.errorInTimes++;
+                Player.TurnShallow();
+            }
+        }
+
+        if (inside)
+        {
+            ballSpawner.indexLoc = tip.Position;
+            ballSpawner.area_type = triggered ? 4 : 2;
+            ballSpawner.index = ballIndex;
+        }
+
+        bool selected = magicTap2Motion.Sample(tip.Position, inside, Time.fixedDeltaTime,
+            ballSpawner.magicTap2SpeedThreshold, ballSpawner.magicTap2AccelerationThreshold);
+        if (selected && !triggered)
+        {
+            ballSpawner.triggeredBy = "index";
+            ballSpawner.triggerCondition = '2';
+            Player.TurnYellow();
+            if (source != null) source.Play();
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        }
+    }
+
+    private void EndMagicTap2ObstacleContact()
+    {
+        if (!handInBall) return;
+        handInBall = handInBall2 = inBall = false;
+        if (!triggered)
+        {
+            Player.Acced = false;
+            if (magicTap2IdleMaterial != null)
+            {
+                Player.GetComponent<MeshRenderer>().sharedMaterial = magicTap2IdleMaterial;
+            }
+            oldTime = Time.time;
+            ballSpawner.area_type = 3;
+            ballSpawner.index = -1;
+        }
+    }
+
     public void SetDynamicStopMode()
     {
         dynamicStopCollider = GetComponent<Collider>();
         dynamicStopMotion.Reset();
+        ixdlDynamicMotion.Reset();
         handInBall = handInBall2 = inBall = false;
     }
 
@@ -1522,21 +1634,23 @@ public class S2Obstacles : MonoBehaviour
         {
             EndDynamicStopObstacleContact();
             dynamicStopMotion.Reset();
+            ixdlDynamicMotion.Reset();
             return;
         }
         if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
         {
             EndDynamicStopObstacleContact();
             dynamicStopMotion.Reset();
+            ixdlDynamicMotion.Reset();
             return;
         }
 
         bool inside = DynamicStopMotionTracker.ContainsPoint(dynamicStopCollider, pose.Position);
-        if (!inside && dynamicStopMotion.IsInside)
+        if (!inside && DynamicMotionInside)
         {
             EndDynamicStopObstacleContact();
         }
-        else if (inside && !dynamicStopMotion.IsInside)
+        else if (inside && !DynamicMotionInside)
         {
             handInBall = handInBall2 = inBall = true;
             if (!triggered)
@@ -1554,9 +1668,16 @@ public class S2Obstacles : MonoBehaviour
             ballSpawner.index = ballIndex;
         }
 
-        if (dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings())
-            && !triggered)
+        bool selected = UsesIxDLDynamic
+            ? ixdlDynamicMotion.Sample(pose.Position, inside, Time.fixedDeltaTime, ballSpawner.GetIxDLDynamicMotionSettings())
+            : dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
+        if (selected && !triggered)
         {
+            if (UsesIxDLDynamic)
+            {
+                logWriter3?.RecordIxDLDynamicTrigger(ixdlDynamicMotion, "obstacle", GetInstanceID(),
+                    ballIndex, ballKind, false, pose.Position);
+            }
             ballSpawner.triggeredBy = "index";
             ballSpawner.triggerCondition = 'M';
             Player.TurnYellow();
@@ -2567,8 +2688,21 @@ public class S2Obstacles : MonoBehaviour
         });
     }
 
+    private void FixedUpdate()
+    {
+        if (UsesMagicTap2)
+        {
+            UpdateMagicTap2Obstacle();
+        }
+        else if (UsesIxDLDynamic)
+        {
+            UpdateDynamicStopObstacle();
+        }
+    }
+
     private void Update()
     {
+        LogSpeedStudy("tracking_lost");
         if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
         {
             UpdateDynamicStopObstacle();
@@ -2895,8 +3029,40 @@ public class S2Obstacles : MonoBehaviour
         canceled = false;
     }
 
+    private void LogSpeedStudy(string eventName, string reason = "", bool allowHighSpeedTrigger = true)
+    {
+        if (!SpeedStudyTelemetry.IsSpeedMode(modeSelected) || ballSpawner == null || Acce == null
+            || logWriter3 == null || logWriter3.IsStateOnly
+            || ballSpawner.executionMode != BallSpawner.ExecutionMode.Study3Experiment)
+        {
+            return;
+        }
+        if (speedStudyTelemetry == null)
+        {
+            if (eventName != "sample") return;
+            speedStudyTelemetry = new SpeedStudyTelemetry(logWriter3.WriteSpeedStudyRow, logWriter3.NextSpeedEntrySequence);
+        }
+        SpeedStudySnapshot snapshot = SpeedStudySnapshot.Capture(this, ballSpawner, Acce, modeSelected,
+            ballIndex, ballKind, true, "obstacle", GetCurrentIndexSpeed(), handInBall,
+            speedReleaseMinSpeedMet, speedReleaseTriggered,
+            speedReleaseReentryRequired || direction010ReentryRequired, allowHighSpeedTrigger);
+        snapshot.ExperimentStarted = logWriter3.IsExperimentRunning;
+        if (eventName == "sample") logWriter3.RegisterSpeedStudyObserver(speedStudyTelemetry);
+        switch (eventName)
+        {
+            case "sample": speedStudyTelemetry.Inside(snapshot); break;
+            case "check": speedStudyTelemetry.Check(snapshot); break;
+            case "armed": speedStudyTelemetry.Armed(snapshot); break;
+            case "exit": speedStudyTelemetry.Exit(snapshot); break;
+            case "disabled": speedStudyTelemetry.Disable(snapshot); break;
+            case "tracking_lost": speedStudyTelemetry.TrackingLost(snapshot); break;
+            default: speedStudyTelemetry.Finish(snapshot, eventName, reason); break;
+        }
+    }
+
     private void CheckSpeedReleaseIndexTrigger(bool allowHighSpeedTrigger = true)
     {
+        LogSpeedStudy("check", "", allowHighSpeedTrigger);
         if (speedReleaseTriggered || speedReleaseReentryRequired)
         {
             return;
@@ -2908,6 +3074,7 @@ public class S2Obstacles : MonoBehaviour
             if (indexSpeed <= Mathf.Max(0f, ballSpawner.speedMinThreshold))
             {
                 speedReleaseMinSpeedMet = true;
+                LogSpeedStudy("armed");
                 ResetReleaseGestureTracking();
             }
 
@@ -2965,6 +3132,7 @@ public class S2Obstacles : MonoBehaviour
         }
 
         speedReleaseTriggered = true;
+        LogSpeedStudy("trigger", "obstacle_error");
         ballSpawner.triggerCondition = 'S';
         Player.TurnYellow();
         source.Play();
@@ -2984,6 +3152,7 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
+        LogSpeedStudy("cancel", "release");
         speedReleaseReentryRequired = true;
         canceled = true;
         handInBall = false;
@@ -3007,6 +3176,7 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
+        LogSpeedStudy("cancel", requireReentry ? "dwell" : "contact transition");
         speedReleaseReentryRequired = requireReentry;
         canceled = true;
         handInBall = false;
@@ -3023,6 +3193,7 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
+        LogSpeedStudy("cancel", "wrist-tilt");
         speedReleaseReentryRequired = true;
         CancelPinchWristTiltObstacle();
         ResetFastTapTiming();
@@ -4566,6 +4737,7 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
 
+        LogSpeedStudy("cancel", "direction");
         direction010CancelTriggered = true;
         direction010ReentryRequired = true;
         canceled = true;
@@ -5239,8 +5411,12 @@ public class S2Obstacles : MonoBehaviour
 
     private void OnDisable()
     {
+        LogSpeedStudy("disabled");
+        logWriter3?.UnregisterSpeedStudyObserver(speedStudyTelemetry);
         dynamicStopMotion.Reset();
-        if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
+        ixdlDynamicMotion.Reset();
+        magicTap2Motion.Reset();
+        if (UsesDynamicMotion || UsesMagicTap2)
         {
             handInBall = handInBall2 = inBall = false;
         }

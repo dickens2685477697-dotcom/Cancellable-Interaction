@@ -38,6 +38,8 @@ MonoBehaviour:
   speedMinThreshold: 0.067
   speedMaxThreshold: 0.375
   longPressTimeThreshold: 0.7
+  magicTap2SpeedThreshold: 0.2
+  magicTap2AccelerationThreshold: 11.661
   dynamicStopSampleMs: 16
   dynamicStopSpeedMin: 0.067
   dynamicStopSpeedMax: 0.196
@@ -46,6 +48,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 12.043
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
+  ixdlAccelerationThreshold: 0.375
+  ixdlInputSpeedMin: 0
+  ixdlInputSpeedMax: 0.6
+  ixdlSpeedThresholdMin: 0.02
+  ixdlSpeedThresholdMax: 0.03
   pinchReleaseOpeningSpeedThreshold: 0.2
   pinchEndDistanceThreshold: 0.024
   pinchThumbSwipeDistanceThreshold: 0.013

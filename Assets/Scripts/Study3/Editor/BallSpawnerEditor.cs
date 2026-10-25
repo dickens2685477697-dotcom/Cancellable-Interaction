@@ -9,6 +9,7 @@ public sealed class BallSpawnerEditor : Editor
     {
         "m_Script",
         "SelectionSettings",
+        "samplingRateHz",
         "rainbowArcPlacement",
         "showContact010TriggerRegion",
         "showModeReadyRing",
@@ -35,6 +36,8 @@ public sealed class BallSpawnerEditor : Editor
         "speedMinThreshold",
         "speedMaxThreshold",
         "longPressTimeThreshold",
+        "magicTap2SpeedThreshold",
+        "magicTap2AccelerationThreshold",
         "dynamicStopSampleMs",
         "dynamicStopSpeedMin",
         "dynamicStopSpeedMax",
@@ -43,6 +46,11 @@ public sealed class BallSpawnerEditor : Editor
         "dynamicStopAccelMax",
         "dynamicStopAccelGain",
         "dynamicStopHistorySeconds",
+        "ixdlAccelerationThreshold",
+        "ixdlInputSpeedMin",
+        "ixdlInputSpeedMax",
+        "ixdlSpeedThresholdMin",
+        "ixdlSpeedThresholdMax",
         "pinchReleaseOpeningSpeedThreshold",
         "pinchEndDistanceThreshold",
         "pinchThumbSwipeDistanceThreshold",
@@ -57,6 +65,13 @@ public sealed class BallSpawnerEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("samplingRateHz"));
+        EditorGUILayout.HelpBox(
+            "控制 Study3Experiment 的全局 FixedUpdate 频率（默认 50 Hz），同时影响手部运动计算和 trajectory 日志。"
+            + "运行时修改会立即生效，停用 Spawner 后恢复原时间步。实际手部新数据频率受设备限制；Dynamic Stop 还受 Sample Interval (ms) 限制。",
+            MessageType.Info);
+        EditorGUILayout.Space();
 
         SerializedProperty settingsProperty = serializedObject.FindProperty("SelectionSettings");
         EditorGUILayout.LabelField("Shared Selection Technique Settings", EditorStyles.boldLabel);
@@ -79,7 +94,7 @@ public sealed class BallSpawnerEditor : Editor
         serializedObject.Update();
         DrawPropertiesExcluding(serializedObject, settings != null
             ? SharedFieldNames
-            : new[] { "m_Script", "SelectionSettings" });
+            : new[] { "m_Script", "SelectionSettings", "samplingRateHz" });
         serializedObject.ApplyModifiedProperties();
     }
 

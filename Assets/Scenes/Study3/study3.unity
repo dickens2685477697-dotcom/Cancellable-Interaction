@@ -1023,6 +1023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectionSettings: {fileID: 0}
   executionMode: 0
+  samplingRateHz: 50
   modeSelected: 0
   targetSelectionMode: 0
   able_to_process: 1
@@ -1064,6 +1065,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 4
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
+  ixdlAccelerationThreshold: 0.15
+  ixdlInputSpeedMin: 0
+  ixdlInputSpeedMax: 10
+  ixdlSpeedThresholdMin: 0.3
+  ixdlSpeedThresholdMax: 1
   pinchReleaseOpeningSpeedThreshold: 0.6
   pinchEndDistanceThreshold: 0.05
   pinchThumbSwipeDistanceThreshold: 0.03
@@ -2268,7 +2274,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
   executionMode: 0
-  modeSelected: 13
+  samplingRateHz: 50
+  modeSelected: 31
   targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
@@ -2309,6 +2316,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 12.043
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
+  ixdlAccelerationThreshold: 0.375
+  ixdlInputSpeedMin: 0
+  ixdlInputSpeedMax: 0.6
+  ixdlSpeedThresholdMin: 0.02
+  ixdlSpeedThresholdMax: 0.03
   pinchReleaseOpeningSpeedThreshold: 0.2
   pinchEndDistanceThreshold: 0.024
   pinchThumbSwipeDistanceThreshold: 0.013
@@ -3545,6 +3557,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectionSettings: {fileID: 0}
   executionMode: 0
+  samplingRateHz: 50
   modeSelected: 0
   targetSelectionMode: 0
   able_to_process: 1
@@ -3586,6 +3599,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 4
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
+  ixdlAccelerationThreshold: 0.15
+  ixdlInputSpeedMin: 0
+  ixdlInputSpeedMax: 10
+  ixdlSpeedThresholdMin: 0.3
+  ixdlSpeedThresholdMax: 1
   pinchReleaseOpeningSpeedThreshold: 0.6
   pinchEndDistanceThreshold: 0.05
   pinchThumbSwipeDistanceThreshold: 0.03

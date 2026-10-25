@@ -70,6 +70,11 @@ using UnityEngine.Rendering;
 /// <param name="InMate">Material when the finger is in the button</param>
 public class AcceStimulate : MonoBehaviour
 {
+    public long MotionSampleSequence { get; private set; }
+    public double MotionSampleFixedTime { get; private set; }
+    public float MotionSampleDeltaTime { get; private set; }
+    public bool IndexTipPoseValid { get; private set; }
+    public bool IndexDistalPoseValid { get; private set; }
     public UnityEvent<bool> InEvent_Bool;
     public UnityEvent InEvent, BeforeHesEvent, HesEvent, OutEvent, AfterOutEvent;
     public float UpdateT, WaitTime, PrepTime, HesTime, vpre, v, vc, apre, a, ac, Vb, Vbc, Ab, Vupper;
@@ -135,8 +140,13 @@ public class AcceStimulate : MonoBehaviour
 
     void FixedUpdate()
     {
+        MotionSampleSequence++;
+        MotionSampleFixedTime = Time.fixedTimeAsDouble;
+        MotionSampleDeltaTime = Time.fixedDeltaTime;
+        IndexDistalPoseValid = false;
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2))
+        IndexTipPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2);
+        if (IndexTipPoseValid)
         {
             #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
             if (Init)
@@ -168,7 +178,7 @@ public class AcceStimulate : MonoBehaviour
 
               #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
+            IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
             HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
             // Judge if the fingertip is inside
             if (Bounds.Contains(IndexTipPose2.Position))

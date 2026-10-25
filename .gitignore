@@ -77,3 +77,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Local analysis runtimes and generated Python caches
+/output/**/.plot_dependencies/
+/output/**/.matplotlib_cache/
+__pycache__/
+*.py[cod]

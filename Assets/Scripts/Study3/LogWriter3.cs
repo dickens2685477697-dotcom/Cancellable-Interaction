@@ -12,6 +12,14 @@ public class LogWriter3 : MonoBehaviour
     public BallSpawner ballSpawner;
     private string date, filePath, fileName, fileFullPath, directionDebugFileName, directionDebugFileFullPath;
     private string pinchReleaseDistanceFileName, pinchReleaseDistanceFileFullPath;
+    private StreamWriter speedBoundaryWriter, speedEntryWriter, sessionSettingsWriter;
+    private StreamWriter ixdlTriggerWriter;
+    private IxDLDynamicTriggerRecord? ixdlTargetTrigger;
+    private long speedEntrySequence;
+    private double nextSpeedLogFlush;
+    private bool speedLogsClosed;
+    private string lastSessionConfiguration;
+    private readonly HashSet<SpeedStudyTelemetry> speedStudyObservers = new HashSet<SpeedStudyTelemetry>();
     private GameObject[] Targets, Obstacles;
     private FileStream fs;
     private StreamWriter sw;
@@ -89,11 +97,13 @@ public class LogWriter3 : MonoBehaviour
     [SerializeField] private bool stateOnly;
 
     public bool IsStateOnly => stateOnly;
+    public bool IsExperimentRunning => started;
 
     public void InitializeStateOnly(BallSpawner host)
     {
         stateOnly = true;
         ballSpawner = host;
+        ixdlTargetTrigger = null;
         started = false;
         filePath = null;
         fileFullPath = null;
@@ -113,7 +123,7 @@ public class LogWriter3 : MonoBehaviour
             return;
         }
 
-        date = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss");
+        date = ballSpawner.LogSessionTimestamp;
         filePath = Application.persistentDataPath + "/Logs/" + date + "/";
         fileName = date + "-" + "time" + ".csv";
         fileFullPath = filePath + fileName;
@@ -124,6 +134,7 @@ public class LogWriter3 : MonoBehaviour
         Debug.Log(fileFullPath);
         //acce = gameObject.GetComponent<AcceStimulate>();
         InitialPath();
+        WriteSessionSettings("session_start");
         temp = GameObject.Find("temp");
         acceStimulate = temp.GetComponent<AcceStimulate>();
         // Start writing once entering, no need to set invoked as true because we want it record every frame inside
@@ -140,10 +151,15 @@ public class LogWriter3 : MonoBehaviour
         ballSpawner.ExpStartEvent.AddListener(() =>
         {
             started = true;
+            ixdlTargetTrigger = null;
+            WriteSessionSettings("experiment_start");
         });
         ballSpawner.ExpEndEvent.AddListener(() =>
         {
             started = false;
+            WriteSessionSettings("experiment_end");
+            EndSpeedStudyObservers("experiment_ended_before_outcome");
+            FlushSpeedLogs();
         });
         ballSpawner.RoundOverEvent.AddListener(Write);
     }
@@ -203,6 +219,9 @@ public class LogWriter3 : MonoBehaviour
             ans += "," + temp.y;
             ans += "," + temp.z;
         }
+        ans += "," + (ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic && ixdlTargetTrigger.HasValue
+            ? ixdlTargetTrigger.Value.ToCsv()
+            : IxDLDynamicTriggerRecord.MissingCsv);
         return ans;
     }
     public void InitialPath()
@@ -216,7 +235,7 @@ public class LogWriter3 : MonoBehaviour
             // Close the operator after creation
             fs = new FileStream(fileFullPath, FileMode.Create, FileAccess.Write);
             sw = new StreamWriter(fs);
-            sw.WriteLine("Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,no trigger reason,cancelTimes,directionAngleFrame,directionSpeedMin,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ");
+            sw.WriteLine("Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,no trigger reason,cancelTimes,directionAngleFrame,directionSpeedMin,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ," + IxDLDynamicTriggerRecord.CsvHeader);
             sw.Close();
             fs.Close();
         }
@@ -243,6 +262,7 @@ public class LogWriter3 : MonoBehaviour
         // because a writer and file stream will lock the memory storage so that other gameobject cannot write
         if (started)
         {
+            WriteSessionSettings("trial_end");
             fs = new FileStream(fileFullPath, FileMode.Append, FileAccess.Write);
             sw = new StreamWriter(fs);
             SetTriggerTimeFromLastEntry();
@@ -259,8 +279,136 @@ public class LogWriter3 : MonoBehaviour
         }
         ClearCancelReasons();
         ClearNoTriggerReasons();
+        ixdlTargetTrigger = null;
 
     }
+    public long NextSpeedEntrySequence() => ++speedEntrySequence;
+    public void RegisterSpeedStudyObserver(SpeedStudyTelemetry observer) => speedStudyObservers.Add(observer);
+    public void UnregisterSpeedStudyObserver(SpeedStudyTelemetry observer) => speedStudyObservers.Remove(observer);
+
+    private void EndSpeedStudyObservers(string reason)
+    {
+        foreach (SpeedStudyTelemetry observer in speedStudyObservers) observer.AbortPending(reason);
+        speedStudyObservers.Clear();
+    }
+
+    public void WriteSpeedStudyRow(string row, bool entrySummary)
+    {
+        if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath)) return;
+        EnsureSpeedWriters();
+        speedBoundaryWriter.WriteLine(row);
+        if (entrySummary) speedEntryWriter.WriteLine(row);
+        if (!isActiveAndEnabled) FlushSpeedLogs();
+    }
+
+    public void RecordIxDLDynamicTrigger(IxDLDynamicMotionTracker motion, string source,
+        int sourceInstanceId, int ballIndex, int ballKind, bool isMine, Vector3 indexPosition)
+    {
+        if (motion == null || !motion.HasAcceleration || ballSpawner == null) return;
+
+        var record = new IxDLDynamicTriggerRecord(motion);
+        // Obstacles are separate events and must not replace the target's trial result.
+        if (source == "target") ixdlTargetTrigger = record;
+        if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath)) return;
+
+        if (ixdlTriggerWriter == null)
+        {
+            ixdlTriggerWriter = OpenStudyCsv("ixdl-trigger",
+                "frame,time,fixedTime,realtime,case,id,mode,source,sourceInstanceId,ballIndex,ballKind,isMineBall,experimentStarted,"
+                + IxDLDynamicTriggerRecord.CsvHeader
+                + ",accelerationThreshold,fixedDeltaTime,requestedSamplingHz,indexX,indexY,indexZ,schemaVersion");
+        }
+
+        // Format and write before CompleteSelection can advance Case/ID or destroy this ball.
+        string context = FormattableString.Invariant(
+            $"{Time.frameCount},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{ballSpawner.modeSelected},{EscapeCsv(source)},{sourceInstanceId},{ballIndex},{ballKind},{isMine},{started}");
+        string settingsAndPosition = FormattableString.Invariant(
+            $",{record.AccelerationThreshold:R},{Time.fixedDeltaTime:R},{ballSpawner.samplingRateHz:R},{indexPosition.x:R},{indexPosition.y:R},{indexPosition.z:R},1");
+        ixdlTriggerWriter.WriteLine(context + "," + record.ToCsv() + settingsAndPosition);
+        ixdlTriggerWriter.Flush();
+    }
+
+    private StreamWriter OpenStudyCsv(string suffix, string header)
+    {
+        string path = Path.Combine(filePath, date + "-" + suffix + ".csv");
+        bool needsHeader = !File.Exists(path) || new FileInfo(path).Length == 0;
+        var writer = new StreamWriter(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read),
+            new System.Text.UTF8Encoding(false), 65536);
+        if (needsHeader) writer.WriteLine(header);
+        return writer;
+    }
+
+    private void EnsureSpeedWriters()
+    {
+        if (speedBoundaryWriter == null)
+        {
+            speedBoundaryWriter = OpenStudyCsv("speed-boundary-debug", SpeedStudyTelemetry.Header);
+            speedEntryWriter = OpenStudyCsv("speed-entry-summary", SpeedStudyTelemetry.Header);
+        }
+    }
+
+    private string SessionConfiguration()
+    {
+        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R}");
+    }
+
+    private void WriteSessionSettings(string eventName)
+    {
+        if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath) || ballSpawner == null) return;
+        if (sessionSettingsWriter == null)
+        {
+            sessionSettingsWriter = OpenStudyCsv("session-settings",
+                "event,time,fixedTime,realtime,frame,case,id,mode,requestedSamplingHz,fixedDeltaTime,fixedSamplingHz,timeScale,minSpeedThreshold,maxSpeedThreshold,dwellTimeoutSeconds,directionAngleThreshold,directionSmoothingAlpha,directionMinSpeed,directionWindowSamples,useEntryDirectionAxis,entryDirectionConeHalfAngle,releaseDistanceDeltaThreshold,wristTiltThreshold,targetSelectionMode,enableMineBall,enabledOb,enablePreview,magicTap2SpeedThreshold,magicTap2AccelerationThreshold,schemaVersion");
+        }
+        lastSessionConfiguration = SessionConfiguration();
+        sessionSettingsWriter.WriteLine(FormattableString.Invariant(
+            $"{eventName},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{Time.frameCount},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{lastSessionConfiguration},2"));
+    }
+
+    private void LateUpdate()
+    {
+        if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath)) return;
+        if (ballSpawner != null && SessionConfiguration() != lastSessionConfiguration)
+        {
+            WriteSessionSettings("settings_changed");
+        }
+        if (Time.realtimeSinceStartupAsDouble >= nextSpeedLogFlush)
+        {
+            FlushSpeedLogs();
+            nextSpeedLogFlush = Time.realtimeSinceStartupAsDouble + 0.5;
+        }
+    }
+
+    private void FlushSpeedLogs()
+    {
+        speedBoundaryWriter?.Flush();
+        speedEntryWriter?.Flush();
+        sessionSettingsWriter?.Flush();
+        ixdlTriggerWriter?.Flush();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused) FlushSpeedLogs();
+    }
+
+    private void OnDisable() => FlushSpeedLogs();
+
+    private void OnApplicationQuit() => CloseSpeedLogs();
+
+    private void OnDestroy() => CloseSpeedLogs();
+
+    private void CloseSpeedLogs()
+    {
+        if (speedLogsClosed) return;
+        EndSpeedStudyObservers("session_closed_before_outcome");
+        speedLogsClosed = true;
+        speedBoundaryWriter?.Dispose(); speedBoundaryWriter = null;
+        speedEntryWriter?.Dispose(); speedEntryWriter = null;
+        sessionSettingsWriter?.Dispose(); sessionSettingsWriter = null;
+        ixdlTriggerWriter?.Dispose(); ixdlTriggerWriter = null;
+    }
+
     public void RecordCancelReason(string reason)
     {
         if (!string.IsNullOrEmpty(reason))
@@ -507,8 +655,12 @@ public class LogWriter3 : MonoBehaviour
                 return "dwell_cancel_timeout_reached";
             case BallSpawner.Mode.magicTap:
                 return "acceleration_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.magicTap2:
+                return "magic_tap_2_speed_acceleration_not_reached_before_exit";
             case BallSpawner.Mode.dynamicStop:
                 return "dynamic_stop_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.ixdlDynamic:
+                return "ixdl_dynamic_threshold_not_reached_before_exit";
             case BallSpawner.Mode.reactTap:
                 return "react_cancel_condition_detected";
             case BallSpawner.Mode.reactRelease:
@@ -592,8 +744,12 @@ public class LogWriter3 : MonoBehaviour
                 return "react_stage_not_reached_before_exit";
             case BallSpawner.Mode.magicTap:
                 return "acceleration_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.magicTap2:
+                return "magic_tap_2_speed_acceleration_not_reached_before_exit";
             case BallSpawner.Mode.dynamicStop:
                 return "dynamic_stop_threshold_not_reached_before_exit";
+            case BallSpawner.Mode.ixdlDynamic:
+                return "ixdl_dynamic_threshold_not_reached_before_exit";
             case BallSpawner.Mode.reactTap:
                 return "react_stage_not_reached_before_exit";
             case BallSpawner.Mode.reactRelease:

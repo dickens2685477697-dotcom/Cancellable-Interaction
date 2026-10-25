@@ -88,6 +88,17 @@ public class AcceStudy3 : MonoBehaviour
     public float Distance;
     public Vector3 IndexVelocity;
     public Vector3 IndexVelocityDirection;
+    public long MotionSampleSequence { get; private set; }
+    public double MotionSampleFixedTime { get; private set; }
+    public float MotionSampleDeltaTime { get; private set; }
+    public double MotionTrackingGapSeconds { get; private set; }
+    private double previousValidMotionTime = double.NaN;
+    public Vector3 MotionPreviousTipPosition { get; private set; }
+    public Bounds MotionSampleBounds => Bounds;
+    public bool IndexTipPoseValid { get; private set; }
+    public bool IndexDistalPoseValid { get; private set; }
+    public bool SampleTipInside { get; private set; }
+    public bool SampleDistalInside { get; private set; }
     public Vector3 SurfaceEntryPoint;
     public bool HasSurfaceEntryPoint;
     private Vector3 previousDistalPosition;
@@ -164,9 +175,19 @@ public class AcceStudy3 : MonoBehaviour
 
     void FixedUpdate()
     {
+        MotionSampleSequence++;
+        MotionSampleFixedTime = Time.fixedTimeAsDouble;
+        MotionSampleDeltaTime = Time.fixedDeltaTime;
+        MotionPreviousTipPosition = IndexTipPose1.Position;
+        IndexDistalPoseValid = false;
+        SampleTipInside = SampleDistalInside = false;
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2))
+        IndexTipPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2);
+        if (IndexTipPoseValid)
         {
+            MotionTrackingGapSeconds = double.IsNaN(previousValidMotionTime)
+                ? double.NaN : MotionSampleFixedTime - previousValidMotionTime;
+            previousValidMotionTime = MotionSampleFixedTime;
             #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
             if (Init)
             {
@@ -175,7 +196,7 @@ public class AcceStudy3 : MonoBehaviour
                 indexTipPositionPreviousFrame = IndexTipPose2.Position;
                 indexTipPositionTwoFramesAgo = IndexTipPose2.Position;
                 indexTipSampleCount = 1;
-                HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
+                IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
                 previousDistalPosition = IndexDistalPose.Position;
                 return;
 
@@ -206,10 +227,12 @@ public class AcceStudy3 : MonoBehaviour
 
             #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
+            IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
             HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
             bool tipInside = Bounds.Contains(IndexTipPose2.Position);
             bool distalInside = Bounds.Contains(IndexDistalPose.Position);
+            SampleTipInside = tipInside;
+            SampleDistalInside = distalInside;
             // Judge if the fingertip is inside
             //if (Vector3.Distance(Bounds.center, IndexTipPose2.Position) <= triggerDis)
             if (tipInside || distalInside)

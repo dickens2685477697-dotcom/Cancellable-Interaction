@@ -41,6 +41,14 @@ public sealed class Study3SelectionSettings : ScriptableObject
     public float speedMaxThreshold = 0.2f;
     public float longPressTimeThreshold = 0.5f;
 
+    [Header("Magic Tap 2.0")]
+    [InspectorName("Speed Threshold (m/s)"), Min(0f)]
+    [Tooltip("食指速度向量的模长必须严格小于此值，并同时满足加速度条件。独立于 React Tap。")]
+    public float magicTap2SpeedThreshold = 0.2f;
+    [InspectorName("Acceleration Threshold (m/s²)"), Min(0f)]
+    [Tooltip("相邻速度向量之差除以 fixedDeltaTime 的模长必须严格小于此值；不是有符号的速率变化。")]
+    public float magicTap2AccelerationThreshold = 11.661f;
+
     [Header("Dynamic Stop (demo motion logic)")]
     [InspectorName("Sample Interval (ms)"), Min(0.1f)]
     [Tooltip("最短运动测量间隔，单位毫秒；使用实际经过时间计算速度，不是长按等待时间。")]
@@ -66,6 +74,20 @@ public sealed class Study3SelectionSettings : ScriptableObject
     [InspectorName("Speed History Decay (s)"), Min(0.001f)]
     [Tooltip("高速历史的指数衰减时间尺度，单位秒；不是停止后必须等待的时间。")]
     public float dynamicStopHistorySeconds = 0.18f;
+
+    [Header("IxDL Dynamic (previous fixed sample)")]
+    [InspectorName("Acceleration Threshold (m/s²)")]
+    [Tooltip("有符号加速度 (本次速率 - 前次速率) / fixedDeltaTime 必须严格小于此值。")]
+    public float ixdlAccelerationThreshold = 0.375f;
+    [InspectorName("Input Speed Start (m/s)"), Min(0f)]
+    public float ixdlInputSpeedMin = 0f;
+    [InspectorName("Input Speed End (m/s)"), Min(0.0001f)]
+    public float ixdlInputSpeedMax = 0.6f;
+    [InspectorName("Speed Threshold Start (m/s)"), Min(0f)]
+    public float ixdlSpeedThresholdMin = 0.03f;
+    [InspectorName("Speed Threshold End (m/s)"), Min(0f)]
+    [Tooltip("前一次 FixedUpdate 的速率线性映射为本次速度阈值，超出范围时截到端点；本次速率必须严格小于此阈值。")]
+    public float ixdlSpeedThresholdMax = 0.06f;
 
     [Header("Pinch")]
     public float pinchReleaseOpeningSpeedThreshold = 0.6f;
@@ -118,6 +140,9 @@ public sealed class Study3SelectionSettings : ScriptableObject
         target.speedMaxThreshold = speedMaxThreshold;
         target.longPressTimeThreshold = longPressTimeThreshold;
 
+        target.magicTap2SpeedThreshold = magicTap2SpeedThreshold;
+        target.magicTap2AccelerationThreshold = magicTap2AccelerationThreshold;
+
         target.dynamicStopSampleMs = dynamicStopSampleMs;
         target.dynamicStopSpeedMin = dynamicStopSpeedMin;
         target.dynamicStopSpeedMax = dynamicStopSpeedMax;
@@ -126,6 +151,12 @@ public sealed class Study3SelectionSettings : ScriptableObject
         target.dynamicStopAccelMax = dynamicStopAccelMax;
         target.dynamicStopAccelGain = dynamicStopAccelGain;
         target.dynamicStopHistorySeconds = dynamicStopHistorySeconds;
+
+        target.ixdlAccelerationThreshold = ixdlAccelerationThreshold;
+        target.ixdlInputSpeedMin = ixdlInputSpeedMin;
+        target.ixdlInputSpeedMax = ixdlInputSpeedMax;
+        target.ixdlSpeedThresholdMin = ixdlSpeedThresholdMin;
+        target.ixdlSpeedThresholdMax = ixdlSpeedThresholdMax;
 
         target.pinchReleaseOpeningSpeedThreshold = pinchReleaseOpeningSpeedThreshold;
         target.pinchEndDistanceThreshold = pinchEndDistanceThreshold;
