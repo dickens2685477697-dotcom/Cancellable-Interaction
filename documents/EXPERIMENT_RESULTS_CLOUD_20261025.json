@@ -15,28 +15,34 @@
       "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
       "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
       "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
-      "source_report_sha256": "c86e1ead3c60415d4934729698b7f29fa6fd41e28ad73d36fdf9b13c5bb4de21",
+      "source_report_sha256": "5c0605566283811adbcb2729ff65e7a86a62672e99cc9aa6570d4c7164124db9",
       "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
-      "uploaded_archive_sha256": "58ae31c9703bc2fc0f94bc6f570ed02f9caa36e1243e4f4aada6888745ae4dfa",
+      "uploaded_archive_sha256": "c20106bbdac044f9bf187b975bad21c4be0325357efc66316a81161fef76aae4",
       "body_readback_verified": true,
-      "native_tables": 4,
-      "table_cells_readback_verified": 134,
+      "paragraphs_readback_verified": 53,
+      "native_tables": 8,
+      "table_cells_readback_verified": 190,
+      "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true
+      "attachment_readback_verified": true,
+      "old_body_replaced_after_new_body_verification": true
     },
     {
       "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
       "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
       "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
       "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
-      "source_report_sha256": "d2cdf773095c6fe5e2b8d2054becba4145d9f4cc2ab8f1125f55b456bc674b57",
+      "source_report_sha256": "b1840e623784b7931324eba524de3d7d331d2d29001ca085924e2fb7620a8bf1",
       "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
-      "uploaded_archive_sha256": "137fc5ecad02d7e65cf8a9304efbf2390353e7b9f7ad09beec2d2b5099b7c4ad",
+      "uploaded_archive_sha256": "112fc97d929035448b612a0e72346f93809986aa8182a5193201fb2b8f4f519e",
       "body_readback_verified": true,
-      "native_tables": 3,
-      "table_cells_readback_verified": 89,
+      "paragraphs_readback_verified": 53,
+      "native_tables": 5,
+      "table_cells_readback_verified": 125,
+      "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true
+      "attachment_readback_verified": true,
+      "old_body_replaced_after_new_body_verification": true
     }
   ],
   "progress_link_updates": [
@@ -87,5 +93,55 @@
     "python_analysis_tests": 5,
     "unity_scene_and_device_checks_rerun": false
   },
-  "scope": "Reports, native tables, result images and downloadable report/data archives. Existing project evidence fields were appended with cloud links."
+  "scope": "Revised the two existing reports into experiment-method, terminology, figure-based results, mechanism analysis and explicit conclusion sections; updated downloadable archives and preserved existing progress links.",
+  "previous_document_versions": [
+    {
+      "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
+      "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
+      "source_report_sha256": "c86e1ead3c60415d4934729698b7f29fa6fd41e28ad73d36fdf9b13c5bb4de21",
+      "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
+      "uploaded_archive_sha256": "58ae31c9703bc2fc0f94bc6f570ed02f9caa36e1243e4f4aada6888745ae4dfa",
+      "body_readback_verified": true,
+      "native_tables": 4,
+      "table_cells_readback_verified": 134,
+      "image_readback_verified": true,
+      "attachment_readback_verified": true
+    },
+    {
+      "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
+      "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
+      "source_report_sha256": "d2cdf773095c6fe5e2b8d2054becba4145d9f4cc2ab8f1125f55b456bc674b57",
+      "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
+      "uploaded_archive_sha256": "137fc5ecad02d7e65cf8a9304efbf2390353e7b9f7ad09beec2d2b5099b7c4ad",
+      "body_readback_verified": true,
+      "native_tables": 3,
+      "table_cells_readback_verified": 89,
+      "image_readback_verified": true,
+      "attachment_readback_verified": true
+    }
+  ],
+  "revision": {
+    "date": "2026-10-25",
+    "name": "mentor_report_v2",
+    "based_on_commit": "cbe1cf0",
+    "requested_order": [
+      "experiment purpose and method",
+      "terminology and metrics",
+      "data analysis with result figures",
+      "interpretation of plotted data",
+      "mechanism analysis",
+      "explicit inferences and conclusions"
+    ],
+    "cloud_urls_preserved": true,
+    "raw_data_and_figures_unchanged": true,
+    "computed_report_tables_match_verified_csv_and_json": true,
+    "report_generators_reproduce_reviewed_markdown": true,
+    "participant_count_device_model_and_dwell_duration_not_inferred": true,
+    "cloud_readback_paragraphs": 106,
+    "cloud_readback_table_cells": 315
+  }
 }
