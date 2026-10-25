@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-25",
+  "timezone": "Asia/Shanghai",
+  "app_id": "cli_aa5dc48806f8dc2e",
+  "identity": "user",
+  "wiki_url": "https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc",
+  "status": "synced_and_verified",
+  "source_commits": [
+    "93a04ac1b77393d01c6ac6f0e8420a1e53f41a1b",
+    "2f9dc44786a5d7cb3416cf6459d2e30bfb4be438"
+  ],
+  "documents": [
+    {
+      "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
+      "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
+      "source_report_sha256": "c86e1ead3c60415d4934729698b7f29fa6fd41e28ad73d36fdf9b13c5bb4de21",
+      "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
+      "uploaded_archive_sha256": "58ae31c9703bc2fc0f94bc6f570ed02f9caa36e1243e4f4aada6888745ae4dfa",
+      "body_readback_verified": true,
+      "native_tables": 4,
+      "table_cells_readback_verified": 134,
+      "image_readback_verified": true,
+      "attachment_readback_verified": true
+    },
+    {
+      "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
+      "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
+      "source_report_sha256": "d2cdf773095c6fe5e2b8d2054becba4145d9f4cc2ab8f1125f55b456bc674b57",
+      "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
+      "uploaded_archive_sha256": "137fc5ecad02d7e65cf8a9304efbf2390353e7b9f7ad09beec2d2b5099b7c4ad",
+      "body_readback_verified": true,
+      "native_tables": 3,
+      "table_cells_readback_verified": 89,
+      "image_readback_verified": true,
+      "attachment_readback_verified": true
+    }
+  ],
+  "progress_link_updates": [
+    {
+      "key": "sync-version",
+      "table_id": "tblqAZmn5vW5u5vB",
+      "record_id": "reczz28RfiOh7FPb",
+      "field": "产物入口",
+      "urls": [
+        "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+        "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu"
+      ],
+      "changed": true,
+      "verified": true,
+      "previous_sha256": "88fc4282c317b903a12914cdc2557a26732b33ad62f58a73e4fab5283fb4d3db",
+      "updated_sha256": "ecbbe337c811d9293c83b0e9649443080e05be69a81c5583fed2a15b57b80037"
+    },
+    {
+      "key": "comparison-h",
+      "table_id": "tblhUFFMKD7ocIZ7",
+      "record_id": "reczz28Rfj9v4OGp",
+      "field": "证据入口",
+      "urls": [
+        "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu"
+      ],
+      "changed": true,
+      "verified": true,
+      "previous_sha256": "c699622683dd02dace5dca050d67bf91ca7ea63fd6bf1cbff3ac89caa3d7096f",
+      "updated_sha256": "95352427221be09566d2f13b532dada3bdcfe2088b8eab1238d9f90e2f78b4bc"
+    },
+    {
+      "key": "speed-result-h",
+      "table_id": "tblhUFFMKD7ocIZ7",
+      "record_id": "reczz28RfjD2lVbR",
+      "field": "证据入口",
+      "urls": [
+        "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh"
+      ],
+      "changed": true,
+      "verified": true,
+      "previous_sha256": "0547d5f5db26e58ac4ffac67e7cc9f07976b7016a1bba6ee4f628183675a55c9",
+      "updated_sha256": "79188f2f2539caafe0a68f40f7c6398d8f3dd74a70f190ebcc00064f8b54d1e3"
+    }
+  ],
+  "validation": {
+    "speed_telemetry_assertions": 108,
+    "magic_tap2_assertions": 41,
+    "python_analysis_tests": 5,
+    "unity_scene_and_device_checks_rerun": false
+  },
+  "scope": "Reports, native tables, result images and downloadable report/data archives. Existing project evidence fields were appended with cloud links."
+}

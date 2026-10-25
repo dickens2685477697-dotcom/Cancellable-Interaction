@@ -1,0 +1,731 @@
+# 飞书项目进展同步内容（2026-10-25）
+
+同步结果：新增10条记录、更新9条记录；116个字段已回读一致。版本记录：E20（reczz28RfiOh7FPb）。
+
+目标：https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+
+版本：2f9dc44786a5d7cb3416cf6459d2e30bfb4be438
+
+## E20 10月25日Windows实验程序与已有分析材料同步
+
+### 进度记录
+
+E20 10月25日Windows实验程序与已有分析材料同步
+
+### 完成时间
+
+1792937392411
+
+### 完成事项
+
+Windows项目D:\HLStudy4_22已核对，Unity 2020.3.37f1c1。当前HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438；相关程序、说明及两份10/25报告无未提交改动。BallSpawner负责技术/目标/频率调度，S2AccMode与S2Obstacles负责目标、雷球与障碍逻辑，Study3SelectionSettings负责共享参数。已有1–15项历史核对保留；当前另外存在16 Dynamic Stop（enum30）、17 IxDL Dynamic（enum31）及Magic Tap 2.0（enum32），不据此认定已替换正式条件。
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+现有10/25对照报告：4会话×48完成试次=192条，各组合只有1会话，未提供被试编号。正常选择触发等待均值Magic Tap 2.0为157.5ms、IxDL为185.8ms；慢速逗留为451.3ms、607.9ms，但中位数为280ms、270ms，差异主要在长尾。IxDL正常16/48、逗留44/48出现零速触发，报告指出60个事件均对应同渲染帧内连续FixedUpdate重复位姿。Magic速度由轨迹重建，IxDL为事件快照，速度/加速度和区域口径不同；没有完整逗留尝试分母，不能给出逗留误触率或被试层面的显著性结论。
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+独立场景Assets/Scenes/fast_tap_thershold/pilot_fast_tap.unity及FastTapThresholdExperiment/FastTapThresholdLogger已存在。pilot每block6次、formal10次，两色各半随机，流程pilot→formal循环。起始球后进入目标，绿球要求阈值内离开trigger，黄球要求停留达阈值cancel；阈值500/600/700/800/900/1000ms或Custom，代码默认500ms。输出phase、trial、颜色、阈值、用时、成功、停留和最终指尖坐标，以及逐采样轨迹CSV。此项仅核对程序与说明，未验证设备运行或报告被试结果。
+
+### 产物版本
+
+本地HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438；Windows现有实现/报告核对快照
+
+### 相对上一版的变更
+
+在10/22组会状态上，补充IxDL/Magic Tap2实现、事件快照、Speed采样遥测、两份10/25既有分析及Fast Tap阈值程序。保留1–15静态基线和研究/正文等未核实状态。
+
+### 产物入口
+
+D:\HLStudy4_22\Assets\Scripts\Study3\BallSpawner.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2AccMode.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2Obstacles.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\Study3SelectionSettings.asset
+D:\HLStudy4_22\documents\STUDY3_DYNAMIC_STOP.md
+D:\HLStudy4_22\Assets\Scripts\Study3\DynamicStopMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+D:\HLStudy4_22\Assets\Scenes\fast_tap_thershold\README_fast_tap_threshold.md
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdExperiment.cs
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdLogger.cs
+
+### 时间与版本依据
+
+本条完成时间为2026-10-25本次资料核对及飞书同步时间；不是所有程序首次完成时间。源码与报告以HEAD及本机文件为依据，当前核对路径无未提交改动。
+
+### 追溯缺口
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。 原始设备日志本次未重新读取；真实设备新样本判定、对照协议及正式实验覆盖仍待核。
+
+### 核实日期
+
+1792857600000
+
+## detail-reczz28M2el3HHJX
+
+### 已完成内容
+
+9/3组会中的Pinch/Speed/Direction、采样率、平滑、训练和顺序平衡问题及修订建议已梳理。
+
+2026-10-22组会更新：10/21已有Study3菜单1–15代码/配置核对。10/22要求动态阈值忠实复现原式、慢移不误触且停止可触发；现有Dynamic Stop说明及回归检查不等于实机行为验证。Pinch口述22厘米待核，不替换已记录20/24mm参数。
+
+【2026-10-25 本机程序与材料核对】
+Windows项目D:\HLStudy4_22已核对，Unity 2020.3.37f1c1。当前HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438；相关程序、说明及两份10/25报告无未提交改动。BallSpawner负责技术/目标/频率调度，S2AccMode与S2Obstacles负责目标、雷球与障碍逻辑，Study3SelectionSettings负责共享参数。已有1–15项历史核对保留；当前另外存在16 Dynamic Stop（enum30）、17 IxDL Dynamic（enum31）及Magic Tap 2.0（enum32），不据此认定已替换正式条件。
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+
+### 当前版本
+
+2026-10-25本机HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438；1–15历史基线保留，新增技术与遥测分列
+
+### 当前状态
+
+当前程序、参数、遥测与已有报告已核对；采样机制修正与统一条件复测待做
+
+### 后续或待核实
+
+先处理同渲染帧重复位姿的零速误判，并统一速度/加速度/入球区域口径；为Magic Tap2增加原始触发事件快照。保持旧Speed与停止触发对照分开；按10/22组会安排确认配对30Hz验证及6人pilot协议，额外大规模帧率扩样未启动。
+
+### 证据入口
+
+/Users/neoneoneo/Downloads/9.3组会.docx,Codex“这是两周前的组会内容,帮我整理一下有哪些需要改动的地方和下一步计划”（9/14-9/24记录）
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+/Users/neoneoneo/Desktop/Paper_Cancelable/project_progress_workspace/study3_source/documents/STUDY3_DYNAMIC_STOP.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\Assets\Scripts\Study3\BallSpawner.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2AccMode.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2Obstacles.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\Study3SelectionSettings.asset
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+## detail-reczz28QOfHCj2ka
+
+### 已完成内容
+
+已在本地找到Dynamic Stop实现说明，描述近期速度、速度/加速度阈值及回归检查；本次仅核对文档，未重跑检查或完成设备验证。10/22组会明确目标为慢移减少误触、停止及时确认，不以提升触发速度为主要贡献。
+
+【2026-10-25 本机程序与材料核对】
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+Dynamic Stop参数仍由共享设置/Spawner路由，历史编译与10项算法回归仅引述原说明，本次未重跑。IxDL与Magic Tap2实现和10/25对照另列新工作项，不把其数据当成Dynamic Stop已通过实机验证。
+
+### 当前版本
+
+保留Dynamic Stop enum30；2026-10-25另核对IxDL enum31与Magic Tap2 enum32
+
+### 当前状态
+
+Dynamic Stop说明与实现已核对；与原表达式等价性及独立实机验收仍待确认
+
+### 后续或待核实
+
+明确测试构建使用enum30、31还是32；核对原式、采样与阈值，不混用不同算法的对照结果。分别验证慢速穿过、球内移动、停止和快入后停；保留完整尝试分母、意图标记及触发延迟。
+
+### 证据入口
+
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+/Users/neoneoneo/Desktop/Paper_Cancelable/project_progress_workspace/study3_source/documents/STUDY3_DYNAMIC_STOP.md
+/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\documents\STUDY3_DYNAMIC_STOP.md
+D:\HLStudy4_22\Assets\Scripts\Study3\DynamicStopMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+## detail-reczz28M2el3HHlg
+
+### 已完成内容
+
+结果图、主观报告、论文草稿和文献证据已有入口；用户确认目前先整理现有结果。
+
+2026-10-22组会更新：已有资料基础；10/22纪要与行动计划已归档。下一步任务已明确：Speed事件核查、动态阈值目标对齐、6人pilot分析、framing及场景展示。
+
+【2026-10-25 本机程序与材料核对】
+现有10/25对照报告：4会话×48完成试次=192条，各组合只有1会话，未提供被试编号。正常选择触发等待均值Magic Tap 2.0为157.5ms、IxDL为185.8ms；慢速逗留为451.3ms、607.9ms，但中位数为280ms、270ms，差异主要在长尾。IxDL正常16/48、逗留44/48出现零速触发，报告指出60个事件均对应同渲染帧内连续FixedUpdate重复位姿。Magic速度由轨迹重建，IxDL为事件快照，速度/加速度和区域口径不同；没有完整逗留尝试分母，不能给出逗留误触率或被试层面的显著性结论。
+
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+
+### 当前版本
+
+2026-10-25两份本机报告已纳入；6人总体整合未完成
+
+### 当前状态
+
+已有触发对照和Speed边界事件的描述性结果；统一口径与研究综合待推进
+
+### 后续或待核实
+
+将重复位姿零速触发与球外才达高速这两类问题分开；记录证据、替代解释与边界。先统一算法/采样/速度口径再评价动态映射；本次不扩推为6人结果、正式总体结论或显著性结果。
+
+### 证据入口
+
+2026-10-11用户确认,FigJam结果与文献页面
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+## IxDL Dynamic与Magic Tap 2.0：实现及对照分析
+
+### 工作项
+
+IxDL Dynamic与Magic Tap 2.0：实现及对照分析
+
+### 当前版本
+
+2026-10-25源文件/报告核对；HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438
+
+### 已完成内容
+
+已核对IxDLDynamicMotionTracker、IxDLDynamicTriggerRecord和MagicTap2MotionTracker，并在目标/障碍两条路径看到对应接入。共享资产的IxDL参数：输入速度0–0.6m/s映射门限0.02–0.03m/s，加速度阈值0.375m/s²；代码默认门限0.03–0.06被资产覆盖。Magic Tap 2.0资产速度/加速度阈值0.2m/s、11.661m/s²；1mm以下样本不推进历史。IxDL在time.csv保存triggerSpeed、previousSpeed、speedThreshold、triggerAcceleration，并在ixdl-trigger.csv保留目标/雷球/障碍事件快照，预热由experimentStarted区分。
+
+现有10/25对照报告：4会话×48完成试次=192条，各组合只有1会话，未提供被试编号。正常选择触发等待均值Magic Tap 2.0为157.5ms、IxDL为185.8ms；慢速逗留为451.3ms、607.9ms，但中位数为280ms、270ms，差异主要在长尾。IxDL正常16/48、逗留44/48出现零速触发，报告指出60个事件均对应同渲染帧内连续FixedUpdate重复位姿。Magic速度由轨迹重建，IxDL为事件快照，速度/加速度和区域口径不同；没有完整逗留尝试分母，不能给出逗留误触率或被试层面的显著性结论。
+
+### 当前状态
+
+实现与既有报告已核对；重复位姿问题、统一口径对照待修正
+
+### 后续或待核实
+
+避免把重复查询姿态当作新硬件样本；为Magic增加精确触发快照，统一运动与区域定义。保留全部逗留/未触发尝试分母；不推断被试层面的显著性。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+## Speed采样遥测与50 Hz边界高速分析
+
+### 工作项
+
+Speed采样遥测与50 Hz边界高速分析
+
+### 当前版本
+
+2026-10-25源文件/报告核对；HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438
+
+### 已完成内容
+
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+
+### 当前状态
+
+遥测与单会话报告已有；50/30Hz因果比较尚未完成
+
+### 后续或待核实
+
+按共同ID、阈值、设备与协议确认30Hz对照；区分每次进入触发率与重进trial比例。先结束会话并检查预热/丢失/参数变化/未闭合记录，不能用插值证明未观测运动。
+
+### 证据入口
+
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+## Fast Tap Threshold独立阈值实验程序
+
+### 工作项
+
+Fast Tap Threshold独立阈值实验程序
+
+### 当前版本
+
+2026-10-25源文件/报告核对；HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438
+
+### 已完成内容
+
+独立场景Assets/Scenes/fast_tap_thershold/pilot_fast_tap.unity及FastTapThresholdExperiment/FastTapThresholdLogger已存在。pilot每block6次、formal10次，两色各半随机，流程pilot→formal循环。起始球后进入目标，绿球要求阈值内离开trigger，黄球要求停留达阈值cancel；阈值500/600/700/800/900/1000ms或Custom，代码默认500ms。输出phase、trial、颜色、阈值、用时、成功、停留和最终指尖坐标，以及逐采样轨迹CSV。此项仅核对程序与说明，未验证设备运行或报告被试结果。
+
+### 当前状态
+
+程序与文档已核对；设备验证和采集结果待确认
+
+### 后续或待核实
+
+核对Inspector实际阈值、pilot/formal切换、颜色成败、重复进入及日志关联，再安排阈值评估；不将代码默认值当作所有实际采集设置。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scenes\fast_tap_thershold\README_fast_tap_threshold.md
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdExperiment.cs
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdLogger.cs
+
+## hierarchy-reczz28PhcYvxJBz
+
+### 当前内容与决策逻辑
+
+原程序修订记录保留。2026-10-21按仓库提交d7bf7281d93bd8a022eb33961fa38fa486f68e0e，核对Study3 Inspector 1–15菜单到Mode枚举映射、S2AccMode逻辑、Study3SelectionSettings资产、活跃Spawner和S2Trigger预制体。详细代表技术见2.1.5，阈值历史与当前配置见2.2。当前菜单4以PinchEnd的22mm贴合距离解析取消；方向用-Z/45°/4点窗口；Speed用0.067→0.375m/s；Pinch松开24mm。没有据此认定全部条件已完成运行验证。
+
+2026-10-22组会更新：动态阈值验证目标为慢移减少误触、停下及时触发。优先取得原始表达式和固定/动态参考版本，核对Studio到Unity的行为；现有复杂实现不自动等价于原式。口述Pinch“22厘米”待核，暂不据此改20/24mm配置。
+
+【2026-10-25 本机程序与材料核对】
+Windows项目D:\HLStudy4_22已核对，Unity 2020.3.37f1c1。当前HEAD 2f9dc44786a5d7cb3416cf6459d2e30bfb4be438；相关程序、说明及两份10/25报告无未提交改动。BallSpawner负责技术/目标/频率调度，S2AccMode与S2Obstacles负责目标、雷球与障碍逻辑，Study3SelectionSettings负责共享参数。已有1–15项历史核对保留；当前另外存在16 Dynamic Stop（enum30）、17 IxDL Dynamic（enum31）及Magic Tap 2.0（enum32），不据此认定已替换正式条件。
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+Speed遥测、IxDL触发快照及Fast Tap阈值实验详见本分支新增条目。
+
+### 当前状态
+
+现有程序与参数已核对；采样修正及统一协议实测待做
+
+### 后续与验收
+
+10月23日重跑动态阈值是汇报者承诺；记录对照行为、参数、真实时间戳和构建。Dynamic Stop另列2.2.4，是否纳入15条件主实验待定。
+
+【2026-10-25 本机程序与材料核对】
+后续以10/25新增证据为准：先复核重复位姿、速度/加速度定义和原始事件口径，再确定统一条件复测；不把既有描述性报告写成已完成正式实验。
+
+### 证据入口
+
+https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc?table=tbl3ZqWLMVAfRDbG
+https://github.com/dickens2685477697-dotcom/Cancellable-Interaction/blob/d7bf7281d93bd8a022eb33961fa38fa486f68e0e/Assets/Scripts/Study3/Study3SelectionSettings.asset#L17
+https://github.com/dickens2685477697-dotcom/Cancellable-Interaction/blob/d7bf7281d93bd8a022eb33961fa38fa486f68e0e/Assets/Scripts/Study3/S2AccMode.cs
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+/Users/neoneoneo/Desktop/Paper_Cancelable/project_progress_workspace/study3_source/documents/STUDY3_DYNAMIC_STOP.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\Assets\Scripts\Study3\BallSpawner.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2AccMode.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2Obstacles.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\Study3SelectionSettings.asset
+D:\HLStudy4_22\Assets\Scenes\fast_tap_thershold\README_fast_tap_threshold.md
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdExperiment.cs
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdLogger.cs
+
+## hierarchy-reczz28PhcYvzGXP
+
+### 当前内容与决策逻辑
+
+当前Study3菜单8–11使用球内先低速再高速的有序状态：<=0.067m/s进入准备，后续>=0.375m/s提交。配对取消为离球、0.7s超时、Release手势或Direction。Speed-Direction还要求方向窗口已可判断且方向在取消锥体外才开放高速确认。旧Min/Max候选表保留为历史参数，不作为当前Speed提交阈值。
+
+2026-10-22组会更新：先检查主观快速但未触发的事件：准备是否成立、出球前球内采样点数、何时越过速度阈值。现有50/30 Hz结果未证明帧率是主因；额外6–10人帧率扩样暂缓。旧Speed稳定后提速提交，与Dynamic Stop停止触发分别记录。
+
+【2026-10-25 本机程序与材料核对】
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+
+### 当前状态
+
+已具备逐进入证据；单会话边界候选已分析，因果解释待对照
+
+### 后续与验收
+
+复用现有分析，建立事件级时间线和失败分类；补真实时间戳及版本。扩大热区和插值仅作候选探索；先查证再改实现。
+
+【2026-10-25 本机程序与材料核对】
+后续以10/25新增证据为准：先复核重复位姿、速度/加速度定义和原始事件口径，再确定统一条件复测；不把既有描述性报告写成已完成正式实验。
+
+### 证据入口
+
+https://www.figma.com/board/LzfNACZpP2aWOppuZBFOEB/draft?node-id=58-937
+https://github.com/dickens2685477697-dotcom/Cancellable-Interaction/blob/d7bf7281d93bd8a022eb33961fa38fa486f68e0e/Assets/Scripts/Study3/Study3SelectionSettings.asset#L17
+https://github.com/dickens2685477697-dotcom/Cancellable-Interaction/blob/d7bf7281d93bd8a022eb33961fa38fa486f68e0e/Assets/Scripts/Study3/S2AccMode.cs
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+## hierarchy-reczz28QOf1oedpZ
+
+### 当前内容与决策逻辑
+
+2026-10-22：独立技术验证任务。目标为慢移减少误触、停止及时确认；现有STUDY3_DYNAMIC_STOP说明含实现与回归检查，但不能认定与导师表达式/Studio行为等价，实机验证未完成。本次未重跑该文档所述检查。与旧Speed稳定后提速提交分开；是否加入/替换正式15条件待定。
+
+【2026-10-25 本机程序与材料核对】
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+本条仅对应enum30；10/25的IxDL/Magic对照不能替代本条原式对齐及实机验收。
+
+### 当前状态
+
+Dynamic Stop实现已核对；独立实机验收仍待完成
+
+### 后续与验收
+
+取得原始表达式及固定/动态参考版本，核对映射和附加处理；10月23日按承诺重跑。对照慢速穿过、球内绕行、停止、快入后停及快速穿过；记录误提交k/n、正确提交k/n及停止延迟，保存版本、参数、日志、视频。
+
+【2026-10-25 本机程序与材料核对】
+后续以10/25新增证据为准：先复核重复位姿、速度/加速度定义和原始事件口径，再确定统一条件复测；不把既有描述性报告写成已完成正式实验。
+
+### 证据入口
+
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+/Users/neoneoneo/Desktop/Paper_Cancelable/project_progress_workspace/study3_source/documents/STUDY3_DYNAMIC_STOP.md
+/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\documents\STUDY3_DYNAMIC_STOP.md
+D:\HLStudy4_22\Assets\Scripts\Study3\DynamicStopMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+## hierarchy-reczz28PhcYvxkPz
+
+### 当前内容与决策逻辑
+
+需汇总正式数据完整性、异常、排除规则及实验版本，现有完成范围待核。
+
+2026-10-22组会更新：会前数据审计已有。旧P01/P05逐帧轨迹缺真实timestamp，AABB/指节inside与球面指尖重算不等价。本次口述192次50/30 Hz与既有384个Speed-family trial不是同一分母。
+
+【2026-10-25 本机程序与材料核对】
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+IxDL触发字段在目标切换前冻结；obstacle事件不覆盖目标快照，预热须剔除。两份既有报告均指出time.csv坐标组表头与实际列数差异；分析采用已核验标量/行尾字段。本次不修写原始数据。
+
+### 当前状态
+
+新遥测与质量规则已有；重复姿态及日志列映射需继续核对
+
+### 后续与验收
+
+记录真实时间戳、位置、inside分解、准备/越阈/触发/退出及构建参数；建立本次192次记录的源文件映射，不以插值证明未观测运动。
+
+【2026-10-25 本机程序与材料核对】
+后续以10/25新增证据为准：先复核重复位姿、速度/加速度定义和原始事件口径，再确定统一条件复测；不把既有描述性报告写成已完成正式实验。
+
+### 证据入口
+
+https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc?table=tbl3ZqWLMVAfRDbG
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+/Users/neoneoneo/Desktop/Paper_Cancelable/meeting_discussion_20261022/analysis/audit.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+## hierarchy-reczz28PhcYvzoi7
+
+### 当前内容与决策逻辑
+
+整理已有主观Pilot、Speed两人客观分析及其他现有结果，建立可进入论文的结论与证据对应。
+
+2026-10-22组会更新：主线明确为提炼突出结果、理论解释、framing和应用场景。当前审计不支持Direction在所有触发族中一致变慢；普通触发与受指示取消需分别解释。
+
+【2026-10-25 本机程序与材料核对】
+现有10/25对照报告：4会话×48完成试次=192条，各组合只有1会话，未提供被试编号。正常选择触发等待均值Magic Tap 2.0为157.5ms、IxDL为185.8ms；慢速逗留为451.3ms、607.9ms，但中位数为280ms、270ms，差异主要在长尾。IxDL正常16/48、逗留44/48出现零速触发，报告指出60个事件均对应同渲染帧内连续FixedUpdate重复位姿。Magic速度由轨迹重建，IxDL为事件快照，速度/加速度和区域口径不同；没有完整逗留尝试分母，不能给出逗留误触率或被试层面的显著性结论。
+
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+
+### 当前状态
+
+两份描述性结果已纳入；研究综合及6人阶段分析待推进
+
+### 后续与验收
+
+交付发现表：观察、证据、可能机制、反例、边界和设计建议；6人后做初步汇报。先保留2–3个主题，其余描述放结果表/附录。
+
+【2026-10-25 本机程序与材料核对】
+后续以10/25新增证据为准：先复核重复位姿、速度/加速度定义和原始事件口径，再确定统一条件复测；不把既有描述性报告写成已完成正式实验。
+
+### 证据入口
+
+https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc?table=tbl3ZqWLMVAfRDbG
+https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+
+【2026-10-25 本机程序与材料核对】
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+## 3.2.2 Unity实验程序结构与数据链路
+
+### 工作项
+
+3.2.2 Unity实验程序结构与数据链路
+
+### 当前状态
+
+结构已核对，运行与数据覆盖另行验收
+
+### 当前内容与决策逻辑
+
+Unity 2020.3.37f1c1项目。AcceStimulate负责通用指尖进入/离开和运动事件；Study1脚本负责起始球、倒计时、目标反馈和CSV；Study3由BallSpawner调度，S2AccMode/S2Obstacles分担目标与障碍，ReactTap/ReleaseGesture/Pinch处理具体交互，共享设置集中下发。输出通常位于Application.persistentDataPath/Logs/<会话时间>/，需区分Unity临时目录与实验数据。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scripts\Study3\BallSpawner.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2AccMode.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\S2Obstacles.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\Study3SelectionSettings.asset
+D:\HLStudy4_22\documents\PROJECT_STRUCTURE_AND_CODE_SUMMARY.md
+
+### 完整层级路径
+
+3 实验方案与系统 > 3.2 程序与参数 > 3.2.2 Unity实验程序结构与数据链路
+
+## 3.2.3 IxDL Dynamic与Magic Tap 2.0
+
+### 工作项
+
+3.2.3 IxDL Dynamic与Magic Tap 2.0
+
+### 当前状态
+
+实现与既有报告已核对；重复位姿问题、统一口径对照待修正
+
+### 当前内容与决策逻辑
+
+已核对IxDLDynamicMotionTracker、IxDLDynamicTriggerRecord和MagicTap2MotionTracker，并在目标/障碍两条路径看到对应接入。共享资产的IxDL参数：输入速度0–0.6m/s映射门限0.02–0.03m/s，加速度阈值0.375m/s²；代码默认门限0.03–0.06被资产覆盖。Magic Tap 2.0资产速度/加速度阈值0.2m/s、11.661m/s²；1mm以下样本不推进历史。IxDL在time.csv保存triggerSpeed、previousSpeed、speedThreshold、triggerAcceleration，并在ixdl-trigger.csv保留目标/雷球/障碍事件快照，预热由experimentStarted区分。
+三种实现分开：Dynamic Stop继续按近期速度历史衰减生成速度/加速度阈值，见STUDY3_DYNAMIC_STOP.md；IxDL Dynamic按前一次FixedUpdate速率线性映射本次门限，使用有符号速率变化率；Magic Tap 2.0使用速度向量变化模长，并保留1毫米位移过滤。三者不应混称同一原式实现，也不能直接把差异归因于动态映射。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+### 完整层级路径
+
+3 实验方案与系统 > 3.2 程序与参数 > 3.2.3 IxDL Dynamic与Magic Tap 2.0
+
+## 3.2.4 Speed采样与边界事件遥测
+
+### 工作项
+
+3.2.4 Speed采样与边界事件遥测
+
+### 当前状态
+
+遥测与单会话报告已有；50/30Hz因果比较尚未完成
+
+### 当前内容与决策逻辑
+
+Speed采样遥测已有：Spawner Sampling Rate (Hz)可配置30/50，改变的是Unity固定更新频率，不等同设备追踪刷新率。当前共享Speed低速准备/高速提交阈值0.067/0.375m/s。新增speed-boundary-debug、speed-entry-summary、session-settings，trajectory追加时间与样本来源；覆盖Speed族目标/雷球/障碍。进入编号entrySequence及进入时case/id/source固定，区分预热、追踪丢失、参数混合、aborted、重复检查和未闭合进入；保留原球内判定与Update/FixedUpdate检查行为。tools/analyze_speed_sampling.py及ValidateSpeedTelemetry.ps1已有，本次未重跑。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+### 完整层级路径
+
+3 实验方案与系统 > 3.2 程序与参数 > 3.2.4 Speed采样与边界事件遥测
+
+## 3.2.5 Fast Tap Threshold独立阈值实验
+
+### 工作项
+
+3.2.5 Fast Tap Threshold独立阈值实验
+
+### 当前状态
+
+程序与文档已核对；设备验证和采集结果待确认
+
+### 当前内容与决策逻辑
+
+独立场景Assets/Scenes/fast_tap_thershold/pilot_fast_tap.unity及FastTapThresholdExperiment/FastTapThresholdLogger已存在。pilot每block6次、formal10次，两色各半随机，流程pilot→formal循环。起始球后进入目标，绿球要求阈值内离开trigger，黄球要求停留达阈值cancel；阈值500/600/700/800/900/1000ms或Custom，代码默认500ms。输出phase、trial、颜色、阈值、用时、成功、停留和最终指尖坐标，以及逐采样轨迹CSV。此项仅核对程序与说明，未验证设备运行或报告被试结果。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scenes\fast_tap_thershold\README_fast_tap_threshold.md
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdExperiment.cs
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdLogger.cs
+
+### 完整层级路径
+
+3 实验方案与系统 > 3.2 程序与参数 > 3.2.5 Fast Tap Threshold独立阈值实验
+
+## 5.4 IxDL与Magic Tap 2.0的10月25日描述性对照
+
+### 工作项
+
+5.4 IxDL与Magic Tap 2.0的10月25日描述性对照
+
+### 当前状态
+
+192完成试次的报告已有；不作逗留误触率或被试显著性推断
+
+### 当前内容与决策逻辑
+
+现有10/25对照报告：4会话×48完成试次=192条，各组合只有1会话，未提供被试编号。正常选择触发等待均值Magic Tap 2.0为157.5ms、IxDL为185.8ms；慢速逗留为451.3ms、607.9ms，但中位数为280ms、270ms，差异主要在长尾。IxDL正常16/48、逗留44/48出现零速触发，报告指出60个事件均对应同渲染帧内连续FixedUpdate重复位姿。Magic速度由轨迹重建，IxDL为事件快照，速度/加速度和区域口径不同；没有完整逗留尝试分母，不能给出逗留误触率或被试层面的显著性结论。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+
+### 完整层级路径
+
+5 结果分析与综合 > 5.4 IxDL与Magic Tap 2.0的10月25日描述性对照
+
+## 5.5 Speed正常选择3 ID的50 Hz边界分析
+
+### 工作项
+
+5.5 Speed正常选择3 ID的50 Hz边界分析
+
+### 当前状态
+
+单会话48trial分析已有；无30Hz配对数据
+
+### 当前内容与决策逻辑
+
+现有10/25单会话Speed报告：仅50Hz，48正式trial、72正式进入，48触发、24未触发退出；11个trial需重进。13/24（54.2%）未触发退出在已低速准备后满足边界高速候选，涉及9/48（18.8%）trial；ID1/2/3每次进入触发率100%/84.2%/43.2%，ID是条件而非参与者。13次候选相邻运动样本固定游戏时间20ms，墙钟约27.275–28.266ms。支持离散采样与球内门控的失败模式，但不能证明异常掉帧、连续真实速度在球内越阈，或50/30Hz的因果差异；本数据没有30Hz条件。
+
+### 后续与验收
+
+本次完成源代码、序列化参数及已有说明/报告核对；未重新执行Unity编译、回归检查、真机试次或分析脚本。统计数字引用现有报告，不代表本次重新采集，也不代表6人pilot或正式整体实验已完成。
+先复核样本来源、算法/参数/区域口径，再安排对应设备验证；保留失败与未完成尝试分母。
+
+### 证据入口
+
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+
+### 完整层级路径
+
+5 结果分析与综合 > 5.5 Speed正常选择3 ID的50 Hz边界分析
+
+## overview-reczz28M2el3Bfp6
+
+### 做到哪里了
+
+2026-08-04完成排名工具初版及主要流程验收，08-05完成任意位置拖拽修订并通过构建。
+2026-08-13完成3人主观Pilot分析及图表。
+2026-08-24完成中文详细大纲整合版，08-31完成实验说明v1.0并修正Study2试次数。
+2026-09-15完成move-out证据备忘录，09-17完成导图，09-23完成文献卡，09-24完成原文证据框。
+P01/P05 Speed分析已完成，实际完成日期及报告版本待你确认（10-11确认已完成）。
+Pending框架材料已有。当前先整理现有结果，完整正文、正式实验整体范围及后续任务待核实。
+
+2026-10-22已归档本次组会纪要、原始转写与后续行动计划。已有分析与实现资料，核心行为及正式数据覆盖仍需验证。动态阈值和旧Speed分开记录；当前没有把后续实验标作已完成。
+
+【2026-10-25 本机程序与材料核对】
+已把Windows当前程序、IxDL/Magic Tap2事件快照、Speed采样遥测和Fast Tap阈值实验资料纳入。现有报告含4会话192条IxDL/Magic完成试次对照，以及单会话48trial/72进入的Speed边界分析（13次候选涉及9个trial）；这些不代表6人pilot或正式整体完成。
+
+### 当前任务
+
+按10/22组会继续机制核查；结合10/25已有日志/报告先修正重复位姿零速问题、统一对照口径，再推进6人pilot分析与framing
+
+### 当前卡点
+
+IxDL出现同渲染帧重复位姿零速触发；Magic触发速度为重建估计，两算法速度/加速度和区域定义不一致。Speed已有13次边界候选，但没有30Hz配对数据，不能把失败归因于异常掉帧或采样率。6人累计/新增口径及正式任务覆盖仍未冻结。
+
+### 回来后的第一步
+
+先核对当前构建的enum/共享资产与样本来源，处理重复位姿并增加Magic精确事件快照；再按组会安排确认同条件复测与30Hz对照。随后结合已冻结的6人pilot范围整理2–3个发现和场景；额外大规模帧率扩样未启动。
+
+### 工作入口
+
+完整进度明细：项目进展
+进度与版本记录：项目进展
+结果图：https://www.figma.com/board/LzfNACZpP2aWOppuZBFOEB/draft?node-id=0-1
+文献证据：https://www.figma.com/board/LzfNACZpP2aWOppuZBFOEB/draft?node-id=83-592
+原始分析：组内4090电脑上的文件夹（具体目录待补）
+论文：/Users/neoneoneo/Desktop/Paper_Cancelable
+排名工具：/Users/neoneoneo/Desktop/Cancellable_Ranking
+本次会议：https://kvxm3gyd38.feishu.cn/docx/H4k3dfGkHoTob3xu8pdcOtrAnxh
+本地纪要：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/组会纪要.md
+行动计划：/Users/neoneoneo/Desktop/Paper_Cancelable/组会纪要/2026-10-22_交互触发技术与研究进度讨论/后续行动计划.md
+DIS官网：https://dis.acm.org/2027/call-for-papers/
+
+【2026-10-25 本机程序与材料核对】
+Windows项目：D:\HLStudy4_22
+当前HEAD：2f9dc44786a5d7cb3416cf6459d2e30bfb4be438
+D:\HLStudy4_22\Assets\Scripts\Study3\IxDLDynamicMotionTracker.cs
+D:\HLStudy4_22\Assets\Scripts\Study3\MagicTap2MotionTracker.cs
+D:\HLStudy4_22\documents\IXDL_TRIGGER_OUTPUT.md
+D:\HLStudy4_22\output\magic_tap2_comparison_20261025\分析报告.md
+D:\HLStudy4_22\documents\SPEED_SAMPLING_LOGS.md
+D:\HLStudy4_22\tools\analyze_speed_sampling.py
+D:\HLStudy4_22\tools\ValidateSpeedTelemetry.ps1
+D:\HLStudy4_22\output\speed_normal_3id_20261025_201508\analysis_report.md
+D:\HLStudy4_22\Assets\Scenes\fast_tap_thershold\README_fast_tap_threshold.md
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdExperiment.cs
+D:\HLStudy4_22\Assets\Scripts\fast_tap_thershold\FastTapThresholdLogger.cs
+
+### 最近更新
+
+1792857600000
