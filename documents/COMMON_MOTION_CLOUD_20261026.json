@@ -80,5 +80,28 @@
   "limitations": [
     "MRTK update identity is not a hardware capture timestamp.",
     "Quest Pro deployment and new experiment collection were not performed."
-  ]
+  ],
+  "discovery": {
+    "checked_date": "2026-10-26",
+    "document_exists_and_content_verified": true,
+    "wiki_directory_member": false,
+    "wiki_move_denied_code": 99991679,
+    "missing_user_grants": [
+      "wiki:wiki",
+      "wiki:node:move"
+    ],
+    "project_record_index": {
+      "date": "2026-10-26",
+      "app_id": "cli_aa5dc48806f8dc2e",
+      "record_id": "reczz28RwAS5ktPJ",
+      "table_id": "tblqAZmn5vW5u5vB",
+      "title": "2026-10-26 共同规则修订与复测说明（独立文档入口）",
+      "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
+      "project_url": "https://kvxm3gyd38.feishu.cn/wiki/JXDrwfIyviAVBWkvCP0c9INznOc",
+      "navigation_path": "项目进展 → 进度与版本记录 → 2026-10-26 共同规则修订与复测说明（独立文档入口）",
+      "readback_verified": true,
+      "wiki_directory_membership": false,
+      "wiki_directory_block_reason": "User authorization lacks wiki:wiki or wiki:node:move."
+    }
+  }
 }
