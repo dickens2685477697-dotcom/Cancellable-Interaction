@@ -15,9 +15,9 @@
       "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
       "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
       "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
-      "source_report_sha256": "5c0605566283811adbcb2729ff65e7a86a62672e99cc9aa6570d4c7164124db9",
+      "source_report_sha256": "7d80c18bc333975e4630526c4a7ccef3b25189bfd535fdbdf40f4c70692cf0c1",
       "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
-      "uploaded_archive_sha256": "c20106bbdac044f9bf187b975bad21c4be0325357efc66316a81161fef76aae4",
+      "uploaded_archive_sha256": "237808b06d855a4a8dd38b4a66f06cb97d9ec6053a8a45fe3d81f513a081ff4d",
       "body_readback_verified": true,
       "paragraphs_readback_verified": 53,
       "native_tables": 8,
@@ -25,16 +25,17 @@
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
       "attachment_readback_verified": true,
-      "old_body_replaced_after_new_body_verification": true
+      "old_body_replaced_after_new_body_verification": true,
+      "protocol_supplemented_date": "2026-10-26"
     },
     {
       "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
       "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
       "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
       "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
-      "source_report_sha256": "b1840e623784b7931324eba524de3d7d331d2d29001ca085924e2fb7620a8bf1",
+      "source_report_sha256": "ef9304d57e13c7c6571fd8baa0ad424dedb200e717ecfa6639dccc7d5ce786c3",
       "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
-      "uploaded_archive_sha256": "112fc97d929035448b612a0e72346f93809986aa8182a5193201fb2b8f4f519e",
+      "uploaded_archive_sha256": "b89888fffbe5688c88732348460f2e8da7be2cb402a19051e022a67b032a310d",
       "body_readback_verified": true,
       "paragraphs_readback_verified": 53,
       "native_tables": 5,
@@ -42,7 +43,8 @@
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
       "attachment_readback_verified": true,
-      "old_body_replaced_after_new_body_verification": true
+      "old_body_replaced_after_new_body_verification": true,
+      "protocol_supplemented_date": "2026-10-26"
     }
   ],
   "progress_link_updates": [
@@ -93,7 +95,7 @@
     "python_analysis_tests": 5,
     "unity_scene_and_device_checks_rerun": false
   },
-  "scope": "Revised the two existing reports into experiment-method, terminology, figure-based results, mechanism analysis and explicit conclusion sections; updated downloadable archives and preserved existing progress links.",
+  "scope": "Supplemented participant, Quest Pro and circling-until-trigger protocol in both existing reports and their generators; revised circling interpretation and conclusions; updated cloud bodies and archives without changing numerical results or figures.",
   "previous_document_versions": [
     {
       "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
@@ -125,23 +127,92 @@
     }
   ],
   "revision": {
-    "date": "2026-10-25",
-    "name": "mentor_report_v2",
-    "based_on_commit": "cbe1cf0",
-    "requested_order": [
-      "experiment purpose and method",
-      "terminology and metrics",
-      "data analysis with result figures",
-      "interpretation of plotted data",
-      "mechanism analysis",
-      "explicit inferences and conclusions"
-    ],
+    "date": "2026-10-26",
+    "name": "confirmed_protocol_v3",
+    "based_on_commit": "6907871",
     "cloud_urls_preserved": true,
     "raw_data_and_figures_unchanged": true,
     "computed_report_tables_match_verified_csv_and_json": true,
     "report_generators_reproduce_reviewed_markdown": true,
-    "participant_count_device_model_and_dwell_duration_not_inferred": true,
     "cloud_readback_paragraphs": 106,
-    "cloud_readback_table_cells": 315
-  }
+    "cloud_readback_table_cells": 315,
+    "confirmed_protocol": {
+      "source": "Direct user confirmation on 2026-10-26",
+      "experiment_date": "2026-10-25",
+      "participant_count": 1,
+      "participant": "experimenter self-test",
+      "device": "Quest Pro",
+      "slow_dwell_operation": "Continuously draw circles inside the target ball until the system triggers.",
+      "endpoint": "system trigger",
+      "circle_radius_speed_and_count": "No quantitative requirements supplied; none inferred."
+    },
+    "interpretation_updates": [
+      "Describe the slow-dwell condition as continuous circling, distinct from static holding.",
+      "Explain that directional change and scalar speed change are different acceleration measures during circling.",
+      "Do not equate a trigger-terminated observation with an error rate over a uniform observation window.",
+      "Limit generalization to a single-participant Quest Pro self-test."
+    ]
+  },
+  "revision_history": [
+    {
+      "revision": {
+        "date": "2026-10-25",
+        "name": "mentor_report_v2",
+        "based_on_commit": "cbe1cf0",
+        "requested_order": [
+          "experiment purpose and method",
+          "terminology and metrics",
+          "data analysis with result figures",
+          "interpretation of plotted data",
+          "mechanism analysis",
+          "explicit inferences and conclusions"
+        ],
+        "cloud_urls_preserved": true,
+        "raw_data_and_figures_unchanged": true,
+        "computed_report_tables_match_verified_csv_and_json": true,
+        "report_generators_reproduce_reviewed_markdown": true,
+        "participant_count_device_model_and_dwell_duration_not_inferred": true,
+        "cloud_readback_paragraphs": 106,
+        "cloud_readback_table_cells": 315
+      },
+      "documents": [
+        {
+          "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
+          "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+          "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+          "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
+          "source_report_sha256": "7d80c18bc333975e4630526c4a7ccef3b25189bfd535fdbdf40f4c70692cf0c1",
+          "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
+          "uploaded_archive_sha256": "237808b06d855a4a8dd38b4a66f06cb97d9ec6053a8a45fe3d81f513a081ff4d",
+          "body_readback_verified": true,
+          "paragraphs_readback_verified": 53,
+          "native_tables": 8,
+          "table_cells_readback_verified": 190,
+          "figure_in_results_section_verified": true,
+          "image_readback_verified": true,
+          "attachment_readback_verified": true,
+          "old_body_replaced_after_new_body_verification": true,
+          "protocol_supplemented_date": "2026-10-26"
+        },
+        {
+          "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
+          "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
+          "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
+          "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
+          "source_report_sha256": "ef9304d57e13c7c6571fd8baa0ad424dedb200e717ecfa6639dccc7d5ce786c3",
+          "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
+          "uploaded_archive_sha256": "b89888fffbe5688c88732348460f2e8da7be2cb402a19051e022a67b032a310d",
+          "body_readback_verified": true,
+          "paragraphs_readback_verified": 53,
+          "native_tables": 5,
+          "table_cells_readback_verified": 125,
+          "figure_in_results_section_verified": true,
+          "image_readback_verified": true,
+          "attachment_readback_verified": true,
+          "old_body_replaced_after_new_body_verification": true,
+          "protocol_supplemented_date": "2026-10-26"
+        }
+      ]
+    }
+  ]
 }
