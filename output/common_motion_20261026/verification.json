@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-26",
+  "based_on_commit": "541976c28afcdcb701942835976edd3abafc4317",
+  "motion_rules_version": "shared-provider-v2",
+  "timestamp_kind": "mrtk_update_received_realtime",
+  "hardware_capture_timestamp_available": false,
+  "scope": [
+    "magicTap2",
+    "ixdlDynamic",
+    "target and obstacle paths"
+  ],
+  "shared_acceleration_default_m_s2": 11.661,
+  "maximum_update_age_and_history_gap_s": 0.25,
+  "speed_threshold_configurations_preserved": true,
+  "validation": {
+    "common_calculation_assertions": 58,
+    "provider_cache_assertions": 17,
+    "speed_telemetry_assertions": 108,
+    "python_analysis_tests": 8,
+    "runtime_compilation": {
+      "compiler": "Unity 2020.3.37f1c1 Roslyn",
+      "sources": 279,
+      "references": 338,
+      "errors": 0
+    },
+    "editor_compilation": {
+      "compiler": "Unity 2020.3.37f1c1 Roslyn",
+      "sources": 13,
+      "references": 366,
+      "errors": 0
+    },
+    "unity_scene_interaction_run": false,
+    "quest_pro_deployment_or_experiment_run": false
+  },
+  "logs": {
+    "common_motion_schema": 1,
+    "session_settings_schema": 3,
+    "ixdl_trigger_schema": 2,
+    "new_magic_and_ixdl_trial_rows_have_exact_trigger_snapshots": true
+  },
+  "historical_data_recomputed_as_new_experiments": false,
+  "raw_data_modified": false,
+  "source_sha256": {
+    "Assets/Scripts/Study3/BallSpawner.cs": "d80d08835c93de7775010ecc1a3a36dd6f80a1e10d7ef987a4235df8c77cc194",
+    "Assets/Scripts/Study3/Editor/BallSpawnerEditor.cs": "e5148385d9623b56813ed80687f71d2aa3934b1fc0537f836f157273fa25a9c8",
+    "Assets/Scripts/Study3/Editor/IxDLDynamicValidation.cs": "3861934d7c679e38acb33800adca14b4a71a7d616c540ceabca1dc39fc983389",
+    "Assets/Scripts/Study3/IxDLDynamicMotionTracker.cs": "772c70f55816548306b184eaae194928546de10f85eae9eb688afa87a5f1b996",
+    "Assets/Scripts/Study3/IxDLDynamicTriggerRecord.cs": "8dbee5412e3acf91787a46843edf553783259f8886a12feacd9d7567bf7d84e9",
+    "Assets/Scripts/Study3/LogWriter3.cs": "7abadc4d299bafeec3f009e171abcb4a393472f75e03e32788565ea4bd329d2a",
+    "Assets/Scripts/Study3/MagicTap2MotionTracker.cs": "ce11f635ebd8dcc977495c0132deef7c82b25f1215cf6de8006a216ae84a7882",
+    "Assets/Scripts/Study3/S2AccMode.cs": "0da01c47d5627af512f4a1924549b0d9e2143df1e39b846f8402ea5edd6d1f70",
+    "Assets/Scripts/Study3/S2Obstacles.cs": "730821085de5faf94421f9de86fda05c204ce5095cb9d145627d3a568f9cbae5",
+    "Assets/Scripts/Study3/Study3SelectionSettings.cs": "fe0a0386dcd0d5e4aeca07345c3191d3d069b0ec72e5b64c744584d2f7853810",
+    "Assets/Scripts/Study3/Study3MotionTracker.cs": "f084df2306fd439317dcf4e56318089ef490359723ccc1b577184ebc269d7788",
+    "Assets/Scripts/Study3/Study3MotionTracker.cs.meta": "10df9aa1e5e1c50551406b45a59123263204cb658df6e1e77453862038a3456f",
+    "Assets/Scripts/Study3/Study3HandPoseSource.cs": "661525f7d45d30f07cb587092b45d1bed9aa08776d26d9a9d55f22117c6d9e9e",
+    "Assets/Scripts/Study3/Study3HandPoseSource.cs.meta": "23573caa159527467fc51eaaaf8f54cdb5c6cb9ffa010407a851bb01f4a452bf",
+    "Assets/Scripts/Study3/Editor/CommonMotionValidation.cs": "50a2ae40e132d228a83b46d96c6e04a7cc2c0f226c27a516bdd324845caf0e1d",
+    "Assets/Scripts/Study3/Editor/CommonMotionValidation.cs.meta": "564825b92972388c7ed4cecc472c87bf0167218a2061c17fed434a2ea028c8f2",
+    "tools/ValidateMagicTap2.ps1": "64fdf64ea45e3390e4cf27361c1e83ee7cedb4de2e1b157e0362952f0ee9041f",
+    "tools/ValidateCommonMotion.ps1": "be7d3667f1592391cd9142c9414826958883d9137584e20f64bdb5525dc2b91a",
+    "tools/analyze_magic_tap_comparison.py": "54158e739822f8627faf64d3b0fc7015b3de2d5841e36d96d92c1bcf76ad4b59",
+    "tools/tests/CommonHandPoseSourceChecks.cs": "d07283d15c8789d699ff94d676e97190bcc58851e89a5ae4573694a1ff300ce6",
+    "tools/tests/test_common_motion_analysis.py": "e96bb4ca56dbd3b1eef6502592c22591e0fa190cff782c2d9933d544d49f41c3",
+    "documents/COMMON_MOTION_RULES_20261026.md": "2b6936ba713e98ba3f656100888b7d1d0ae722d0f24198044cf4b24e9a34b8a0",
+    "output/speed_normal_3id_20261025_201508/analysis_report.md": "03f758f27e0630dfb16d2fca95258dc018dd4ffd8984d97539ba46e43360ae9b",
+    "output/speed_normal_3id_20261025_201508/analyze_session.py": "c9368a6745b7c85741f9297b685126bb591927c611708b1ed7ae60e5fe16f860",
+    "output/magic_tap2_comparison_20261025/分析报告.md": "f7da42ad6d53a45a734c0d57f6ce6b9ef9203a616ed8efd5498d63d335035650"
+  }
+}

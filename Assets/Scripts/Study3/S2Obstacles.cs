@@ -1546,60 +1546,83 @@ public class S2Obstacles : MonoBehaviour
 
     public void SetMagicTap2Mode()
     {
+        Study3HandPoseSource.EnsureAvailable();
         magicTap2Collider = GetComponent<Collider>();
         magicTap2Motion.Reset();
         handInBall = handInBall2 = inBall = false;
     }
 
-    private void UpdateMagicTap2Obstacle()
+    private void UpdateSharedMotionObstacle()
     {
+        Study3MotionTracker motion = UsesMagicTap2 ? magicTap2Motion.Motion : ixdlDynamicMotion.Motion;
         if (ballSpawner == null || Acce == null || !Acce.enabled)
         {
-            EndMagicTap2ObstacleContact();
-            magicTap2Motion.Reset();
+            EndSharedMotionContact("");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
             return;
         }
-        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose tip)
-            || !HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose distal))
+        if (!Study3HandPoseSource.TryGetSample(out Study3MotionSample sample))
         {
-            EndMagicTap2ObstacleContact();
-            magicTap2Motion.Reset();
+            EndSharedMotionContact("tracking lost");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
+            logWriter3?.RecordCommonMotionObservation(default, motion, "obstacle", GetInstanceID(),
+                ballIndex, ballKind, false, false, 0f, ballSpawner.commonMotionAccelerationThreshold, false);
+            return;
+        }
+        if (motion.HasPosition && (sample.SourceId != motion.LastSample.SourceId || sample.TrackingEpoch != motion.LastSample.TrackingEpoch
+            || sample.Timestamp - motion.LastSample.Timestamp > Study3MotionTracker.MaximumAgeSeconds))
+        {
+            EndSharedMotionContact("motion history reset");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
+        }
+        bool wasInside = UsesMagicTap2 ? magicTap2Motion.IsInside : ixdlDynamicMotion.IsInside;
+        bool inside = Study3MotionTracker.ContainsPoint(UsesMagicTap2 ? magicTap2Collider : dynamicStopCollider, sample.Position);
+        double now = Time.realtimeSinceStartupAsDouble;
+        bool selected = UsesMagicTap2
+            ? magicTap2Motion.Sample(sample, inside, now, ballSpawner.magicTap2SpeedThreshold, ballSpawner.commonMotionAccelerationThreshold)
+            : ixdlDynamicMotion.Sample(sample, inside, now, ballSpawner.GetIxDLDynamicMotionSettings());
+        selected = selected && !triggered;
+        float speedLimit = UsesMagicTap2 ? ballSpawner.magicTap2SpeedThreshold : ixdlDynamicMotion.SpeedLimit;
+        logWriter3?.RecordCommonMotionObservation(sample, motion, "obstacle", GetInstanceID(),
+            ballIndex, ballKind, true, inside, speedLimit, ballSpawner.commonMotionAccelerationThreshold, selected);
+        if (!motion.AcceptedLastSample)
+        {
+            if (!motion.HasPosition) EndSharedMotionContact("invalid motion sample");
             return;
         }
 
-        bool inside = MagicTap2MotionTracker.ContainsFinger(magicTap2Collider, tip.Position, distal.Position);
-        if (!inside && magicTap2Motion.IsInside)
-        {
-            EndMagicTap2ObstacleContact();
-        }
-        else if (inside && !magicTap2Motion.IsInside)
+        if (!inside && wasInside) EndSharedMotionContact("contact transition");
+        else if (inside && !wasInside)
         {
             handInBall = handInBall2 = inBall = true;
             if (!triggered)
             {
-                magicTap2IdleMaterial = Player.GetComponent<MeshRenderer>().sharedMaterial;
+                if (UsesMagicTap2) magicTap2IdleMaterial = Player.GetComponent<MeshRenderer>().sharedMaterial;
+                else dynamicStopIdleMaterial = Player.GetComponent<MeshRenderer>().sharedMaterial;
                 ballSpawner.errorInTimes++;
                 Player.TurnShallow();
             }
         }
-
         if (inside)
         {
-            ballSpawner.indexLoc = tip.Position;
+            ballSpawner.indexLoc = sample.Position;
             ballSpawner.area_type = triggered ? 4 : 2;
             ballSpawner.index = ballIndex;
         }
+        if (!selected) return;
+        if (UsesIxDLDynamic) logWriter3?.RecordIxDLDynamicTrigger(ixdlDynamicMotion, "obstacle", GetInstanceID(),
+            ballIndex, ballKind, false, sample.Position);
+        ballSpawner.triggeredBy = "index";
+        ballSpawner.triggerCondition = UsesMagicTap2 ? '2' : 'M';
+        Player.TurnYellow();
+        if (source != null) source.Play();
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+    }
 
-        bool selected = magicTap2Motion.Sample(tip.Position, inside, Time.fixedDeltaTime,
-            ballSpawner.magicTap2SpeedThreshold, ballSpawner.magicTap2AccelerationThreshold);
-        if (selected && !triggered)
-        {
-            ballSpawner.triggeredBy = "index";
-            ballSpawner.triggerCondition = '2';
-            Player.TurnYellow();
-            if (source != null) source.Play();
-            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
-        }
+    private void EndSharedMotionContact(string reason)
+    {
+        if (UsesMagicTap2) EndMagicTap2ObstacleContact();
+        else EndDynamicStopObstacleContact();
     }
 
     private void EndMagicTap2ObstacleContact()
@@ -1621,6 +1644,7 @@ public class S2Obstacles : MonoBehaviour
 
     public void SetDynamicStopMode()
     {
+        if (UsesIxDLDynamic) Study3HandPoseSource.EnsureAvailable();
         dynamicStopCollider = GetComponent<Collider>();
         dynamicStopMotion.Reset();
         ixdlDynamicMotion.Reset();
@@ -1668,9 +1692,7 @@ public class S2Obstacles : MonoBehaviour
             ballSpawner.index = ballIndex;
         }
 
-        bool selected = UsesIxDLDynamic
-            ? ixdlDynamicMotion.Sample(pose.Position, inside, Time.fixedDeltaTime, ballSpawner.GetIxDLDynamicMotionSettings())
-            : dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
+        bool selected = dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
         if (selected && !triggered)
         {
             if (UsesIxDLDynamic)
@@ -2690,14 +2712,7 @@ public class S2Obstacles : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UsesMagicTap2)
-        {
-            UpdateMagicTap2Obstacle();
-        }
-        else if (UsesIxDLDynamic)
-        {
-            UpdateDynamicStopObstacle();
-        }
+        if (UsesMagicTap2 || UsesIxDLDynamic) UpdateSharedMotionObstacle();
     }
 
     private void Update()

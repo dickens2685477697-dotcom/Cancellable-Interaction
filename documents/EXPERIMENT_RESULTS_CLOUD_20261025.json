@@ -11,40 +11,42 @@
   ],
   "documents": [
     {
-      "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
+      "title": "【历史基线·2026-10-25】Speed边界高速与未触发退出报告",
       "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
       "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "status": "historical_baseline",
       "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
-      "source_report_sha256": "7d80c18bc333975e4630526c4a7ccef3b25189bfd535fdbdf40f4c70692cf0c1",
+      "source_report_sha256": "03f758f27e0630dfb16d2fca95258dc018dd4ffd8984d97539ba46e43360ae9b",
       "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
-      "uploaded_archive_sha256": "237808b06d855a4a8dd38b4a66f06cb97d9ec6053a8a45fe3d81f513a081ff4d",
+      "uploaded_archive_sha256": "abdf2592e6ad81477128337e9b17bdbd32b1c4bc548da4a5e2c18f0a1da2c2b1",
       "body_readback_verified": true,
-      "paragraphs_readback_verified": 53,
+      "paragraphs_readback_verified": 55,
       "native_tables": 8,
       "table_cells_readback_verified": 190,
+      "title_status_readback_verified": true,
+      "historical_reason_and_new_rules_link_verified": true,
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true,
-      "old_body_replaced_after_new_body_verification": true,
-      "protocol_supplemented_date": "2026-10-26"
+      "attachment_readback_verified": true
     },
     {
-      "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
+      "title": "【旧实现·2026-10-25】动态阈值与Magic Tap 2.0对比报告",
       "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
       "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "status": "legacy_implementation_comparison",
       "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
-      "source_report_sha256": "ef9304d57e13c7c6571fd8baa0ad424dedb200e717ecfa6639dccc7d5ce786c3",
+      "source_report_sha256": "f7da42ad6d53a45a734c0d57f6ce6b9ef9203a616ed8efd5498d63d335035650",
       "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
-      "uploaded_archive_sha256": "b89888fffbe5688c88732348460f2e8da7be2cb402a19051e022a67b032a310d",
+      "uploaded_archive_sha256": "f96f6cfa7bed8fe9ab3d215017cef55b5d3d990b441c9561bac5b0622ea9b7c8",
       "body_readback_verified": true,
-      "paragraphs_readback_verified": 53,
+      "paragraphs_readback_verified": 55,
       "native_tables": 5,
       "table_cells_readback_verified": 125,
+      "title_status_readback_verified": true,
+      "historical_reason_and_new_rules_link_verified": true,
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true,
-      "old_body_replaced_after_new_body_verification": true,
-      "protocol_supplemented_date": "2026-10-26"
+      "attachment_readback_verified": true
     }
   ],
   "progress_link_updates": [
@@ -95,7 +97,7 @@
     "python_analysis_tests": 5,
     "unity_scene_and_device_checks_rerun": false
   },
-  "scope": "Supplemented participant, Quest Pro and circling-until-trigger protocol in both existing reports and their generators; revised circling interpretation and conclusions; updated cloud bodies and archives without changing numerical results or figures.",
+  "scope": "Historical labels and explicit reasons added to both original report titles and bodies; old statistics retained; common-rule implementation, validation and source archive published separately.",
   "previous_document_versions": [
     {
       "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
@@ -128,30 +130,14 @@
   ],
   "revision": {
     "date": "2026-10-26",
-    "name": "confirmed_protocol_v3",
-    "based_on_commit": "6907871",
-    "cloud_urls_preserved": true,
-    "raw_data_and_figures_unchanged": true,
-    "computed_report_tables_match_verified_csv_and_json": true,
-    "report_generators_reproduce_reviewed_markdown": true,
-    "cloud_readback_paragraphs": 106,
-    "cloud_readback_table_cells": 315,
-    "confirmed_protocol": {
-      "source": "Direct user confirmation on 2026-10-26",
-      "experiment_date": "2026-10-25",
-      "participant_count": 1,
-      "participant": "experimenter self-test",
-      "device": "Quest Pro",
-      "slow_dwell_operation": "Continuously draw circles inside the target ball until the system triggers.",
-      "endpoint": "system trigger",
-      "circle_radius_speed_and_count": "No quantitative requirements supplied; none inferred."
-    },
-    "interpretation_updates": [
-      "Describe the slow-dwell condition as continuous circling, distinct from static holding.",
-      "Explain that directional change and scalar speed change are different acceleration measures during circling.",
-      "Do not equate a trigger-terminated observation with an error rate over a uniform observation window.",
-      "Limit generalization to a single-participant Quest Pro self-test."
-    ]
+    "name": "historical_implementation_labels",
+    "based_on_commit": "541976c",
+    "new_rules_url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
+    "numerical_results_and_raw_data_unchanged": true,
+    "legacy_comparison_reason": "Different displacement filtering, signed versus vector acceleration, and contact geometry; zero-speed duplicate-pose events confound attribution to dynamic thresholds.",
+    "speed_baseline_reason": "Original 50 Hz Speed session remains a historical diagnostic baseline; Speed was not changed by this two-mode revision and the 13/24 candidates were not invalidated.",
+    "cloud_readback_paragraphs": 110,
+    "cloud_readback_table_cells": 315
   },
   "revision_history": [
     {
@@ -213,6 +199,81 @@
           "protocol_supplemented_date": "2026-10-26"
         }
       ]
+    },
+    {
+      "revision": {
+        "date": "2026-10-26",
+        "name": "confirmed_protocol_v3",
+        "based_on_commit": "6907871",
+        "cloud_urls_preserved": true,
+        "raw_data_and_figures_unchanged": true,
+        "computed_report_tables_match_verified_csv_and_json": true,
+        "report_generators_reproduce_reviewed_markdown": true,
+        "cloud_readback_paragraphs": 106,
+        "cloud_readback_table_cells": 315,
+        "confirmed_protocol": {
+          "source": "Direct user confirmation on 2026-10-26",
+          "experiment_date": "2026-10-25",
+          "participant_count": 1,
+          "participant": "experimenter self-test",
+          "device": "Quest Pro",
+          "slow_dwell_operation": "Continuously draw circles inside the target ball until the system triggers.",
+          "endpoint": "system trigger",
+          "circle_radius_speed_and_count": "No quantitative requirements supplied; none inferred."
+        },
+        "interpretation_updates": [
+          "Describe the slow-dwell condition as continuous circling, distinct from static holding.",
+          "Explain that directional change and scalar speed change are different acceleration measures during circling.",
+          "Do not equate a trigger-terminated observation with an error rate over a uniform observation window.",
+          "Limit generalization to a single-participant Quest Pro self-test."
+        ]
+      },
+      "documents": [
+        {
+          "title": "2026-10-25 Speed正常选择3ID：边界高速与漏触发分析",
+          "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+          "document_id": "UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+          "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
+          "source_report_sha256": "7d80c18bc333975e4630526c4a7ccef3b25189bfd535fdbdf40f4c70692cf0c1",
+          "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
+          "uploaded_archive_sha256": "237808b06d855a4a8dd38b4a66f06cb97d9ec6053a8a45fe3d81f513a081ff4d",
+          "body_readback_verified": true,
+          "paragraphs_readback_verified": 53,
+          "native_tables": 8,
+          "table_cells_readback_verified": 190,
+          "figure_in_results_section_verified": true,
+          "image_readback_verified": true,
+          "attachment_readback_verified": true,
+          "old_body_replaced_after_new_body_verification": true,
+          "protocol_supplemented_date": "2026-10-26"
+        },
+        {
+          "title": "2026-10-25 动态阈值与Magic Tap 2.0：触发速度及触发时间",
+          "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
+          "document_id": "BHzTdceBNoTTF3xrMz8ci5oknxu",
+          "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
+          "source_report_sha256": "ef9304d57e13c7c6571fd8baa0ad424dedb200e717ecfa6639dccc7d5ce786c3",
+          "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
+          "uploaded_archive_sha256": "b89888fffbe5688c88732348460f2e8da7be2cb402a19051e022a67b032a310d",
+          "body_readback_verified": true,
+          "paragraphs_readback_verified": 53,
+          "native_tables": 5,
+          "table_cells_readback_verified": 125,
+          "figure_in_results_section_verified": true,
+          "image_readback_verified": true,
+          "attachment_readback_verified": true,
+          "old_body_replaced_after_new_body_verification": true,
+          "protocol_supplemented_date": "2026-10-26"
+        }
+      ]
     }
-  ]
+  ],
+  "common_rules_note": {
+    "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
+    "document_id": "Krvid94LAoLCVjxupfDc5TYkn8f",
+    "source_sha256": "2b6936ba713e98ba3f656100888b7d1d0ae722d0f24198044cf4b24e9a34b8a0",
+    "source_archive_sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "body_verified": true,
+    "archive_verified": true
+  }
 }

@@ -13,7 +13,7 @@ public class LogWriter3 : MonoBehaviour
     private string date, filePath, fileName, fileFullPath, directionDebugFileName, directionDebugFileFullPath;
     private string pinchReleaseDistanceFileName, pinchReleaseDistanceFileFullPath;
     private StreamWriter speedBoundaryWriter, speedEntryWriter, sessionSettingsWriter;
-    private StreamWriter ixdlTriggerWriter;
+    private StreamWriter ixdlTriggerWriter, commonMotionWriter;
     private IxDLDynamicTriggerRecord? ixdlTargetTrigger;
     private long speedEntrySequence;
     private double nextSpeedLogFlush;
@@ -219,7 +219,7 @@ public class LogWriter3 : MonoBehaviour
             ans += "," + temp.y;
             ans += "," + temp.z;
         }
-        ans += "," + (ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic && ixdlTargetTrigger.HasValue
+        ans += "," + ((ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic || ballSpawner.modeSelected == BallSpawner.Mode.magicTap2) && ixdlTargetTrigger.HasValue
             ? ixdlTargetTrigger.Value.ToCsv()
             : IxDLDynamicTriggerRecord.MissingCsv);
         return ans;
@@ -316,16 +316,35 @@ public class LogWriter3 : MonoBehaviour
             ixdlTriggerWriter = OpenStudyCsv("ixdl-trigger",
                 "frame,time,fixedTime,realtime,case,id,mode,source,sourceInstanceId,ballIndex,ballKind,isMineBall,experimentStarted,"
                 + IxDLDynamicTriggerRecord.CsvHeader
-                + ",accelerationThreshold,fixedDeltaTime,requestedSamplingHz,indexX,indexY,indexZ,schemaVersion");
+                + ",accelerationThreshold,fixedDeltaTime,requestedSamplingHz,indexX,indexY,indexZ,motionRulesVersion,sampleSequence,sampleTimestamp,sampleDtSeconds,timestampKind,schemaVersion");
         }
 
         // Format and write before CompleteSelection can advance Case/ID or destroy this ball.
         string context = FormattableString.Invariant(
             $"{Time.frameCount},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{ballSpawner.modeSelected},{EscapeCsv(source)},{sourceInstanceId},{ballIndex},{ballKind},{isMine},{started}");
         string settingsAndPosition = FormattableString.Invariant(
-            $",{record.AccelerationThreshold:R},{Time.fixedDeltaTime:R},{ballSpawner.samplingRateHz:R},{indexPosition.x:R},{indexPosition.y:R},{indexPosition.z:R},1");
+            $",{record.AccelerationThreshold:R},{Time.fixedDeltaTime:R},{ballSpawner.samplingRateHz:R},{indexPosition.x:R},{indexPosition.y:R},{indexPosition.z:R},{Study3MotionTracker.RulesVersion},{motion.Motion.LastSample.Sequence},{motion.Motion.LastSample.Timestamp:R},{motion.Motion.DeltaTime:R},{Study3MotionTracker.TimestampKind},2");
         ixdlTriggerWriter.WriteLine(context + "," + record.ToCsv() + settingsAndPosition);
         ixdlTriggerWriter.Flush();
+    }
+
+    public void RecordCommonMotionObservation(Study3MotionSample sample, Study3MotionTracker motion,
+        string source, int sourceInstanceId, int ballIndex, int ballKind, bool trackingValid,
+        bool inside, float speedLimit, float accelerationLimit, bool selected)
+    {
+        if (motion == null || ballSpawner == null) return;
+        // Both techniques preserve the same exact decision values in the trial row.
+        if (selected && source == "target")
+            ixdlTargetTrigger = new IxDLDynamicTriggerRecord(motion, speedLimit, accelerationLimit);
+        if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath)) return;
+        if (commonMotionWriter == null)
+            commonMotionWriter = OpenStudyCsv("common-motion",
+                "frame,time,fixedTime,realtime,case,id,mode,source,sourceInstanceId,ballIndex,ballKind,experimentStarted,trackingValid,inside,sampleSourceId,sampleSequence,sampleTimestamp,timestampKind,sampleAgeSeconds,acceptedMotionDtSeconds,sampleAccepted,sampleStatus,hasVelocity,hasAcceleration,triggerSpeed,previousSpeed,speedThreshold,triggerAcceleration,accelerationThreshold,selected,indexX,indexY,indexZ,trackingEpoch,motionRulesVersion,schemaVersion");
+        double now = Time.realtimeSinceStartupAsDouble;
+        string status = trackingValid ? motion.Status : "tracking_lost_or_no_provider_update";
+        commonMotionWriter.WriteLine(FormattableString.Invariant(
+            $"{Time.frameCount},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{now:R},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{ballSpawner.modeSelected},{source},{sourceInstanceId},{ballIndex},{ballKind},{started},{trackingValid},{inside},{sample.SourceId},{sample.Sequence},{sample.Timestamp:R},{Study3MotionTracker.TimestampKind},{(trackingValid ? now - sample.Timestamp : double.NaN):R},{motion.DeltaTime:R},{motion.AcceptedLastSample},{status},{motion.HasVelocity},{motion.HasAcceleration},{motion.Speed:R},{motion.PreviousSpeed:R},{speedLimit:R},{motion.Acceleration:R},{accelerationLimit:R},{selected},{sample.Position.x:R},{sample.Position.y:R},{sample.Position.z:R},{sample.TrackingEpoch},{Study3MotionTracker.RulesVersion},1"));
+        if (selected) commonMotionWriter.Flush();
     }
 
     private StreamWriter OpenStudyCsv(string suffix, string header)
@@ -347,9 +366,15 @@ public class LogWriter3 : MonoBehaviour
         }
     }
 
+    private string CurrentMotionRules => ballSpawner.modeSelected == BallSpawner.Mode.magicTap2
+        || ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic ? Study3MotionTracker.RulesVersion : "legacy_other_mode";
+
+    private string CurrentMotionTimestampKind => CurrentMotionRules == Study3MotionTracker.RulesVersion
+        ? Study3MotionTracker.TimestampKind : "legacy_fixed_step";
+
     private string SessionConfiguration()
     {
-        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R}");
+        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R},{ballSpawner.commonMotionAccelerationThreshold:R},{ballSpawner.ixdlInputSpeedMin:R},{ballSpawner.ixdlInputSpeedMax:R},{ballSpawner.ixdlSpeedThresholdMin:R},{ballSpawner.ixdlSpeedThresholdMax:R},{CurrentMotionRules},{CurrentMotionTimestampKind}");
     }
 
     private void WriteSessionSettings(string eventName)
@@ -358,11 +383,11 @@ public class LogWriter3 : MonoBehaviour
         if (sessionSettingsWriter == null)
         {
             sessionSettingsWriter = OpenStudyCsv("session-settings",
-                "event,time,fixedTime,realtime,frame,case,id,mode,requestedSamplingHz,fixedDeltaTime,fixedSamplingHz,timeScale,minSpeedThreshold,maxSpeedThreshold,dwellTimeoutSeconds,directionAngleThreshold,directionSmoothingAlpha,directionMinSpeed,directionWindowSamples,useEntryDirectionAxis,entryDirectionConeHalfAngle,releaseDistanceDeltaThreshold,wristTiltThreshold,targetSelectionMode,enableMineBall,enabledOb,enablePreview,magicTap2SpeedThreshold,magicTap2AccelerationThreshold,schemaVersion");
+                "event,time,fixedTime,realtime,frame,case,id,mode,requestedSamplingHz,fixedDeltaTime,fixedSamplingHz,timeScale,minSpeedThreshold,maxSpeedThreshold,dwellTimeoutSeconds,directionAngleThreshold,directionSmoothingAlpha,directionMinSpeed,directionWindowSamples,useEntryDirectionAxis,entryDirectionConeHalfAngle,releaseDistanceDeltaThreshold,wristTiltThreshold,targetSelectionMode,enableMineBall,enabledOb,enablePreview,magicTap2SpeedThreshold,magicTap2AccelerationThreshold,commonMotionAccelerationThreshold,ixdlInputSpeedMin,ixdlInputSpeedMax,ixdlSpeedThresholdMin,ixdlSpeedThresholdMax,motionRulesVersion,motionTimestampKind,schemaVersion");
         }
         lastSessionConfiguration = SessionConfiguration();
         sessionSettingsWriter.WriteLine(FormattableString.Invariant(
-            $"{eventName},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{Time.frameCount},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{lastSessionConfiguration},2"));
+            $"{eventName},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{Time.frameCount},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{lastSessionConfiguration},3"));
     }
 
     private void LateUpdate()
@@ -385,6 +410,7 @@ public class LogWriter3 : MonoBehaviour
         speedEntryWriter?.Flush();
         sessionSettingsWriter?.Flush();
         ixdlTriggerWriter?.Flush();
+        commonMotionWriter?.Flush();
     }
 
     private void OnApplicationPause(bool paused)
@@ -407,6 +433,7 @@ public class LogWriter3 : MonoBehaviour
         speedEntryWriter?.Dispose(); speedEntryWriter = null;
         sessionSettingsWriter?.Dispose(); sessionSettingsWriter = null;
         ixdlTriggerWriter?.Dispose(); ixdlTriggerWriter = null;
+        commonMotionWriter?.Dispose(); commonMotionWriter = null;
     }
 
     public void RecordCancelReason(string reason)

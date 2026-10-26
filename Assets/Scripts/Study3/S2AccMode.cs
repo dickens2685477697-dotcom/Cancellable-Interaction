@@ -40,7 +40,7 @@ public class S2AccMode : MonoBehaviour
     public int ballIndex = 0;
     public int ballKind = 1;
     public Pinch pinchob;
-    public bool useIndex = false; 
+    public bool useIndex = false;
     public bool handInBall = false;
     public bool canceled = false;
     public LogWriter3 logWriter3;
@@ -157,14 +157,7 @@ public class S2AccMode : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UsesMagicTap2)
-        {
-            UpdateMagicTap2Selection();
-        }
-        else if (UsesIxDLDynamic)
-        {
-            UpdateDynamicStopSelection();
-        }
+        if (UsesMagicTap2 || UsesIxDLDynamic) UpdateSharedMotionSelection();
     }
 
     void Update()
@@ -509,7 +502,7 @@ public class S2AccMode : MonoBehaviour
         standaloneSelectionReported = true;
         StandaloneSelectionSucceeded?.Invoke(this);
     }
-    
+
     public void SetPinchReleaseMode()
     {
         ResetPinchReleaseState();
@@ -1693,34 +1686,52 @@ public class S2AccMode : MonoBehaviour
     }
     public void SetMagicTap2Mode()
     {
+        Study3HandPoseSource.EnsureAvailable();
         magicTap2Collider = GetComponent<Collider>();
         magicTap2Motion.Reset();
     }
 
-    private void UpdateMagicTap2Selection()
+    private void UpdateSharedMotionSelection()
     {
-        if (ballSpawner == null || logWriter3 == null || Acce == null || !Acce.enabled
-            || !ballSpawner.enable_trigger)
+        Study3MotionTracker motion = UsesMagicTap2 ? magicTap2Motion.Motion : ixdlDynamicMotion.Motion;
+        if (ballSpawner == null || Acce == null || !Acce.enabled || logWriter3 == null || !ballSpawner.enable_trigger)
         {
-            EndMagicTap2Contact("");
-            magicTap2Motion.Reset();
+            EndSharedMotionContact("");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
+            return;
+        }
+        if (!Study3HandPoseSource.TryGetSample(out Study3MotionSample sample))
+        {
+            EndSharedMotionContact("tracking lost");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
+            logWriter3?.RecordCommonMotionObservation(default, motion, "target", GetInstanceID(),
+                ballIndex, ballKind, false, false, 0f, ballSpawner.commonMotionAccelerationThreshold, false);
+            return;
+        }
+        if (motion.HasPosition && (sample.SourceId != motion.LastSample.SourceId || sample.TrackingEpoch != motion.LastSample.TrackingEpoch
+            || sample.Timestamp - motion.LastSample.Timestamp > Study3MotionTracker.MaximumAgeSeconds))
+        {
+            EndSharedMotionContact("motion history reset");
+            magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
+        }
+        bool wasInside = UsesMagicTap2 ? magicTap2Motion.IsInside : ixdlDynamicMotion.IsInside;
+        bool inside = Study3MotionTracker.ContainsPoint(UsesMagicTap2 ? magicTap2Collider : dynamicStopCollider, sample.Position);
+        double now = Time.realtimeSinceStartupAsDouble;
+        bool selected = UsesMagicTap2
+            ? magicTap2Motion.Sample(sample, inside, now, ballSpawner.magicTap2SpeedThreshold, ballSpawner.commonMotionAccelerationThreshold)
+            : ixdlDynamicMotion.Sample(sample, inside, now, ballSpawner.GetIxDLDynamicMotionSettings());
+
+        float speedLimit = UsesMagicTap2 ? ballSpawner.magicTap2SpeedThreshold : ixdlDynamicMotion.SpeedLimit;
+        logWriter3?.RecordCommonMotionObservation(sample, motion, "target", GetInstanceID(),
+            ballIndex, ballKind, true, inside, speedLimit, ballSpawner.commonMotionAccelerationThreshold, selected);
+        if (!motion.AcceptedLastSample)
+        {
+            if (!motion.HasPosition) EndSharedMotionContact("invalid motion sample");
             return;
         }
 
-        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose tip)
-            || !HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose distal))
-        {
-            EndMagicTap2Contact("tracking lost");
-            magicTap2Motion.Reset();
-            return;
-        }
-
-        bool inside = MagicTap2MotionTracker.ContainsFinger(magicTap2Collider, tip.Position, distal.Position);
-        if (!inside && magicTap2Motion.IsInside)
-        {
-            EndMagicTap2Contact("contact transition");
-        }
-        else if (inside && !magicTap2Motion.IsInside)
+        if (!inside && wasInside) EndSharedMotionContact("contact transition");
+        else if (inside && !wasInside)
         {
             handInBall = handInBall2 = inBall = true;
             canceled = false;
@@ -1730,36 +1741,33 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.intargetTimes++;
             if (isMineBall) Player.TurnShallowYellowMineBall();
             else Player.TurnShallowGreenMineBall();
+            if (UsesIxDLDynamic) ShowModeReadyRing();
         }
-
         if (inside)
         {
-            ballSpawner.indexLoc = tip.Position;
+            ballSpawner.indexLoc = sample.Position;
             ballSpawner.area_type = 1;
             ballSpawner.index = ballIndex;
         }
-
-        if (!magicTap2Motion.Sample(tip.Position, inside, Time.fixedDeltaTime,
-            ballSpawner.magicTap2SpeedThreshold, ballSpawner.magicTap2AccelerationThreshold)) return;
-
+        if (!selected) return;
+        if (UsesIxDLDynamic) logWriter3.RecordIxDLDynamicTrigger(ixdlDynamicMotion, "target", GetInstanceID(),
+            ballIndex, ballKind, isMineBall, sample.Position);
         ballSpawner.triggeredBy = "index";
-        ballSpawner.triggerCondition = '2';
+        ballSpawner.triggerCondition = UsesMagicTap2 ? '2' : 'M';
         logWriter3.triggerTime = GetCurrentEntryElapsedTime();
         logWriter3.successfully_Canceled = false;
         logWriter3.isMineBall = isMineBall;
         logWriter3.handInBall = false;
         ballSpawner.caseTime++;
-        if (isMineBall)
-        {
-            Player.TurnYellowMineBall();
-            ballSpawner.PlaySoundWrong();
-        }
-        else
-        {
-            Player.TurnGreenMineBall();
-            ballSpawner.PlaySound2();
-        }
+        if (isMineBall) { Player.TurnYellowMineBall(); ballSpawner.PlaySoundWrong(); }
+        else { Player.TurnGreenMineBall(); ballSpawner.PlaySound2(); }
         CompleteSelection();
+    }
+
+    private void EndSharedMotionContact(string reason)
+    {
+        if (UsesMagicTap2) EndMagicTap2Contact(reason);
+        else EndDynamicStopContact(reason);
     }
 
     private void EndMagicTap2Contact(string reason)
@@ -1792,6 +1800,7 @@ public class S2AccMode : MonoBehaviour
 
     public void SetDynamicStopMode()
     {
+        if (UsesIxDLDynamic) Study3HandPoseSource.EnsureAvailable();
         dynamicStopCollider = GetComponent<Collider>();
         dynamicStopMotion.Reset();
         ixdlDynamicMotion.Reset();
@@ -1841,9 +1850,7 @@ public class S2AccMode : MonoBehaviour
             ballSpawner.index = ballIndex;
         }
 
-        bool selected = UsesIxDLDynamic
-            ? ixdlDynamicMotion.Sample(pose.Position, inside, Time.fixedDeltaTime, ballSpawner.GetIxDLDynamicMotionSettings())
-            : dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
+        bool selected = dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
         if (selected)
         {
             if (UsesIxDLDynamic)
@@ -1984,7 +1991,7 @@ public class S2AccMode : MonoBehaviour
                 CompleteSelection();
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
-                
+
             }
             else
             {
@@ -1998,7 +2005,7 @@ public class S2AccMode : MonoBehaviour
                     print(555);
                 }
             }
-            
+
             Player.ChangeOpacityBack();
             logWriter3.handInBall = false;
             logWriter3.triggerTime = 0f;
@@ -3520,7 +3527,7 @@ public class S2AccMode : MonoBehaviour
                 ballSpawner.isReact = false;
                 Player.hideCircle();
 
-                
+
             }
             else if (ballSpawner.enable_trigger)
             {
@@ -3544,7 +3551,7 @@ public class S2AccMode : MonoBehaviour
                 Player.hideCircle();
             }
             logWriter3.handInBall = false;
-            
+
         });
 
         reactTap.OutEvent.AddListener(() =>

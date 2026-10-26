@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-26",
+  "app_id": "cli_aa5dc48806f8dc2e",
+  "status": "synced_and_verified",
+  "motion_rules_version": "shared-provider-v2",
+  "note": {
+    "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
+    "document_id": "Krvid94LAoLCVjxupfDc5TYkn8f",
+    "source_sha256": "2b6936ba713e98ba3f656100888b7d1d0ae722d0f24198044cf4b24e9a34b8a0",
+    "source_archive_sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "body_verified": true,
+    "archive_verified": true
+  },
+  "note_title": "2026-10-26 Study3共同规则修订与复测说明（shared-provider-v2）",
+  "verified_note_text_blocks": 44,
+  "historical_reports": {
+    "speed": {
+      "url": "https://kvxm3gyd38.feishu.cn/docx/UCZ3d2ZUpokvEbxXRCbcUaI7nbh",
+      "title": "【历史基线·2026-10-25】Speed边界高速与未触发退出报告",
+      "title_verified": true,
+      "body_notice_verified": true
+    },
+    "magic": {
+      "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu",
+      "title": "【旧实现·2026-10-25】动态阈值与Magic Tap 2.0对比报告",
+      "title_verified": true,
+      "body_notice_verified": true
+    }
+  },
+  "project_evidence_updates": [
+    {
+      "table_id": "tblqAZmn5vW5u5vB",
+      "record_id": "reczz28RfiOh7FPb",
+      "field": "产物入口",
+      "verified": true,
+      "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+    },
+    {
+      "table_id": "tblhUFFMKD7ocIZ7",
+      "record_id": "reczz28Rfj9v4OGp",
+      "field": "证据入口",
+      "verified": true,
+      "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+    },
+    {
+      "table_id": "tblhUFFMKD7ocIZ7",
+      "record_id": "reczz28RfjD2lVbR",
+      "field": "证据入口",
+      "verified": true,
+      "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+    }
+  ],
+  "source_package": {
+    "file": "common_motion_source_20261026.zip",
+    "sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "files": 26,
+    "base_commit": "541976c28afcdcb701942835976edd3abafc4317",
+    "all_archived_files_match_workspace": true
+  },
+  "validation": {
+    "common_calculation_assertions": 58,
+    "provider_cache_assertions": 17,
+    "speed_telemetry_assertions": 108,
+    "python_analysis_tests": 8,
+    "runtime_compilation": {
+      "compiler": "Unity 2020.3.37f1c1 Roslyn",
+      "sources": 279,
+      "references": 338,
+      "errors": 0
+    },
+    "editor_compilation": {
+      "compiler": "Unity 2020.3.37f1c1 Roslyn",
+      "sources": 13,
+      "references": 366,
+      "errors": 0
+    },
+    "unity_scene_interaction_run": false,
+    "quest_pro_deployment_or_experiment_run": false
+  },
+  "limitations": [
+    "MRTK update identity is not a hardware capture timestamp.",
+    "Quest Pro deployment and new experiment collection were not performed."
+  ]
+}

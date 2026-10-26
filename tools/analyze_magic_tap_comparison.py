@@ -87,6 +87,13 @@ def stats(values):
                 p95=float(np.quantile(a, .95)), minimum=float(a.min()), maximum=float(a.max()))
 
 
+def ensure_legacy_session(settings):
+    if any(row.get("motionRulesVersion", "").startswith("shared-") for row in settings):
+        raise ValueError("This analysis replays the legacy 1 mm / fixed-step implementation. "
+                         "New shared motion sessions must use their common-motion event snapshots; "
+                         "do not mix them with the October 25 historical comparison.")
+
+
 def analyze(root, output):
     details = []
     quality = {}
@@ -98,6 +105,7 @@ def analyze(root, output):
         trajectory_path = next(folder.glob("*-trajectory.csv"))
         trials = read_trials(time_path)
         settings = read_csv(settings_path)
+        ensure_legacy_session(settings)
         ends = [r for r in settings if r["event"] == "trial_end"]
         trajectory = read_csv(trajectory_path)
         by_motion_time = {key_time(r["motionFixedTime"]): r for r in trajectory}
@@ -234,7 +242,11 @@ def write_report_and_plot(result, output):
             d = lookup[(context, '动态阈值')]['by_id'][i]['latency_ms']
             by_id_rows.append(f"| {context} | {i} | {m['mean']:.0f} | {d['mean']:.0f} | {m['median']:.0f} | {d['median']:.0f} |")
     zero_rows, by_id_rows = "\n".join(zero_rows), "\n".join(by_id_rows)
-    report = rf"""# 动态阈值与 Magic Tap 2.0：正常选择及慢速逗留实验
+    report = rf"""# 【旧实现数据】动态阈值与 Magic Tap 2.0：正常选择及球内画圈实验
+
+> **版本状态：旧实现实验报告。** 本文192个试次采集于2026-10-25，保留原图表和统计用于诊断，不是共同规则版本的性能验证；于2026-10-26标记为历史版本。
+
+> **标记原因：** 旧版Magic跳过不足1 mm位移，动态模式接受零位移且使用有符号加速度；两种模式的采样处理、加速度定义和目标内判定不同，结果不能单独归因于动态阈值。新版已统一这些处理，仍需Quest Pro重新采集。参见[共同规则修订与复测说明](https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f)。
 
 实验日期：2026-10-25。分析对象：4 个分别采集的会话，共 192 个完成试次。
 

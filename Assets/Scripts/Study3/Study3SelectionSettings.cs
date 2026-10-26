@@ -41,12 +41,16 @@ public sealed class Study3SelectionSettings : ScriptableObject
     public float speedMaxThreshold = 0.2f;
     public float longPressTimeThreshold = 0.5f;
 
+    [Header("Shared Magic Tap 2.0 / IxDL motion")]
+    [Min(0f), Tooltip("两种模式共用的速度向量变化模长门限；使用相邻新MRTK更新的实际间隔，单位m/s²。旧的独立加速度字段不再生效。 ")]
+    public float commonMotionAccelerationThreshold = 11.661f;
     [Header("Magic Tap 2.0")]
     [InspectorName("Speed Threshold (m/s)"), Min(0f)]
     [Tooltip("食指速度向量的模长必须严格小于此值，并同时满足加速度条件。独立于 React Tap。")]
     public float magicTap2SpeedThreshold = 0.2f;
     [InspectorName("Acceleration Threshold (m/s²)"), Min(0f)]
     [Tooltip("相邻速度向量之差除以 fixedDeltaTime 的模长必须严格小于此值；不是有符号的速率变化。")]
+    [HideInInspector]
     public float magicTap2AccelerationThreshold = 11.661f;
 
     [Header("Dynamic Stop (demo motion logic)")]
@@ -75,9 +79,10 @@ public sealed class Study3SelectionSettings : ScriptableObject
     [Tooltip("高速历史的指数衰减时间尺度，单位秒；不是停止后必须等待的时间。")]
     public float dynamicStopHistorySeconds = 0.18f;
 
-    [Header("IxDL Dynamic (previous fixed sample)")]
+    [Header("IxDL Dynamic (previous accepted hand update)")]
     [InspectorName("Acceleration Threshold (m/s²)")]
     [Tooltip("有符号加速度 (本次速率 - 前次速率) / fixedDeltaTime 必须严格小于此值。")]
+    [HideInInspector]
     public float ixdlAccelerationThreshold = 0.375f;
     [InspectorName("Input Speed Start (m/s)"), Min(0f)]
     public float ixdlInputSpeedMin = 0f;
@@ -86,7 +91,7 @@ public sealed class Study3SelectionSettings : ScriptableObject
     [InspectorName("Speed Threshold Start (m/s)"), Min(0f)]
     public float ixdlSpeedThresholdMin = 0.03f;
     [InspectorName("Speed Threshold End (m/s)"), Min(0f)]
-    [Tooltip("前一次 FixedUpdate 的速率线性映射为本次速度阈值，超出范围时截到端点；本次速率必须严格小于此阈值。")]
+    [Tooltip("前一次接受的手部更新速率线性映射为本次速度阈值，超出范围时截到端点；本次速率必须严格小于此阈值。")]
     public float ixdlSpeedThresholdMax = 0.06f;
 
     [Header("Pinch")]
@@ -140,6 +145,7 @@ public sealed class Study3SelectionSettings : ScriptableObject
         target.speedMaxThreshold = speedMaxThreshold;
         target.longPressTimeThreshold = longPressTimeThreshold;
 
+        target.commonMotionAccelerationThreshold = commonMotionAccelerationThreshold;
         target.magicTap2SpeedThreshold = magicTap2SpeedThreshold;
         target.magicTap2AccelerationThreshold = magicTap2AccelerationThreshold;
 

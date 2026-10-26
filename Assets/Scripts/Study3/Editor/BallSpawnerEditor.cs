@@ -36,8 +36,8 @@ public sealed class BallSpawnerEditor : Editor
         "speedMinThreshold",
         "speedMaxThreshold",
         "longPressTimeThreshold",
+        "commonMotionAccelerationThreshold",
         "magicTap2SpeedThreshold",
-        "magicTap2AccelerationThreshold",
         "dynamicStopSampleMs",
         "dynamicStopSpeedMin",
         "dynamicStopSpeedMax",
@@ -46,7 +46,6 @@ public sealed class BallSpawnerEditor : Editor
         "dynamicStopAccelMax",
         "dynamicStopAccelGain",
         "dynamicStopHistorySeconds",
-        "ixdlAccelerationThreshold",
         "ixdlInputSpeedMin",
         "ixdlInputSpeedMax",
         "ixdlSpeedThresholdMin",
@@ -68,8 +67,8 @@ public sealed class BallSpawnerEditor : Editor
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("samplingRateHz"));
         EditorGUILayout.HelpBox(
-            "控制 Study3Experiment 的全局 FixedUpdate 频率（默认 50 Hz），同时影响手部运动计算和 trajectory 日志。"
-            + "运行时修改会立即生效，停用 Spawner 后恢复原时间步。实际手部新数据频率受设备限制；Dynamic Stop 还受 Sample Interval (ms) 限制。",
+            "控制 Study3Experiment 的全局 FixedUpdate 判定频率（默认50 Hz）和trajectory日志。"
+            + "Magic Tap 2.0与IxDL共用新MRTK更新，运动计算使用更新接收时间间隔；固定回调频率不等于新姿态频率。停用Spawner后恢复原时间步。Dynamic Stop仍受Sample Interval限制。",
             MessageType.Info);
         EditorGUILayout.Space();
 

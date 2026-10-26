@@ -209,7 +209,11 @@ plt.close(fig)
 summary_rows = "\n".join(f"| {r['id']} | {r['entries']} | {r['trigger_entries']} | {r['failed_entries']} | {r['entry_trigger_rate']:.1%} | {r['reentry_trials']} | {r['boundary_candidates']} | {r['candidate_trials']} |" for r in summary)
 candidate_rows = "\n".join(f"| {r['id']} | {r['case']} | {r['entry_sequence']} | {r['last_inside_speed_m_s']:.6f} | {r['exit_speed_m_s']:.6f} | {r['wall_gap_ms']:.3f} |" for r in verified_candidates)
 time_rows = "\n".join(f"| {r['id']} | {r['mean_trial_time_s']:.3f} | {r['median_trial_time_s']:.3f} | {r['median_successful_entry_time_s']*1000:.0f} |" for r in summary)
-report = rf"""# Speed 正常选择实验：边界高速与未触发退出分析
+report = rf"""# 【历史基线】Speed 正常选择实验：边界高速与未触发退出分析
+
+> **版本状态：2026-10-25旧会话历史基线。** 本文保留原始50 Hz Speed结果；本次Magic与IxDL共同规则修订没有修改Speed算法，13/24次候选的描述性统计没有被推翻。
+
+> **标记原因：** 该会话没有采用新增的共同更新序号和事件快照，不能作为新版两种模式的复测证据；原结果仍仅支持Speed边界时序相关的漏触发假设，不能证明异常掉帧。参见[共同规则修订与复测说明](https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f)。
 
 实验日期：2026-10-25。采集会话：20261025-20-15-08。
 

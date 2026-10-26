@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Maps the previous fixed sample's speed to the current speed limit.</summary>
+/// <summary>Maps the previous accepted hand update's speed to the current speed limit.</summary>
 public readonly struct IxDLDynamicMotionSettings
 {
     public readonly float AccelerationLimit;
@@ -26,72 +26,42 @@ public readonly struct IxDLDynamicMotionSettings
     }
 }
 
-/// <summary>
-/// Samples once per FixedUpdate. Acceleration is signed, matching AcceStudy3.
-/// Contact and both motion conditions form a single rising-edge selection gate.
-/// </summary>
+/// <summary>Dynamic speed gate over the same timestamped vector motion as Magic Tap 2.0.</summary>
 public sealed class IxDLDynamicMotionTracker
 {
+    public readonly Study3MotionTracker Motion = new Study3MotionTracker();
     public bool IsInside { get; private set; }
     public bool IsActive { get; private set; }
-    public bool HasAcceleration { get; private set; }
+    public bool HasAcceleration => Motion.HasAcceleration;
     public bool ConditionsMet { get; private set; }
-    public float Speed { get; private set; }
-    public float PreviousSpeed { get; private set; }
-    public float Acceleration { get; private set; }
+    public float Speed => Motion.Speed;
+    public float PreviousSpeed => Motion.PreviousSpeed;
+    public float Acceleration => Motion.Acceleration;
     public float SpeedLimit { get; private set; }
     public float AccelerationLimit { get; private set; }
     public bool SpeedConditionMet => HasAcceleration && Speed < SpeedLimit;
     public bool AccelerationConditionMet => HasAcceleration && Acceleration < AccelerationLimit;
 
-    private bool hasPosition;
-    private bool hasSpeed;
-    private Vector3 previousPosition;
-
-    public bool Sample(Vector3 position, bool inside, float deltaTime, IxDLDynamicMotionSettings settings)
+    public bool Sample(Study3MotionSample sample, bool inside, double now, IxDLDynamicMotionSettings settings)
     {
-        if (!(deltaTime > 0f) || float.IsInfinity(deltaTime))
+        if (!Motion.TrySample(sample, now))
         {
-            Reset();
+            if (!Motion.HasPosition) { IsInside = IsActive = ConditionsMet = false; }
             return false;
         }
-
         IsInside = inside;
         if (!inside) IsActive = false;
         AccelerationLimit = settings.AccelerationLimit;
-
-        if (!hasPosition)
-        {
-            hasPosition = true;
-            previousPosition = position;
-            SpeedLimit = settings.SpeedLimitMin;
-            return false;
-        }
-
-        float currentSpeed = Vector3.Distance(previousPosition, position) / deltaTime;
-        previousPosition = position;
-        PreviousSpeed = Speed;
-        HasAcceleration = hasSpeed;
-        // Read the previous speed before replacing it with this sample's speed.
         SpeedLimit = settings.GetSpeedLimit(PreviousSpeed);
-        Acceleration = HasAcceleration
-            ? (currentSpeed - PreviousSpeed) / deltaTime
-            : float.PositiveInfinity;
-        Speed = currentSpeed;
-        hasSpeed = true;
-
-        bool condition = inside && SpeedConditionMet && AccelerationConditionMet;
-        bool risingEdge = condition && !ConditionsMet;
-        ConditionsMet = condition;
-        if (risingEdge) IsActive = true;
-        return risingEdge;
+        ConditionsMet = inside && SpeedConditionMet && AccelerationConditionMet;
+        bool selected = ConditionsMet && !IsActive;
+        if (selected) IsActive = true;
+        return selected;
     }
-
     public void Reset()
     {
-        IsInside = IsActive = HasAcceleration = ConditionsMet = false;
-        hasPosition = hasSpeed = false;
-        previousPosition = Vector3.zero;
-        Speed = PreviousSpeed = Acceleration = SpeedLimit = AccelerationLimit = 0f;
+        Motion.Reset();
+        IsInside = IsActive = ConditionsMet = false;
+        SpeedLimit = AccelerationLimit = 0f;
     }
 }

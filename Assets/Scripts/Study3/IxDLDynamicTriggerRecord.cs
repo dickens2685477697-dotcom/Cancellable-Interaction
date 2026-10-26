@@ -13,12 +13,15 @@ public readonly struct IxDLDynamicTriggerRecord
     public readonly float AccelerationThreshold;
 
     public IxDLDynamicTriggerRecord(IxDLDynamicMotionTracker motion)
+        : this(motion.Motion, motion.SpeedLimit, motion.AccelerationLimit) { }
+
+    public IxDLDynamicTriggerRecord(Study3MotionTracker motion, float speedLimit, float accelerationLimit)
     {
         TriggerSpeed = motion.Speed;
         PreviousSpeed = motion.PreviousSpeed;
-        SpeedThreshold = motion.SpeedLimit;
+        SpeedThreshold = speedLimit;
         TriggerAcceleration = motion.Acceleration;
-        AccelerationThreshold = motion.AccelerationLimit;
+        AccelerationThreshold = accelerationLimit;
     }
 
     public string ToCsv()
