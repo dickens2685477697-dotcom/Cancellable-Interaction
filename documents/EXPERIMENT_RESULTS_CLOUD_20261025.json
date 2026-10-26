@@ -18,7 +18,7 @@
       "local_report": "output\\speed_normal_3id_20261025_201508\\analysis_report.md",
       "source_report_sha256": "03f758f27e0630dfb16d2fca95258dc018dd4ffd8984d97539ba46e43360ae9b",
       "source_image_sha256": "fde0e67fd842f8ea53968cdfc67b4b33896e8f2a850aca0b184af3cfe7122a11",
-      "uploaded_archive_sha256": "abdf2592e6ad81477128337e9b17bdbd32b1c4bc548da4a5e2c18f0a1da2c2b1",
+      "uploaded_archive_sha256": "9464f8309d734ca2a2554a8c211321d97e59670fee25e06559fabadb191bde55",
       "body_readback_verified": true,
       "paragraphs_readback_verified": 55,
       "native_tables": 8,
@@ -27,7 +27,8 @@
       "historical_reason_and_new_rules_link_verified": true,
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true
+      "attachment_readback_verified": true,
+      "download_note_version": "shared-provider-v3"
     },
     {
       "title": "【旧实现·2026-10-25】动态阈值与Magic Tap 2.0对比报告",
@@ -37,7 +38,7 @@
       "local_report": "output\\magic_tap2_comparison_20261025\\分析报告.md",
       "source_report_sha256": "f7da42ad6d53a45a734c0d57f6ce6b9ef9203a616ed8efd5498d63d335035650",
       "source_image_sha256": "6ea2f3cff8716f7519c2245d1c0b40d9174a9a437163ae4d6ffb4cce47523291",
-      "uploaded_archive_sha256": "f96f6cfa7bed8fe9ab3d215017cef55b5d3d990b441c9561bac5b0622ea9b7c8",
+      "uploaded_archive_sha256": "fca4c007f2e3ef0c13616ef7ff5178ccf8061ded6ee0c6b7ecf0edb6db05a498",
       "body_readback_verified": true,
       "paragraphs_readback_verified": 55,
       "native_tables": 5,
@@ -46,7 +47,8 @@
       "historical_reason_and_new_rules_link_verified": true,
       "figure_in_results_section_verified": true,
       "image_readback_verified": true,
-      "attachment_readback_verified": true
+      "attachment_readback_verified": true,
+      "download_note_version": "shared-provider-v3"
     }
   ],
   "progress_link_updates": [
@@ -271,9 +273,16 @@
   "common_rules_note": {
     "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
     "document_id": "Krvid94LAoLCVjxupfDc5TYkn8f",
-    "source_sha256": "2b6936ba713e98ba3f656100888b7d1d0ae722d0f24198044cf4b24e9a34b8a0",
-    "source_archive_sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "source_sha256": "e250b898f6f5e6dadc4859d66d0ccd676cca0fe310e3e1b21820bee8bd3fa189",
+    "source_archive_sha256": "77fea0731f7fb39e6f73841255d38ebc2cbbad19bd88742b90ddbfb243da7af5",
     "body_verified": true,
-    "archive_verified": true
+    "archive_verified": true,
+    "motion_rules_version": "shared-provider-v3",
+    "acceleration_thresholds_independent": true
+  },
+  "independent_threshold_correction": {
+    "date": "2026-10-26",
+    "reason": "Per-mode acceleration thresholds remain separate inputs; common rules apply to data processing, not parameter values.",
+    "cloud_verified": true
   }
 }

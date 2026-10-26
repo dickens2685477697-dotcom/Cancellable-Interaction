@@ -374,7 +374,7 @@ public class LogWriter3 : MonoBehaviour
 
     private string SessionConfiguration()
     {
-        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R},{ballSpawner.commonMotionAccelerationThreshold:R},{ballSpawner.ixdlInputSpeedMin:R},{ballSpawner.ixdlInputSpeedMax:R},{ballSpawner.ixdlSpeedThresholdMin:R},{ballSpawner.ixdlSpeedThresholdMax:R},{CurrentMotionRules},{CurrentMotionTimestampKind}");
+        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R},{ballSpawner.ixdlAccelerationThreshold:R},{ballSpawner.ixdlInputSpeedMin:R},{ballSpawner.ixdlInputSpeedMax:R},{ballSpawner.ixdlSpeedThresholdMin:R},{ballSpawner.ixdlSpeedThresholdMax:R},{CurrentMotionRules},{CurrentMotionTimestampKind}");
     }
 
     private void WriteSessionSettings(string eventName)
@@ -383,11 +383,11 @@ public class LogWriter3 : MonoBehaviour
         if (sessionSettingsWriter == null)
         {
             sessionSettingsWriter = OpenStudyCsv("session-settings",
-                "event,time,fixedTime,realtime,frame,case,id,mode,requestedSamplingHz,fixedDeltaTime,fixedSamplingHz,timeScale,minSpeedThreshold,maxSpeedThreshold,dwellTimeoutSeconds,directionAngleThreshold,directionSmoothingAlpha,directionMinSpeed,directionWindowSamples,useEntryDirectionAxis,entryDirectionConeHalfAngle,releaseDistanceDeltaThreshold,wristTiltThreshold,targetSelectionMode,enableMineBall,enabledOb,enablePreview,magicTap2SpeedThreshold,magicTap2AccelerationThreshold,commonMotionAccelerationThreshold,ixdlInputSpeedMin,ixdlInputSpeedMax,ixdlSpeedThresholdMin,ixdlSpeedThresholdMax,motionRulesVersion,motionTimestampKind,schemaVersion");
+                "event,time,fixedTime,realtime,frame,case,id,mode,requestedSamplingHz,fixedDeltaTime,fixedSamplingHz,timeScale,minSpeedThreshold,maxSpeedThreshold,dwellTimeoutSeconds,directionAngleThreshold,directionSmoothingAlpha,directionMinSpeed,directionWindowSamples,useEntryDirectionAxis,entryDirectionConeHalfAngle,releaseDistanceDeltaThreshold,wristTiltThreshold,targetSelectionMode,enableMineBall,enabledOb,enablePreview,magicTap2SpeedThreshold,magicTap2AccelerationThreshold,ixdlAccelerationThreshold,ixdlInputSpeedMin,ixdlInputSpeedMax,ixdlSpeedThresholdMin,ixdlSpeedThresholdMax,motionRulesVersion,motionTimestampKind,schemaVersion");
         }
         lastSessionConfiguration = SessionConfiguration();
         sessionSettingsWriter.WriteLine(FormattableString.Invariant(
-            $"{eventName},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{Time.frameCount},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{lastSessionConfiguration},3"));
+            $"{eventName},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{Time.frameCount},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{lastSessionConfiguration},4"));
     }
 
     private void LateUpdate()

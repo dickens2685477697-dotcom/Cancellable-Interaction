@@ -21,7 +21,8 @@ public static class IxDLDynamicValidation
         try
         {
             BallSpawner host = hostObject.AddComponent<BallSpawner>();
-            settings.commonMotionAccelerationThreshold = 0.25f;
+            settings.magicTap2AccelerationThreshold = 9f;
+            settings.ixdlAccelerationThreshold = 0.25f;
             settings.ixdlInputSpeedMin = 1f;
             settings.ixdlInputSpeedMax = 3f;
             settings.ixdlSpeedThresholdMin = 0.2f;
@@ -29,9 +30,16 @@ public static class IxDLDynamicValidation
             host.SelectionSettings = settings;
             host.ApplySelectionSettings();
             IxDLDynamicMotionSettings applied = host.GetIxDLDynamicMotionSettings();
-            Near(applied.AccelerationLimit, 0.25f, "Shared acceleration limit");
+            Near(applied.AccelerationLimit, 0.25f, "Independent dynamic acceleration limit");
+            Near(host.magicTap2AccelerationThreshold, 9f, "Independent Magic acceleration limit");
+            settings.magicTap2AccelerationThreshold = 4f;
+            host.ApplySelectionSettings();
+            Near(host.GetIxDLDynamicMotionSettings().AccelerationLimit, 0.25f, "Magic edit changed dynamic threshold");
+            settings.ixdlAccelerationThreshold = 0.75f;
+            host.ApplySelectionSettings();
+            Near(host.magicTap2AccelerationThreshold, 4f, "Dynamic edit changed Magic threshold");
             Near(applied.GetSpeedLimit(2f), 0.4f, "Shared mapping parameters");
-            foreach (string field in new[] { "commonMotionAccelerationThreshold", "ixdlInputSpeedMin", "ixdlInputSpeedMax", "ixdlSpeedThresholdMin", "ixdlSpeedThresholdMax" })
+            foreach (string field in new[] { "magicTap2AccelerationThreshold", "ixdlAccelerationThreshold", "ixdlInputSpeedMin", "ixdlInputSpeedMax", "ixdlSpeedThresholdMin", "ixdlSpeedThresholdMax" })
             {
                 Require(new SerializedObject(host).FindProperty(field) != null
                     && new SerializedObject(settings).FindProperty(field) != null, "Missing Inspector field: " + field);

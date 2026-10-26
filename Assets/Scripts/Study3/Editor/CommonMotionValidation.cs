@@ -79,6 +79,19 @@ public static class CommonMotionValidation
         Near(d.SpeedLimit, .06f, "Dynamic threshold did not use previous accepted speed");
         Near(dynamic.GetSpeedLimit(-1), .02f, "Mapping lower clamp"); Near(dynamic.GetSpeedLimit(2), .06f, "Mapping upper clamp");
 
+        // Identical motion is allowed to have independently configured acceleration gates.
+        m.Reset(); d.Reset();
+        var independent = new IxDLDynamicMotionSettings(.375f, 0, 1, .1f, .1f);
+        foreach (var sample in new[] { S(1, 12), S(2, 12.02, .0004f), S(3, 12.04, .0012f) })
+        { m.Sample(sample, true, sample.Timestamp, .1f, 11.661f); d.Sample(sample, true, sample.Timestamp, independent); }
+        Require(m.IsSelected, "Magic did not use its independent acceleration threshold");
+        Require(!d.IsActive && d.SpeedConditionMet && !d.AccelerationConditionMet, "Dynamic inherited Magic acceleration threshold");
+        Near(m.Acceleration, d.Acceleration, "Independent gates changed the common calculation");
+        var next = S(4, 12.06, .0024f);
+        Require(d.Sample(next, true, next.Timestamp, new IxDLDynamicMotionSettings(2, 0, 1, .1f, .1f)), "Dynamic threshold edit did not take effect");
+        Near(d.AccelerationLimit, 2, "Dynamic threshold was overwritten");
+        Near(new IxDLDynamicTriggerRecord(d).AccelerationThreshold, 2, "Trigger snapshot did not capture the active independent threshold");
+
         var motion = new Study3MotionTracker();
         Require(motion.TrySample(S(1, 5), 5), "Baseline rejected");
         Require(!motion.TrySample(S(1, 5, 1), 5.01), "Same ID with changed position accepted");

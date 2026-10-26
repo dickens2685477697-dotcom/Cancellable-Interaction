@@ -14,8 +14,9 @@ class LegacyComparisonVersionChecks(unittest.TestCase):
 
     def test_common_motion_is_not_replayed_with_legacy_filter(self):
         for mode in ("magicTap2", "ixdlDynamic"):
-            with self.subTest(mode=mode), self.assertRaisesRegex(ValueError, "common-motion"):
-                comparison.ensure_legacy_session([{"mode": mode, "motionRulesVersion": "shared-provider-v2"}])
+            for version in ("shared-provider-v2", "shared-provider-v3"):
+                with self.subTest(mode=mode, version=version), self.assertRaisesRegex(ValueError, "common-motion"):
+                    comparison.ensure_legacy_session([{"mode": mode, "motionRulesVersion": version}])
 
     def test_mixed_versions_are_rejected(self):
         with self.assertRaises(ValueError):

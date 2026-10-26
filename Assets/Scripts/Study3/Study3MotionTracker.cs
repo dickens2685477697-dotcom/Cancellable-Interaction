@@ -16,7 +16,7 @@ public readonly struct Study3MotionSample
 /// <summary>Common preprocessing for Magic Tap 2.0 and IxDL Dynamic.</summary>
 public sealed class Study3MotionTracker
 {
-    public const string RulesVersion = "shared-provider-v2";
+    public const string RulesVersion = "shared-provider-v3";
     public const string TimestampKind = "mrtk_update_received_realtime";
     public const double MaximumAgeSeconds = 0.25;
     public Study3MotionSample LastSample { get; private set; }

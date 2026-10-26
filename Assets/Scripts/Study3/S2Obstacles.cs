@@ -1561,12 +1561,13 @@ public class S2Obstacles : MonoBehaviour
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
             return;
         }
+        float accelerationLimit = UsesMagicTap2 ? ballSpawner.magicTap2AccelerationThreshold : ballSpawner.ixdlAccelerationThreshold;
         if (!Study3HandPoseSource.TryGetSample(out Study3MotionSample sample))
         {
             EndSharedMotionContact("tracking lost");
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
             logWriter3?.RecordCommonMotionObservation(default, motion, "obstacle", GetInstanceID(),
-                ballIndex, ballKind, false, false, 0f, ballSpawner.commonMotionAccelerationThreshold, false);
+                ballIndex, ballKind, false, false, 0f, accelerationLimit, false);
             return;
         }
         if (motion.HasPosition && (sample.SourceId != motion.LastSample.SourceId || sample.TrackingEpoch != motion.LastSample.TrackingEpoch
@@ -1579,12 +1580,12 @@ public class S2Obstacles : MonoBehaviour
         bool inside = Study3MotionTracker.ContainsPoint(UsesMagicTap2 ? magicTap2Collider : dynamicStopCollider, sample.Position);
         double now = Time.realtimeSinceStartupAsDouble;
         bool selected = UsesMagicTap2
-            ? magicTap2Motion.Sample(sample, inside, now, ballSpawner.magicTap2SpeedThreshold, ballSpawner.commonMotionAccelerationThreshold)
+            ? magicTap2Motion.Sample(sample, inside, now, ballSpawner.magicTap2SpeedThreshold, accelerationLimit)
             : ixdlDynamicMotion.Sample(sample, inside, now, ballSpawner.GetIxDLDynamicMotionSettings());
         selected = selected && !triggered;
         float speedLimit = UsesMagicTap2 ? ballSpawner.magicTap2SpeedThreshold : ixdlDynamicMotion.SpeedLimit;
         logWriter3?.RecordCommonMotionObservation(sample, motion, "obstacle", GetInstanceID(),
-            ballIndex, ballKind, true, inside, speedLimit, ballSpawner.commonMotionAccelerationThreshold, selected);
+            ballIndex, ballKind, true, inside, speedLimit, accelerationLimit, selected);
         if (!motion.AcceptedLastSample)
         {
             if (!motion.HasPosition) EndSharedMotionContact("invalid motion sample");

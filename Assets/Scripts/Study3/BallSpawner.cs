@@ -235,16 +235,12 @@
      public float speedMaxThreshold = 0.2f;
      [Tooltip("Dwell触发阈值：食指进入目标区域后需要停留的时间，单位秒")]
      public float longPressTimeThreshold = 0.5f;
-     [Header("Shared Magic Tap 2.0 / IxDL motion")]
-     [Min(0f), Tooltip("两种模式共用的速度向量变化模长门限；使用相邻新MRTK更新的实际间隔，单位m/s²。旧的独立加速度字段不再生效。 ")]
-     public float commonMotionAccelerationThreshold = 11.661f;
      [Header("Magic Tap 2.0")]
      [InspectorName("Speed Threshold (m/s)"), Min(0f)]
      [Tooltip("食指速度向量的模长必须严格小于此值，并同时满足加速度条件。独立于 React Tap。")]
      public float magicTap2SpeedThreshold = 0.2f;
      [InspectorName("Acceleration Threshold (m/s²)"), Min(0f)]
-     [Tooltip("相邻速度向量之差除以 fixedDeltaTime 的模长必须严格小于此值；不是有符号的速率变化。")]
-     [HideInInspector]
+     [Tooltip("本模式独立输入的加速度阈值（m/s²）；速度向量变化模长除以实际新更新间隔必须严格小于此值。不会覆盖另一模式的阈值。")]
      public float magicTap2AccelerationThreshold = 11.661f;
      [Header("Dynamic Stop (demo motion logic)")]
      [InspectorName("Sample Interval (ms)"), Min(0.1f)]
@@ -273,8 +269,7 @@
      public float dynamicStopHistorySeconds = 0.18f;
      [Header("IxDL Dynamic (previous accepted hand update)")]
      [InspectorName("Acceleration Threshold (m/s²)")]
-     [Tooltip("使用有符号加速度 (本次速率 - 前次速率) / fixedDeltaTime；严格小于此值才满足条件。")]
-     [HideInInspector]
+     [Tooltip("本模式独立输入的加速度阈值（m/s²）；速度向量变化模长除以实际新更新间隔必须严格小于此值。不会覆盖另一模式的阈值。")]
      public float ixdlAccelerationThreshold = 0.375f;
      [InspectorName("Input Speed Start (m/s)"), Min(0f)]
      public float ixdlInputSpeedMin = 0f;
@@ -1609,7 +1604,7 @@
 
      public IxDLDynamicMotionSettings GetIxDLDynamicMotionSettings()
      {
-         return new IxDLDynamicMotionSettings(commonMotionAccelerationThreshold,
+         return new IxDLDynamicMotionSettings(ixdlAccelerationThreshold,
              ixdlInputSpeedMin, ixdlInputSpeedMax, ixdlSpeedThresholdMin, ixdlSpeedThresholdMax);
      }
 

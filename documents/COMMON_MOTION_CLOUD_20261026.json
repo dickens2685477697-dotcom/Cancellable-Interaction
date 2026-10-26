@@ -2,16 +2,16 @@
   "date": "2026-10-26",
   "app_id": "cli_aa5dc48806f8dc2e",
   "status": "synced_and_verified",
-  "motion_rules_version": "shared-provider-v2",
+  "motion_rules_version": "shared-provider-v3",
   "note": {
     "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
     "document_id": "Krvid94LAoLCVjxupfDc5TYkn8f",
-    "source_sha256": "2b6936ba713e98ba3f656100888b7d1d0ae722d0f24198044cf4b24e9a34b8a0",
-    "source_archive_sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "source_sha256": "e250b898f6f5e6dadc4859d66d0ccd676cca0fe310e3e1b21820bee8bd3fa189",
+    "source_archive_sha256": "77fea0731f7fb39e6f73841255d38ebc2cbbad19bd88742b90ddbfb243da7af5",
     "body_verified": true,
     "archive_verified": true
   },
-  "note_title": "2026-10-26 Study3共同规则修订与复测说明（shared-provider-v2）",
+  "note_title": "2026-10-26 Study3共同规则修订与复测说明（shared-provider-v3，阈值独立输入）",
   "verified_note_text_blocks": 44,
   "historical_reports": {
     "speed": {
@@ -51,14 +51,14 @@
     }
   ],
   "source_package": {
-    "file": "common_motion_source_20261026.zip",
-    "sha256": "6798214a0501dc9e8311e3036113ea2d33cd4dc1e1ab4b0d011c9b03123cf844",
+    "file": "common_motion_source_20261026_v3.zip",
+    "sha256": "77fea0731f7fb39e6f73841255d38ebc2cbbad19bd88742b90ddbfb243da7af5",
     "files": 26,
-    "base_commit": "541976c28afcdcb701942835976edd3abafc4317",
+    "base_commit": "1bd180f00cd02b99f583a1b3926c1de6d55a4ff6",
     "all_archived_files_match_workspace": true
   },
   "validation": {
-    "common_calculation_assertions": 58,
+    "common_calculation_assertions": 64,
     "provider_cache_assertions": 17,
     "speed_telemetry_assertions": 108,
     "python_analysis_tests": 8,
@@ -103,5 +103,38 @@
       "wiki_directory_membership": false,
       "wiki_directory_block_reason": "User authorization lacks wiki:wiki or wiki:node:move."
     }
+  },
+  "revision_history": [
+    {
+      "motion_rules_version": "shared-provider-v2",
+      "note": {
+        "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f",
+        "document_id": "Krvid94LAoLCVjxupfDc5TYkn8f",
+        "source_sha256": "e250b898f6f5e6dadc4859d66d0ccd676cca0fe310e3e1b21820bee8bd3fa189",
+        "source_archive_sha256": "77fea0731f7fb39e6f73841255d38ebc2cbbad19bd88742b90ddbfb243da7af5",
+        "body_verified": true,
+        "archive_verified": true
+      },
+      "source_package": {
+        "file": "common_motion_source_20261026_v3.zip",
+        "sha256": "77fea0731f7fb39e6f73841255d38ebc2cbbad19bd88742b90ddbfb243da7af5",
+        "files": 26,
+        "base_commit": "1bd180f00cd02b99f583a1b3926c1de6d55a4ff6",
+        "all_archived_files_match_workspace": true
+      },
+      "correction_reason": "Shared preprocessing was incorrectly coupled to one acceleration threshold. User requires separately editable per-mode thresholds."
+    }
+  ],
+  "threshold_configuration": {
+    "independent": true,
+    "magic_field": "magicTap2AccelerationThreshold",
+    "dynamic_field": "ixdlAccelerationThreshold",
+    "magic_code_default_m_s2": 11.661,
+    "dynamic_code_default_m_s2": 0.375,
+    "existing_scene_and_settings_values_preserved": true,
+    "shared_threshold_field_removed": true,
+    "shared_preprocessing_preserved": true,
+    "session_settings_schema": 4,
+    "cloud_body_archives_and_project_index_verified": true
   }
 }
