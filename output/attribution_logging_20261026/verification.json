@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-26",
+  "project": "D:/HLStudy4_22",
+  "baselineGitHead": "7e82baa",
+  "validationScope": "offline C# compilation and regression/file checks; not Unity scene or Quest device validation",
+  "checks": {
+    "attributionAssertions": 85,
+    "recorderFileAssertions": 25,
+    "dynamicStopAssertions": 15,
+    "speedTelemetryAssertions": 108,
+    "commonMotionAssertions": 64,
+    "commonMotionProviderAssertions": 17,
+    "pythonTests": 18,
+    "legacyHeadersAndSerializers": "passed",
+    "newFileSchemasAndCsvQuoting": "passed",
+    "runtimeCompilation": "passed",
+    "editorCompilation": "passed",
+    "gitDiffCheck": "passed",
+    "poseQueryAndMetaChecks": {
+      "baseline_query_checks": [
+        {
+          "path": "Assets/Scripts/fast_tap_thershold/FastTapThresholdExperiment.cs",
+          "baseline_pose_queries": 1,
+          "current_pose_queries": 1
+        },
+        {
+          "path": "Assets/Scripts/fast_tap_thershold/FastTapThresholdLogger.cs",
+          "baseline_pose_queries": 0,
+          "current_pose_queries": 0
+        },
+        {
+          "path": "Assets/Scripts/Study3/AcceStudy3_2.cs",
+          "baseline_pose_queries": 3,
+          "current_pose_queries": 3
+        },
+        {
+          "path": "Assets/Scripts/Study3/BallSpawner.cs",
+          "baseline_pose_queries": 2,
+          "current_pose_queries": 2
+        },
+        {
+          "path": "Assets/Scripts/Study3/LogWriter3.cs",
+          "baseline_pose_queries": 0,
+          "current_pose_queries": 0
+        },
+        {
+          "path": "Assets/Scripts/Study3/Pinch.cs",
+          "baseline_pose_queries": 2,
+          "current_pose_queries": 2
+        },
+        {
+          "path": "Assets/Scripts/Study3/ReleaseGesture.cs",
+          "baseline_pose_queries": 6,
+          "current_pose_queries": 6
+        },
+        {
+          "path": "Assets/Scripts/Study3/S2AccMode.cs",
+          "baseline_pose_queries": 12,
+          "current_pose_queries": 12
+        },
+        {
+          "path": "Assets/Scripts/Study3/S2Obstacles.cs",
+          "baseline_pose_queries": 10,
+          "current_pose_queries": 10
+        }
+      ],
+      "new_source_meta_checks": 11
+    }
+  },
+  "fileFixtures": {
+    "path": "Temp/AttributionRecorderFileTest-0d47e4547598437a80b38ea3213db2a9",
+    "quality": {
+      "formal_entry_outcomes": {
+        "trigger": 1,
+        "aborted": 2
+      },
+      "observed_resolved_entries": 1,
+      "task_results_by_mode_source_instruction": [
+        {
+          "mode": "pinchDwell",
+          "source": "target",
+          "expected_action": "select",
+          "counts": {
+            "success": 1
+          }
+        }
+      ],
+      "trial_events": {
+        "trial_start": 3,
+        "trial_end": 1,
+        "trial_aborted": 2,
+        "session_closed": 1,
+        "logging_failed": 1
+      },
+      "quality": {
+        "csv_errors": [],
+        "duplicate_entry_summaries": [],
+        "unclosed_entries": [],
+        "terminal_without_observed_entry": 0,
+        "entries_with_tracking_loss": 0,
+        "aborted_entries": 2,
+        "entries_with_settings_change": 0,
+        "attribution_files_missing": false,
+        "unclosed_trials": [],
+        "manifests_not_normally_closed": [
+          "D:\\HLStudy4_22\\Temp\\AttributionRecorderFileTest-0d47e4547598437a80b38ea3213db2a9\\logging-failure\\file-fault-attribution-manifest.json"
+        ]
+      },
+      "interpretation": "aborted, unclosed, duplicate, inferred-start and unknown-instruction records are not silently counted as normal failures; taskResult describes an entry, not final trial success or psychological intention"
+    },
+    "expectedNonnormalManifests": 1,
+    "description": "Includes one intentionally injected logging failure; not participant data"
+  },
+  "limitations": [
+    "No new device session or deployment performed",
+    "Old raw participant files not rewritten",
+    "Legacy time.csv retains existing schema; new trial-results-v2.csv and read-only loader provide corrected interpretation",
+    "Psychological intent and unrecorded historical information cannot be reconstructed from logs"
+  ],
+  "feishu": {
+    "url": "https://kvxm3gyd38.feishu.cn/docx/ZMpbdDtTZoHTylxpqg0cHYNznKc",
+    "originalBlocksPreserved": true,
+    "csvBlocksVerified": true,
+    "newRootCount": 98,
+    "appendedContent": "CSV file/field descriptions and interpretation boundaries",
+    "originalRootBlocks": 80,
+    "noticeBlocks": 1,
+    "newCsvDescriptionBlocks": 17
+  }
+}

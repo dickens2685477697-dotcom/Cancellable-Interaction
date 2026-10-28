@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -87,6 +87,7 @@ public class AcceStudy3_2 : MonoBehaviour
     public MeshRenderer meshRenderer;
     public float Distance;
 
+    public bool AttributionPoseValid { get; private set; }
     // Set Condition C's bound to Acceleration instead of Velocity.
     public bool useAcce = false;
     public float AccelerationBoundForConditionC;
@@ -137,7 +138,8 @@ public class AcceStudy3_2 : MonoBehaviour
     void FixedUpdate()
     {
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out ThumbTipPose2))
+        AttributionPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out ThumbTipPose2);
+        if (AttributionPoseValid)
         {
             #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
             if (Init)
@@ -169,8 +171,8 @@ public class AcceStudy3_2 : MonoBehaviour
 
             #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbDistalJoint, Handedness.Any, out ThumbDistalPose);
-            //HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbMiddleJoint, Handedness.Any, out ThumbMiddlePose);
+            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbDistalJoint, Handedness.Any, out ThumbDistalPose);
+            //Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbMiddleJoint, Handedness.Any, out ThumbMiddlePose);
             // Judge if the fingertip is inside
             if (Vector3.Distance(Bounds.center, ThumbTipPose2.Position) <= triggerDis)
             {

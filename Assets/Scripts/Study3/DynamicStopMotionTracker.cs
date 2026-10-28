@@ -41,6 +41,10 @@ public sealed class DynamicStopMotionTracker
     public float RecentSpeed { get; private set; }
     public float SpeedLimit { get; private set; }
     public float AccelLimit { get; private set; }
+    public long AttributionMeasurementSequence { get; private set; }
+    public double AttributionMeasurementTime { get; private set; }
+    public float AttributionMeasurementDt { get; private set; }
+    public bool AttributionSampleAccepted { get; private set; }
     public bool SpeedConditionMet => HasAcceleration && Speed <= SpeedLimit;
     public bool AccelerationConditionMet => HasAcceleration && Acceleration <= AccelLimit;
 
@@ -55,6 +59,7 @@ public sealed class DynamicStopMotionTracker
     /// <returns>True only on the first successful measurement of this contact.</returns>
     public bool Sample(Vector3 position, bool inside, double now, DynamicStopMotionSettings settings)
     {
+        AttributionSampleAccepted = false;
         IsInside = inside;
         if (!inside)
         {
@@ -81,6 +86,10 @@ public sealed class DynamicStopMotionTracker
         }
 
         float dt = (float)elapsed;
+        AttributionMeasurementSequence++;
+        AttributionMeasurementTime = now;
+        AttributionMeasurementDt = dt;
+        AttributionSampleAccepted = true;
         float speed = distance / dt;
         Vector3 velocity = (position - measurePosition) / dt;
         HasAcceleration = hasPreviousVelocity;
@@ -112,6 +121,8 @@ public sealed class DynamicStopMotionTracker
 
     public void Reset()
     {
+        AttributionSampleAccepted = false;
+        AttributionMeasurementDt = 0f;
         IsInside = IsActive = HasAcceleration = false;
         hasPosition = hasPreviousVelocity = false;
         lastPosition = measurePosition = previousVelocity = Vector3.zero;

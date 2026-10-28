@@ -69,6 +69,11 @@ public class OVRHand : MonoBehaviour,
 	public TrackingConfidence HandConfidence { get; private set; }
 	public bool IsDominantHand { get; private set; }
 
+	// Observation only: do not poll the SDK again to obtain a timestamp.
+	public OVRHandSamplingMetadata SamplingMetadata { get; private set; }
+	public static event System.Action<OVRHandSamplingMetadata> SamplingStateRead;
+	private long samplingReadSequence;
+
 	private void Awake()
 	{
 		_pointerPoseGO = new GameObject();
@@ -96,7 +101,10 @@ public class OVRHand : MonoBehaviour,
 
 	private void GetHandState(OVRPlugin.Step step)
 	{
-		if (OVRPlugin.GetHandState(step, (OVRPlugin.Hand)HandType, ref _handState))
+		double readStarted = Time.realtimeSinceStartupAsDouble;
+		bool readSucceeded = OVRPlugin.GetHandState(step, (OVRPlugin.Hand)HandType, ref _handState);
+		double readCompleted = Time.realtimeSinceStartupAsDouble;
+		if (readSucceeded)
 		{
 			IsTracked = (_handState.Status & OVRPlugin.HandStatus.HandTracked) != 0;
 			IsSystemGestureInProgress = (_handState.Status & OVRPlugin.HandStatus.SystemGestureInProgress) != 0;
@@ -123,6 +131,21 @@ public class OVRHand : MonoBehaviour,
 			IsDataValid = false;
 			IsDataHighConfidence = false;
 		}
+		SamplingMetadata = new OVRHandSamplingMetadata
+		{
+			HandInstanceId = GetInstanceID(), Hand = (OVRPlugin.Hand)HandType,
+			ReadSequence = ++samplingReadSequence, Step = step, Frame = Time.frameCount,
+			ReadStartedRealtime = readStarted, ReadCompletedRealtime = readCompleted,
+			ReadSucceeded = readSucceeded,
+			SampleTimeStamp = readSucceeded ? _handState.SampleTimeStamp : double.NaN,
+			RequestedTimeStamp = readSucceeded ? _handState.RequestedTimeStamp : double.NaN,
+			Status = readSucceeded ? _handState.Status : default(OVRPlugin.HandStatus),
+			Confidence = readSucceeded ? _handState.HandConfidence : OVRPlugin.TrackingConfidence.Low,
+			IsTracked = IsTracked
+		};
+		// A diagnostic I/O failure must never interrupt hand tracking.
+		try { SamplingStateRead?.Invoke(SamplingMetadata); }
+		catch (System.Exception error) { Debug.LogError("Hand sampling observer failed: " + error.Message); }
 	}
 
 	public bool GetFingerIsPinching(HandFinger finger)
@@ -171,6 +194,7 @@ public class OVRHand : MonoBehaviour,
 	OVRSkeleton.SkeletonPoseData OVRSkeleton.IOVRSkeletonDataProvider.GetSkeletonPoseData()
 	{
 		var data = new OVRSkeleton.SkeletonPoseData();
+		data.SamplingMetadata = SamplingMetadata;
 
 		data.IsDataValid = IsDataValid;
 		if (IsDataValid)

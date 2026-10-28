@@ -1,4 +1,4 @@
-﻿using System;
+using System;
  using System.Collections;
  using System.Collections.Generic;
  using System.Diagnostics;
@@ -137,6 +137,16 @@
 
      #region Serialized Fields & Public Variables
 
+     [Header("Attribution log metadata (optional)")]
+     [Tooltip("Participant identifier written to the new sidecars. Empty remains unknown.")]
+     public string studyParticipantId = "";
+     public string studyProtocolVersion = "";
+     public string studyBlockLabel = "";
+     [Tooltip("For example normal_selection, circling, pass_through; descriptive only.")]
+     public string studyTaskCondition = "";
+     [Tooltip("Task instruction: select, cancel, avoid_selection, or unspecified. Does not infer psychological intention.")]
+     public string studyDeclaredIntent = "unspecified";
+
      [Header("共享选择技术参数")]
      [Tooltip("Study3 与 Intro 共用的选择技术阈值和反馈显示设置。")]
      public Study3SelectionSettings SelectionSettings;
@@ -187,18 +197,24 @@
      [Range(0f, 180f)]
      [Tooltip("Use Entry Direction Axis开启时的单侧取消锥体半角；当前方向与菲茨环平面世界-Z法线的夹角小于或等于该值时满足方向取消条件，单位度。")]
      public float entryDirectionConeHalfAngle = 45f;
+     [Header("Direction正式实验参数")]
      [UnityEngine.Serialization.FormerlySerializedAs("direction010ParallelAngleThreshold")]
      [UnityEngine.Serialization.FormerlySerializedAs("direction010PerpendicularAngleThreshold")]
-     [Tooltip("010-direction取消阈值：球内移动方向与朝向用户方向的最大偏差角，单位度")]
+     [InspectorName("Direction Cancel Angle Threshold (°)")]
+     [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用。Use Entry Direction Axis关闭时，食指移动方向与朝向用户方向在水平面内的夹角小于或等于此值时取消，单位度；开启时改用Entry Direction Cone Half Angle。")]
      public float direction010CDAngleThreshold = 20f;
      [Range(0f, 1f)]
-     [Tooltip("010-direction方向平滑系数：越小越平滑但反应越慢，越大越灵敏")]
+     [InspectorName("Direction Smoothing Alpha")]
+     [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用。仅在Use Entry Direction Axis关闭时生效；越小越平滑但反应越慢，越大越灵敏。")]
      public float direction010SmoothingAlpha = 0.25f;
-     [Tooltip("010-direction取消速度阈值：食指速度低于该值时，即使方向接近朝向用户方向也不取消，单位米/秒")]
+     [InspectorName("Direction Min Speed Threshold (m/s)")]
+     [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用的食指方向取消速度阈值，单位米/秒。Use Entry Direction Axis开启时，速度必须严格大于此值；关闭时，速度低于此值不取消。")]
      public float direction010MinSpeedThreshold = 0.05f;
      [Min(2)]
-     [Tooltip("010-direction方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧。Entry Direction Axis开启时，低速帧不计入，累计达到该值后才进行取消判定。")]
+     [InspectorName("Direction Window Frame Count")]
+     [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用的方向判断窗口，至少为2帧。Use Entry Direction Axis开启时，低于Speed Min Threshold的帧不计入，累计达到窗口帧数后，以窗口内各段单位方向的平均方向判定。Speed-Direction还需先满足低速准备条件，方向判定就绪且在取消锥体外后才允许高速确认。")]
      public int direction010WindowFrameCount = 10;
+     [Header("Pinch Direction")]
      [Tooltip("Pinch-Direction取消阈值：捏合后食指-拇指中心点移动方向与朝向用户方向的最大偏差角，单位度")]
      public float pinchDirectionCDAngleThreshold = 20f;
      [Range(0f, 1f)]
@@ -209,6 +225,7 @@
      [Min(2)]
      [Tooltip("Pinch-Direction中心点方向判断窗口帧数：越小越灵敏，越大越稳定；至少为2帧。Entry Direction Axis开启时，低速帧不计入，累计达到该值后才进行取消判定。")]
      public int pinchDirectionWindowFrameCount = 10;
+     [Header("010 Direction Test")]
      [Tooltip("010-direction-test取消阈值：球内移动方向与朝向用户方向的最大偏差角，单位度")]
      public float direction010TestCDAngleThreshold = 20f;
      [Range(0f, 1f)]
@@ -563,7 +580,7 @@
 
         // 持续追踪手部关节点位置
         Handedness handedness = Handedness.Any;
-        bool hasIndexTipPose = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
+        bool hasIndexTipPose = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
         if (hasIndexTipPose)
         {
             indexLoc = indexPose.Position;
@@ -571,7 +588,7 @@
 
         UpdateDirectionCancelConeVisual(hasIndexTipPose);
 
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose))
+        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose))
         {
             thumbLoc = thumbPose.Position;
         }
@@ -637,6 +654,7 @@
      /// </summary>
      public void ResetExp()
      {
+         GetComponent<LogWriter3>()?.AbortAttributionTrial("experiment_reset_before_outcome");
          EnsureErrorListsInitialized();
          ID = ClampID(ID);
          currentRoundID = ID;
@@ -741,6 +759,10 @@
          if (expTime == 1)
          {
              ExpStartEvent.Invoke();
+         }
+         if (expTime > 0 && logWriter != null && logWriter.IsExperimentRunning)
+         {
+             logWriter.BeginAttributionTrial("target_ready");
          }
      }
 
@@ -1272,8 +1294,9 @@
          }
      }
 
-     public void RegisterObstacleErrorTrigger(int obstacleIndex)
+     public void RegisterObstacleErrorTrigger(int obstacleIndex, S2Obstacles attributionSource = null)
      {
+         GetComponent<LogWriter3>()?.RecordAttributionObstacleTrigger(attributionSource);
          EnsureErrorListsInitialized();
          errorTimes++;
          errorTrigered = true;

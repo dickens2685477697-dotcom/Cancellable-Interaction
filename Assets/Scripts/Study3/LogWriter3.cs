@@ -7,7 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class LogWriter3 : MonoBehaviour
+public partial class LogWriter3 : MonoBehaviour
 {
     public BallSpawner ballSpawner;
     private string date, filePath, fileName, fileFullPath, directionDebugFileName, directionDebugFileFullPath;
@@ -134,6 +134,8 @@ public class LogWriter3 : MonoBehaviour
         Debug.Log(fileFullPath);
         //acce = gameObject.GetComponent<AcceStimulate>();
         InitialPath();
+        EnsureHandSamplingLog();
+        TickAttribution();
         WriteSessionSettings("session_start");
         temp = GameObject.Find("temp");
         acceStimulate = temp.GetComponent<AcceStimulate>();
@@ -153,11 +155,13 @@ public class LogWriter3 : MonoBehaviour
             started = true;
             ixdlTargetTrigger = null;
             WriteSessionSettings("experiment_start");
+            BeginAttributionTrial("experiment_start");
         });
         ballSpawner.ExpEndEvent.AddListener(() =>
         {
             started = false;
             WriteSessionSettings("experiment_end");
+            AbortAttributionTrial("experiment_ended_before_outcome");
             EndSpeedStudyObservers("experiment_ended_before_outcome");
             FlushSpeedLogs();
         });
@@ -262,12 +266,14 @@ public class LogWriter3 : MonoBehaviour
         // because a writer and file stream will lock the memory storage so that other gameobject cannot write
         if (started)
         {
+            CompleteAttributionTrial();
             WriteSessionSettings("trial_end");
             fs = new FileStream(fileFullPath, FileMode.Append, FileAccess.Write);
             sw = new StreamWriter(fs);
             SetTriggerTimeFromLastEntry();
             string log = FormatMsg();
             sw.WriteLine(log);
+            WriteAttributionNormalized(log);
             sw.Close();
             fs.Close();
             reactFrequency = 0;
@@ -333,6 +339,7 @@ public class LogWriter3 : MonoBehaviour
         bool inside, float speedLimit, float accelerationLimit, bool selected)
     {
         if (motion == null || ballSpawner == null) return;
+        ObserveCommonAttribution(sample, motion, sourceInstanceId, trackingValid, inside, speedLimit, accelerationLimit, selected);
         // Both techniques preserve the same exact decision values in the trial row.
         if (selected && source == "target")
             ixdlTargetTrigger = new IxDLDynamicTriggerRecord(motion, speedLimit, accelerationLimit);
@@ -393,6 +400,9 @@ public class LogWriter3 : MonoBehaviour
     private void LateUpdate()
     {
         if (stateOnly || speedLogsClosed || string.IsNullOrEmpty(filePath)) return;
+        EnsureHandSamplingLog();
+        handSamplingSession?.Tick();
+        TickAttribution();
         if (ballSpawner != null && SessionConfiguration() != lastSessionConfiguration)
         {
             WriteSessionSettings("settings_changed");
@@ -406,19 +416,22 @@ public class LogWriter3 : MonoBehaviour
 
     private void FlushSpeedLogs()
     {
+        handSamplingSession?.Flush();
         speedBoundaryWriter?.Flush();
         speedEntryWriter?.Flush();
         sessionSettingsWriter?.Flush();
         ixdlTriggerWriter?.Flush();
         commonMotionWriter?.Flush();
+        FlushAttribution();
     }
 
     private void OnApplicationPause(bool paused)
     {
+        AttributionMarker(paused ? "application_paused" : "application_resumed");
         if (paused) FlushSpeedLogs();
     }
 
-    private void OnDisable() => FlushSpeedLogs();
+    private void OnDisable() { AbortAttributionTrial("logger_disabled_before_outcome"); FlushSpeedLogs(); StopHandSamplingLog(); }
 
     private void OnApplicationQuit() => CloseSpeedLogs();
 
@@ -427,6 +440,8 @@ public class LogWriter3 : MonoBehaviour
     private void CloseSpeedLogs()
     {
         if (speedLogsClosed) return;
+        StopHandSamplingLog();
+        CloseAttribution();
         EndSpeedStudyObservers("session_closed_before_outcome");
         speedLogsClosed = true;
         speedBoundaryWriter?.Dispose(); speedBoundaryWriter = null;
@@ -541,8 +556,11 @@ public class LogWriter3 : MonoBehaviour
         bool speedPass,
         Vector3 ballCenter,
         Vector3 indexPosition,
-        Vector3 viewerPosition)
+        Vector3 viewerPosition, Component attributionOwner = null)
     {
+        ObserveDirectionAttribution(attributionOwner, failReason, finalCancelPass, sampleCount, windowFrameCount,
+            windowReady, angleDeg, angleThresholdDeg, anglePass, indexSpeed, minSpeedThreshold, speedPass,
+            windowMovement, smoothedDirection, userFacingDirection);
         if (string.IsNullOrEmpty(directionDebugFileFullPath))
         {
             return;

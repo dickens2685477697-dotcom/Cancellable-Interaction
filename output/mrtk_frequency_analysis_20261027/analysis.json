@@ -1,0 +1,74 @@
+{
+  "scope": "Three P2 Trigger Speed-family sessions; frame/realtime estimates application cadence, not MRTK provider or hardware rate.",
+  "application_fps_definition": "(last frame - first frame) / (last realtime - first realtime), over the full boundary log record span.",
+  "update_interval_definition": "Positive realtime differences of consecutive non-fixed check events, within the same source/entry, frame difference exactly one; formal entry, case 1..48.",
+  "hardware_rate_measured": false,
+  "mrtk_provider_rate_measured": false,
+  "current_fixed_step_seconds": 0.02,
+  "current_sdk_hand_frequency_request": "LOW (not an on-device frequency measurement)",
+  "static_update_order": {
+    "MixedRealityToolkit": -100,
+    "OVRHand": -90,
+    "OVRSkeleton": -80
+  },
+  "sessions": [
+    {
+      "session": "20261027-11-14-50",
+      "source": "D:\\2026.7.18PilotStudy\\2\\Trigger\\20261027-11-14-50\\20261027-11-14-50-speed-boundary-debug.csv",
+      "sha256": "63504e5ec6da8e883b8dbc8b611bf4d35b6d6b663cbeb4074f006c468878e544",
+      "record_span_seconds": 80.61276759999998,
+      "frame_difference": 5630,
+      "estimated_application_fps": 69.84005347559858,
+      "consecutive_update_pairs": 1847,
+      "interval_ms_p50": 13.848400000142647,
+      "interval_ms_p95": 19.859979999978325,
+      "interval_ms_p99": 27.385058000040768,
+      "interval_ms_max": 31.25,
+      "interval_over_20ms_count": 91
+    },
+    {
+      "session": "20261027-11-41-48",
+      "source": "D:\\2026.7.18PilotStudy\\2\\Trigger\\20261027-11-41-48\\20261027-11-41-48-speed-boundary-debug.csv",
+      "sha256": "b048ecd8926478f4d9619fc8845670872e0bba86dfffd8ffe0fba7f10694cfb3",
+      "record_span_seconds": 72.06327489999967,
+      "frame_difference": 5045,
+      "estimated_application_fps": 70.00792022012342,
+      "consecutive_update_pairs": 1719,
+      "interval_ms_p50": 13.877299999876413,
+      "interval_ms_p95": 19.308430000319277,
+      "interval_ms_p99": 27.3180420002427,
+      "interval_ms_max": 31.889699999737786,
+      "interval_over_20ms_count": 77
+    },
+    {
+      "session": "20261027-11-47-05",
+      "source": "D:\\2026.7.18PilotStudy\\2\\Trigger\\20261027-11-47-05\\20261027-11-47-05-speed-boundary-debug.csv",
+      "sha256": "0877622af3dd5694447abe2021d7a319b7507d8dfdded1706c98669115343a6c",
+      "record_span_seconds": 67.67597049999995,
+      "frame_difference": 4729,
+      "estimated_application_fps": 69.87709175149551,
+      "consecutive_update_pairs": 1524,
+      "interval_ms_p50": 13.871949999838762,
+      "interval_ms_p95": 23.409745000253668,
+      "interval_ms_p99": 27.769796999796196,
+      "interval_ms_max": 35.017100000004575,
+      "interval_over_20ms_count": 89
+    }
+  ],
+  "same_frame_repeated_motion_evidence": {
+    "source": "D:\\HLStudy4_22\\output\\pilot_repeated_sampling_20261027\\same_frame_boundary_evidence.csv",
+    "count": 57,
+    "nominal_motion_dt_ms": 20,
+    "actual_callback_interval_ms_median": 1.5891000000465283,
+    "actual_callback_interval_ms_min": 1.4364000003297406,
+    "actual_callback_interval_ms_max": 4.716699999789853,
+    "meaning": "Same application frame, increasing fixed/motion sequence, equal tip and distal positions, zero computed speed. Not a hardware sample ID."
+  },
+  "legacy_speed_checks": {
+    "checks": 9238,
+    "unique_checked_measurements": 3963,
+    "repeated_measurement_checks": 5275,
+    "inside_motion_samples": 3963,
+    "same_frame_zero_tip_distal": 57
+  }
+}

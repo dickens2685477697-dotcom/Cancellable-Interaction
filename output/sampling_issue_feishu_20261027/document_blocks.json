@@ -1,0 +1,295 @@
+[
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "本问题是在我做动态阈值与 Magic Tap 2.0 比较实验时发现的。",
+            "text_element_style": {}
+          }
+        },
+        {
+          "text_run": {
+            "content": "结论：旧代码可能重复读取缓存手部位姿，并把它计算成零速度或突然减速，进而影响选择判定。",
+            "text_element_style": {
+              "bold": true
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "Pilot 日志已观察到它改变 Speed 系列的低速准备；原版 Magic Tap 也存在同类代码路径。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 4,
+    "heading2": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "1. 旧代码调用逻辑与问题",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 27,
+    "image": {
+      "width": 1400,
+      "height": 1100
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "固定回调 50 Hz（20 ms）不等于每秒收到 50 次新的手部更新。旧代码没有核验 MRTK 更新身份；同一缓存位置再次参与差分时，速度为 0，前次速度非零时还会得到负加速度。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 4,
+    "heading2": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "2. 现有数据中的问题",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "发现背景：2026-10-25 旧实现对比实验。",
+            "text_element_style": {
+              "bold": true
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "动态模式正常选择有 16/48 次、球内持续画圈有 44/48 次在零速记录上触发；这 60 次均呈现同渲染帧、连续固定步位置重复。当时 Magic Tap 2.0 会跳过不足 1 mm 位移，两者预处理不同，旧结果不能单独归因于动态阈值策略。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "Pilot：2号，2026-10-27，三种技术各48次成功选择。",
+            "text_element_style": {
+              "bold": true
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "依次列出“同帧重复位置零速 / 在该记录上进入准备 / 随后本次进入触发”：",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 12,
+    "bullet": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "8 Speed：20次 / 12次 / 11次。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 12,
+    "bullet": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "9 Speed-Dwell：14次 / 5次 / 5次。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 12,
+    "bullet": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "10 Speed-Release：23次 / 10次 / 9次。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "合计 57/3,963 个球内运动测量（1.44%）呈现上述重复零速；",
+            "text_element_style": {}
+          }
+        },
+        {
+          "text_run": {
+            "content": "27/167 次低速准备（16.2%）在这些记录上建立，25/144 次成功选择（17.4%）随后由该次进入触发。",
+            "text_element_style": {
+              "bold": true
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "17.4% 不是误触率。",
+            "text_element_style": {
+              "bold": true
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "日志确认的是判定路径，不能推断过滤后这25次会失败或反应时间会改变多少。同帧证据缺少硬件采样时间戳，不能逐条证明传感器内部状态。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "较早的1、2、3、5号共2,256个 Trigger 试次中，1,259个（55.8%）出现相邻位置相同；这些日志缺少更新身份信息，也可能包含真实静止，不能直接当作旧采样读取率。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 4,
+    "heading2": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "3. 影响范围与处理现状",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "优先处理 8–11 Speed 系列及原版 Magic Tap。3、7、14 的 Direction 机制需复核方向窗口与取消时机；尚无依据把15种机制全部判为同等受影响。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "当前 Magic Tap 2.0 与 IxDL Dynamic 已采用共同的应用更新序号去重；其他正式技术尚未全部统一。下一步应统一新样本识别与实际时间间隔，同时保留各技术的触发、取消和计时条件，并在设备上复测。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "block_type": 2,
+    "text": {
+      "elements": [
+        {
+          "text_run": {
+            "content": "依据：",
+            "text_element_style": {}
+          }
+        },
+        {
+          "text_run": {
+            "content": "旧实现比较报告",
+            "text_element_style": {
+              "link": {
+                "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu"
+              }
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "；",
+            "text_element_style": {}
+          }
+        },
+        {
+          "text_run": {
+            "content": "共同运动规则修订",
+            "text_element_style": {
+              "link": {
+                "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+              }
+            }
+          }
+        },
+        {
+          "text_run": {
+            "content": "；Pilot 原始 speed-boundary-debug：20261027-11-14-50、11-41-48、11-47-05。统计核对日期：2026-10-27。",
+            "text_element_style": {}
+          }
+        }
+      ]
+    }
+  }
+]

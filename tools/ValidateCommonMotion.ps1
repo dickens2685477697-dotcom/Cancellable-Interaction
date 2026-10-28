@@ -60,6 +60,10 @@ namespace Microsoft.MixedReality.Toolkit.Input {
 namespace Microsoft.MixedReality.Toolkit {
  public static class CoreServices { public static Microsoft.MixedReality.Toolkit.Input.IMixedRealityInputSystem InputSystem; }
 }
+public static class Study3HandSamplingDiagnostics {
+ public static void ProviderUpdate(Microsoft.MixedReality.Toolkit.Input.InputEventData<System.Collections.Generic.IDictionary<Microsoft.MixedReality.Toolkit.Utilities.TrackedHandJoint,Microsoft.MixedReality.Toolkit.Utilities.MixedRealityPose>> data,long sequence,double received=double.NaN) {}
+ public static void SourceEvent(uint source,string kind) {}
+}
 '@
 $stubPath = Join-Path $testDirectory 'Stubs.cs'
 $stubs | Set-Content -LiteralPath $stubPath -Encoding utf8

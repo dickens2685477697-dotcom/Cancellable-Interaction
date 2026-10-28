@@ -7,7 +7,7 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using UnityEngine;
 using UnityEngine.Rendering;
 // For all, Out-Enter-Out will have material change be like Out-in-out coded in AcceStudy3.cs
-public class S2AccMode : MonoBehaviour
+public partial class S2AccMode : MonoBehaviour
 {
     public AcceStudy3 Acce;
     public ReactTap reactTap;
@@ -162,6 +162,7 @@ public class S2AccMode : MonoBehaviour
 
     void Update()
     {
+        AttributionTick();
         LogSpeedStudy("tracking_lost");
         if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
         {
@@ -333,6 +334,7 @@ public class S2AccMode : MonoBehaviour
         pinchob = GetComponent<Pinch>();
         ApplyPinchSettings();
         EnsureReleaseGesture();
+        InitializeAttributionObservation();
         switch (modeSelected)
         {
             case 0:
@@ -487,6 +489,7 @@ public class S2AccMode : MonoBehaviour
 
     private void CompleteSelection()
     {
+        AttributionBeforeComplete();
         if (!standalonePreview)
         {
             BallSpawner experimentSpawner = ballSpawner;
@@ -1466,6 +1469,7 @@ public class S2AccMode : MonoBehaviour
 
             if (isMineBall)
             {
+                AttributionCancelReason("contact transition");
                 logWriter3.RecordCancelReason("contact transition");
                 logWriter3.successfully_Canceled = true;
                 ballSpawner.PlaySound2();
@@ -1479,6 +1483,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (!ballSpawner.triggered)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     Player.ChangeOpacityBack();
                     print("������ʧ��");
@@ -1645,6 +1650,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (!ballSpawner.triggered && !useIndex)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     logWriter3.successfully_Canceled = true;
                     CompleteSelection();
@@ -1659,6 +1665,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (!ballSpawner.triggered)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     Player.ChangeOpacityBack();
                     print("������ʧ��");
@@ -1701,8 +1708,11 @@ public class S2AccMode : MonoBehaviour
             return;
         }
         float accelerationLimit = UsesMagicTap2 ? ballSpawner.magicTap2AccelerationThreshold : ballSpawner.ixdlAccelerationThreshold;
-        if (!Study3HandPoseSource.TryGetSample(out Study3MotionSample sample))
+        bool hasSample = Study3HandPoseSource.TryGetSample(out Study3MotionSample sample);
+        Study3HandSamplingDiagnostics.SharedRead(this, hasSample, sample);
+        if (!hasSample)
         {
+            AttributionMotionUnavailable("tracking lost");
             EndSharedMotionContact("tracking lost");
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
             logWriter3?.RecordCommonMotionObservation(default, motion, "target", GetInstanceID(),
@@ -1712,6 +1722,7 @@ public class S2AccMode : MonoBehaviour
         if (motion.HasPosition && (sample.SourceId != motion.LastSample.SourceId || sample.TrackingEpoch != motion.LastSample.TrackingEpoch
             || sample.Timestamp - motion.LastSample.Timestamp > Study3MotionTracker.MaximumAgeSeconds))
         {
+            AttributionMotionUnavailable("motion history reset");
             EndSharedMotionContact("motion history reset");
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
         }
@@ -1778,8 +1789,10 @@ public class S2AccMode : MonoBehaviour
         bool canceledBeforeTrigger = !magicTap2Motion.IsSelected && !string.IsNullOrEmpty(reason);
         if (canceledBeforeTrigger)
         {
+            AttributionCancelBranch("EndMagicTap2Contact");
             canceled = true;
             logWriter3.cancelTimes++;
+            AttributionCancelReason(reason);
             logWriter3.RecordCancelReason(reason);
         }
         handInBall = handInBall2 = inBall = false;
@@ -1818,8 +1831,9 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
+        if (!Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
         {
+            AttributionMotionUnavailable("tracking lost");
             EndDynamicStopContact("tracking lost");
             dynamicStopMotion.Reset();
             ixdlDynamicMotion.Reset();
@@ -1852,6 +1866,7 @@ public class S2AccMode : MonoBehaviour
         }
 
         bool selected = dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
+        AttributionDynamic(inside, selected);
         if (selected)
         {
             if (UsesIxDLDynamic)
@@ -1889,8 +1904,10 @@ public class S2AccMode : MonoBehaviour
         bool canceledBeforeTrigger = !DynamicMotionActive && !string.IsNullOrEmpty(reason);
         if (canceledBeforeTrigger)
         {
+            AttributionCancelBranch("EndDynamicStopContact");
             canceled = true;
             logWriter3.cancelTimes++;
+            AttributionCancelReason(reason);
             logWriter3.RecordCancelReason(reason);
         }
         handInBall = handInBall2 = inBall = false;
@@ -1987,6 +2004,7 @@ public class S2AccMode : MonoBehaviour
             {
                 ballSpawner.PlaySound2();
                 logWriter3.successfully_Canceled = true;
+                AttributionCancelReason("contact transition");
                 logWriter3.RecordCancelReason("contact transition");
                 Player.ChangeOpacityBack();
                 CompleteSelection();
@@ -1998,6 +2016,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (!ballSpawner.triggered)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     Player.ChangeOpacityBack();
                     print("������ʧ��");
@@ -2197,6 +2216,7 @@ public class S2AccMode : MonoBehaviour
             {
                 ballSpawner.PlaySound2();
                 logWriter3.successfully_Canceled = true;
+                AttributionCancelReason("contact transition");
                 logWriter3.RecordCancelReason("contact transition");
                 Player.ChangeOpacityBack();
                 CompleteSelection();
@@ -2207,6 +2227,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (!ballSpawner.triggered)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     Player.ChangeOpacityBack();
                     ballSpawner.area_type = 3;
@@ -2680,6 +2701,7 @@ public class S2AccMode : MonoBehaviour
             bool shouldCancel = handInBall2 && !reactReleaseTriggered;
             if (shouldCancel)
             {
+                AttributionCancelReason(reactReleaseSpeedAcceMet ? "contact transition" : "contact transition before react");
                 logWriter3.RecordCancelReason(reactReleaseSpeedAcceMet ? "contact transition" : "contact transition before react");
             }
 
@@ -3047,6 +3069,7 @@ public class S2AccMode : MonoBehaviour
             bool shouldCancel = handInBall && !speedReleaseTriggered;
             if (shouldCancel)
             {
+                AttributionCancelReason(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
                 logWriter3.RecordCancelReason(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
             }
 
@@ -3121,6 +3144,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (ballSpawner.enable_trigger && handInBall2 && !handInBall && !logWriter3.isReact && !ballSpawner.triggered)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                 }
 
@@ -3318,7 +3342,9 @@ public class S2AccMode : MonoBehaviour
                 if (!logWriter3.isReact)
                 {
                     logWriter3.cancelTimes += 1;
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
+                    AttributionCancelBranch("SetReactTapMode");
                     canceled = true;
                     //Player.hideCircle();
                     logWriter3.isReact = false;
@@ -3350,6 +3376,7 @@ public class S2AccMode : MonoBehaviour
             {
                 if (handInBall2 && !logWriter3.isReact)
                 {
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                 }
 
@@ -3467,6 +3494,7 @@ public class S2AccMode : MonoBehaviour
             if (isMineBall && ballSpawner.enable_trigger)
             {
                 logWriter3.cancelTimes += 1;
+                AttributionCancelBranch("SetReactTapMode");
                 canceled = true;
                 //Player.hideCircle();
                 logWriter3.isReact = false;
@@ -3494,6 +3522,7 @@ public class S2AccMode : MonoBehaviour
                         ballSpawner.nextNextBall.GetComponent<MeshRenderer>().material = ballSpawner.ordinaryBall;
                     }
                 }
+                AttributionCancelBranch("SetReactTapMode");
                 canceled = true;
                 Player.hideCircle();
                 logWriter3.isReact = false;
@@ -3683,11 +3712,13 @@ public class S2AccMode : MonoBehaviour
             {
                 if (handInBall2)
                 {
+                    AttributionCancelBranch("SetPressMode");
                     canceled = true;
                     logWriter3.cancelTime = 0f;
                     logWriter3.cancelTimes += 1;
                     logWriter3.isMineBall = isMineBall;
                     logWriter3.successfully_Canceled = isMineBall;
+                    AttributionCancelReason("contact transition");
                     logWriter3.RecordCancelReason("contact transition");
                     if (isMineBall)
                     {
@@ -3863,6 +3894,7 @@ public class S2AccMode : MonoBehaviour
     private void CancelPinchReleaseTrigger(string cancelReason)
     {
         WritePinchReleaseDistance("cancel", cancelReason);
+        AttributionCancelBranch("CancelPinchReleaseTrigger");
         canceled = true;
         float elapsedTime = GetPinchReleaseTriggerElapsedTime();
         logWriter3.triggerTime = elapsedTime;
@@ -3870,6 +3902,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.isMineBall = isMineBall;
         logWriter3.successfully_Canceled = isMineBall;
+        AttributionCancelReason(cancelReason);
         logWriter3.RecordCancelReason(cancelReason);
 
         if (isMineBall)
@@ -3926,11 +3959,11 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
-        bool hasIndexTip = HandJointUtils.TryGetJointPose(
+        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.IndexTip,
             Handedness.Any,
             out MixedRealityPose indexTipPose);
-        bool hasThumbTip = HandJointUtils.TryGetJointPose(
+        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.ThumbTip,
             Handedness.Any,
             out MixedRealityPose thumbTipPose);
@@ -4351,8 +4384,8 @@ public class S2AccMode : MonoBehaviour
     private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
     {
         centerPoint = Vector3.zero;
-        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
-        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
         if (!hasIndexTip || !hasThumbTip)
         {
             return false;
@@ -4425,7 +4458,7 @@ public class S2AccMode : MonoBehaviour
             speedPass,
             ballCenter,
             centerPosition,
-            viewerPosition);
+            viewerPosition, this);
     }
 
     private Vector3 GetCurrentPinchDirectionCenterForDebug()
@@ -4811,10 +4844,10 @@ public class S2AccMode : MonoBehaviour
         closestPointOnIndex = Vector3.zero;
         thumbProjectionOnIndex = 0f;
 
-        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
-        bool hasIndexDistal = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose indexDistalPose);
-        bool hasIndexMiddle = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out MixedRealityPose indexMiddlePose);
-        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasIndexDistal = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose indexDistalPose);
+        bool hasIndexMiddle = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out MixedRealityPose indexMiddlePose);
+        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
 
         if (!hasIndexTip || !hasThumbTip)
         {
@@ -4879,6 +4912,7 @@ public class S2AccMode : MonoBehaviour
         WritePinchReleaseDistance("cancel", cancelReason);
         pinchThumbSwipeCanceled = true;
         pinchThumbSwipeReentryRequired = true;
+        AttributionCancelBranch("CancelPinchThumbSwipe");
         canceled = true;
         float elapsedTime = GetPinchThumbSwipeElapsedTime();
         logWriter3.triggerTime = elapsedTime;
@@ -4886,6 +4920,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.isMineBall = isMineBall;
         logWriter3.successfully_Canceled = isMineBall;
+        AttributionCancelReason(cancelReason);
         logWriter3.RecordCancelReason(cancelReason);
 
         if (isMineBall)
@@ -5169,22 +5204,26 @@ public class S2AccMode : MonoBehaviour
         float threshold = Mathf.Max(0f, ballSpawner.pinchWristTiltCancelAngleThreshold);
         if (threshold > 180f || !pinchWristTiltHasEntryRotation)
         {
+            AttributionWristDecision(float.NaN, threshold, false);
             return false;
         }
 
         if (!TryGetWristRotation(out Quaternion currentRotation))
         {
+            AttributionWristDecision(float.NaN, threshold, false);
             return false;
         }
 
-        return Quaternion.Angle(pinchWristTiltEntryRotation, currentRotation) >= threshold;
+        float attributionAngle = Quaternion.Angle(pinchWristTiltEntryRotation, currentRotation);
+        AttributionWristDecision(attributionAngle, threshold, true);
+        return attributionAngle >= threshold;
     }
 
     private bool TryGetWristRotation(out Quaternion wristRotation)
     {
         wristRotation = Quaternion.identity;
 
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.Wrist, Handedness.Any, out MixedRealityPose wristPose))
+        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.Wrist, Handedness.Any, out MixedRealityPose wristPose))
         {
             wristRotation = wristPose.Rotation;
             return true;
@@ -5249,6 +5288,7 @@ public class S2AccMode : MonoBehaviour
 
         pinchWristTiltCanceled = true;
         pinchWristTiltReentryRequired = true;
+        AttributionCancelBranch("CancelPinchWristTilt");
         canceled = true;
         float elapsedTime = GetPinchWristTiltElapsedTime();
         logWriter3.triggerTime = elapsedTime;
@@ -5256,6 +5296,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.isMineBall = isMineBall;
         logWriter3.successfully_Canceled = isMineBall;
+        AttributionCancelReason(cancelReason);
         logWriter3.RecordCancelReason(cancelReason);
 
         if (isMineBall)
@@ -5387,11 +5428,11 @@ public class S2AccMode : MonoBehaviour
     {
         indexFromWristDirection = Vector3.zero;
 
-        bool hasIndex = HandJointUtils.TryGetJointPose(
+        bool hasIndex = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.IndexTip,
             Handedness.Any,
             out MixedRealityPose indexTipPose);
-        bool hasWrist = HandJointUtils.TryGetJointPose(
+        bool hasWrist = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.Wrist,
             Handedness.Any,
             out MixedRealityPose wristPose);
@@ -5562,6 +5603,7 @@ public class S2AccMode : MonoBehaviour
             speedReleaseMinSpeedMet, speedReleaseTriggered,
             speedReleaseReentryRequired || direction010ReentryRequired, allowHighSpeedTrigger);
         snapshot.ExperimentStarted = logWriter3.IsExperimentRunning;
+        logWriter3.RecordAttributionSpeed(this, snapshot, eventName, reason);
         if (eventName == "sample") logWriter3.RegisterSpeedStudyObserver(speedStudyTelemetry);
         switch (eventName)
         {
@@ -5930,6 +5972,7 @@ public class S2AccMode : MonoBehaviour
         pinchReleaseWaitForIndexExit = inBall;
         pinchReleaseWaitForThumbExit = inBall2;
         pinchHandledThisGesture = true;
+        AttributionCancelBranch("TriggerPinchReleaseCancel");
         canceled = true;
         inBall = false;
         inBall2 = false;
@@ -5941,6 +5984,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.successfully_Canceled = false;
         logWriter3.isMineBall = isMineBall;
+        AttributionCancelReason(cancelReason);
         logWriter3.RecordCancelReason(cancelReason);
         ballSpawner.area_type = 3;
         ballSpawner.index = -1;
@@ -6146,6 +6190,7 @@ public class S2AccMode : MonoBehaviour
         dwellReleaseInside = false;
         dwellReleaseEntryTimestamp = -1f;
         handInBall2 = false;
+        AttributionCancelBranch("TriggerDwellReleaseCancel");
         canceled = true;
 
         Acce.SetInvoked();
@@ -6157,6 +6202,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.successfully_Canceled = false;
         logWriter3.isMineBall = isMineBall;
+        AttributionCancelReason("release");
         logWriter3.RecordCancelReason("release");
         ballSpawner.area_type = 3;
         ballSpawner.index = -1;
@@ -6237,6 +6283,7 @@ public class S2AccMode : MonoBehaviour
         dwellWithdrawCurrentVelocityDirection = Vector3.zero;
         dwellWithdrawPositionHistory.Clear();
         handInBall2 = false;
+        AttributionCancelBranch("TriggerDwellWithdrawCancel");
         canceled = true;
 
         Acce.SetInvoked();
@@ -6247,6 +6294,7 @@ public class S2AccMode : MonoBehaviour
         logWriter3.cancelTimes += 1;
         logWriter3.successfully_Canceled = false;
         logWriter3.isMineBall = isMineBall;
+        AttributionCancelReason("movement");
         logWriter3.RecordCancelReason("movement");
         ballSpawner.area_type = 3;
         ballSpawner.index = -1;
@@ -6374,6 +6422,7 @@ public class S2AccMode : MonoBehaviour
             return;
         }
 
+        AttributionCancelBranch("TriggerRainbowCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -6401,6 +6450,7 @@ public class S2AccMode : MonoBehaviour
     private void TriggerSurfaceExitCancel(string cancelReason = "contact transition")
     {
         HideModeReadyRingOnIndexEntryIfNeeded();
+        AttributionCancelBranch("TriggerSurfaceExitCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -6417,6 +6467,7 @@ public class S2AccMode : MonoBehaviour
             logWriter3.cancelTime = reactTap.UpdateT + 0.02f;
             logWriter3.successfully_Canceled = true;
             logWriter3.isMineBall = true;
+            AttributionCancelReason(cancelReason);
             logWriter3.RecordCancelReason(cancelReason);
             ballSpawner.caseTime++;
             ballSpawner.PlaySound2();
@@ -6437,6 +6488,7 @@ public class S2AccMode : MonoBehaviour
             logWriter3.triggerTime = 0f;
             logWriter3.cancelTime = 0f;
             logWriter3.cancelTimes += 1;
+            AttributionCancelReason(cancelReason);
             logWriter3.RecordCancelReason(cancelReason);
         }
     }
@@ -6824,7 +6876,7 @@ public class S2AccMode : MonoBehaviour
             speedPass,
             ballCenter,
             indexPosition,
-            viewerPosition);
+            viewerPosition, this);
     }
 
     private Vector3 GetViewerPositionForDirectionDebug()
@@ -7467,6 +7519,7 @@ public class S2AccMode : MonoBehaviour
 
     private void OnDisable()
     {
+        attributionBridge?.Disable("source_disabled_before_outcome");
         LogSpeedStudy("disabled");
         logWriter3?.UnregisterSpeedStudyObserver(speedStudyTelemetry);
         dynamicStopMotion.Reset();

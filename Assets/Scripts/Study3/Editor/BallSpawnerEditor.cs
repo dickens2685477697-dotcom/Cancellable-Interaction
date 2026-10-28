@@ -92,10 +92,28 @@ public sealed class BallSpawnerEditor : Editor
 
         EditorGUILayout.Space();
         serializedObject.Update();
-        DrawPropertiesExcluding(serializedObject, settings != null
+        string[] excludedFields = settings != null
             ? SharedFieldNames
-            : new[] { "m_Script", "SelectionSettings", "samplingRateHz" });
+            : new[] { "m_Script", "SelectionSettings", "samplingRateHz" };
+        SerializedProperty property = serializedObject.GetIterator();
+        bool enterChildren = true;
+        while (property.NextVisible(enterChildren))
+        {
+            enterChildren = false;
+            if (System.Array.IndexOf(excludedFields, property.name) >= 0)
+            {
+                continue;
+            }
+
+            Study3DirectionInspectorGUI.DrawProperty(property, GetSelectedMode());
+        }
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private BallSpawner.Mode? GetSelectedMode()
+    {
+        SerializedProperty mode = serializedObject.FindProperty("modeSelected");
+        return mode.hasMultipleDifferentValues ? (BallSpawner.Mode?)null : (BallSpawner.Mode)mode.intValue;
     }
 
     private void DrawInlineSettings(Study3SelectionSettings settings)
@@ -115,7 +133,7 @@ public sealed class BallSpawnerEditor : Editor
                 continue;
             }
 
-            EditorGUILayout.PropertyField(property, true);
+            Study3DirectionInspectorGUI.DrawProperty(property, GetSelectedMode());
         }
 
         if (EditorGUI.EndChangeCheck())

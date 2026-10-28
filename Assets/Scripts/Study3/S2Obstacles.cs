@@ -10,7 +10,7 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(AcceStudy3_2))]
 [RequireComponent(typeof(AcceStudy3))]
 [RequireComponent(typeof(Pinch))]
-public class S2Obstacles : MonoBehaviour
+public partial class S2Obstacles : MonoBehaviour
 {
     public AcceStudy3 Acce;
     public AcceStudy3_2 Acce2;
@@ -143,6 +143,7 @@ public class S2Obstacles : MonoBehaviour
         pinchob = GetComponent<Pinch>();
         ApplyPinchSettings();
         EnsureReleaseGesture();
+        InitializeAttributionObservation();
         switch (modeSelected)
         {
             case 0:
@@ -336,7 +337,7 @@ public class S2Obstacles : MonoBehaviour
                         Player.TurnYellow();
                         source.Play();
                         print("在障碍球触发");
-                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                     }
                 }
 
@@ -411,7 +412,7 @@ public class S2Obstacles : MonoBehaviour
                         Player.TurnYellow();
                         source.Play();
                         print("在障碍球触发");
-                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                     }
                 }
 
@@ -424,6 +425,7 @@ public class S2Obstacles : MonoBehaviour
         this.modeSelected = modeSelected;
         if (Acce == null || reactTap == null || pinchob == null) return;
         ApplyPinchSettings();
+        InitializeAttributionObservation();
         switch (modeSelected)
         {
             case 0:
@@ -538,6 +540,7 @@ public class S2Obstacles : MonoBehaviour
     }
     public void ClearMode()
     {
+        attributionBridge?.Disable("mode_cleared_before_outcome");
         magicTap2Motion.Reset();
         dynamicStopMotion.Reset();
         ixdlDynamicMotion.Reset();
@@ -631,6 +634,7 @@ public class S2Obstacles : MonoBehaviour
 
         reactTap.HesEvent.AddListener(() =>
         {
+            AttributionCancelBranch("SetReactTapMode");
             canceled = true;
             Player.hideCircle();
             Debug.Log("Hes!");
@@ -671,7 +675,7 @@ public class S2Obstacles : MonoBehaviour
                     source.Play();
                     //！！！是否应该放在hesevent，障碍球触发后应该变
                     print("触发障碍球后还没离开");
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 }
             }
         });
@@ -810,7 +814,7 @@ public class S2Obstacles : MonoBehaviour
 
             Player.TurnYellow();
             source.Play();
-            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
             ResetFastTapTiming();
         });
     }
@@ -969,7 +973,7 @@ public class S2Obstacles : MonoBehaviour
 
             Player.TurnYellow();
             source.Play();
-            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
             ResetFastTapTiming();
         });
     }
@@ -1540,7 +1544,7 @@ public class S2Obstacles : MonoBehaviour
 
             Player.TurnYellow();
             source.Play();
-            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         });
     }
 
@@ -1562,8 +1566,11 @@ public class S2Obstacles : MonoBehaviour
             return;
         }
         float accelerationLimit = UsesMagicTap2 ? ballSpawner.magicTap2AccelerationThreshold : ballSpawner.ixdlAccelerationThreshold;
-        if (!Study3HandPoseSource.TryGetSample(out Study3MotionSample sample))
+        bool hasSample = Study3HandPoseSource.TryGetSample(out Study3MotionSample sample);
+        Study3HandSamplingDiagnostics.SharedRead(this, hasSample, sample);
+        if (!hasSample)
         {
+            AttributionMotionUnavailable("tracking lost");
             EndSharedMotionContact("tracking lost");
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
             logWriter3?.RecordCommonMotionObservation(default, motion, "obstacle", GetInstanceID(),
@@ -1573,6 +1580,7 @@ public class S2Obstacles : MonoBehaviour
         if (motion.HasPosition && (sample.SourceId != motion.LastSample.SourceId || sample.TrackingEpoch != motion.LastSample.TrackingEpoch
             || sample.Timestamp - motion.LastSample.Timestamp > Study3MotionTracker.MaximumAgeSeconds))
         {
+            AttributionMotionUnavailable("motion history reset");
             EndSharedMotionContact("motion history reset");
             magicTap2Motion.Reset(); ixdlDynamicMotion.Reset();
         }
@@ -1617,7 +1625,7 @@ public class S2Obstacles : MonoBehaviour
         ballSpawner.triggerCondition = UsesMagicTap2 ? '2' : 'M';
         Player.TurnYellow();
         if (source != null) source.Play();
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
     }
 
     private void EndSharedMotionContact(string reason)
@@ -1662,8 +1670,9 @@ public class S2Obstacles : MonoBehaviour
             ixdlDynamicMotion.Reset();
             return;
         }
-        if (!HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
+        if (!Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
         {
+            AttributionMotionUnavailable("tracking lost");
             EndDynamicStopObstacleContact();
             dynamicStopMotion.Reset();
             ixdlDynamicMotion.Reset();
@@ -1694,6 +1703,7 @@ public class S2Obstacles : MonoBehaviour
         }
 
         bool selected = dynamicStopMotion.Sample(pose.Position, inside, Time.unscaledTimeAsDouble, ballSpawner.GetDynamicStopMotionSettings());
+        AttributionDynamic(inside, selected);
         if (selected && !triggered)
         {
             if (UsesIxDLDynamic)
@@ -1705,7 +1715,7 @@ public class S2Obstacles : MonoBehaviour
             ballSpawner.triggerCondition = 'M';
             Player.TurnYellow();
             if (source != null) source.Play();
-            ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+            ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         }
     }
 
@@ -1780,7 +1790,7 @@ public class S2Obstacles : MonoBehaviour
                     source.Play();
                     //！！！是否应该放在hesevent，障碍球触发后应该变
                     print("触发障碍球后还没离开");
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 }
 
             });
@@ -2128,7 +2138,7 @@ public class S2Obstacles : MonoBehaviour
                     Player.TurnYellow();
                     source.Play();
                     print("触发障碍球后还没离开");
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 }
             });
 
@@ -2212,7 +2222,7 @@ public class S2Obstacles : MonoBehaviour
                     Player.TurnYellow();
                     source.Play();
                     print("触发障碍球后还没离开");
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 }
             });
 
@@ -2290,7 +2300,7 @@ public class S2Obstacles : MonoBehaviour
                 ballSpawner.area_type = 3;
                 ballSpawner.index = -1;
                 ballSpawner.errorInTimes++;
-                ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 //triggered = false;
                 oldTime = Time.time;
                 inBall = false;
@@ -2317,7 +2327,7 @@ public class S2Obstacles : MonoBehaviour
                         Player.TurnYellow();
                         source.Play();
                         ballSpawner.triggerCondition = 'P';
-                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                         oldTime = Time.time;
                     }
                 }
@@ -2390,7 +2400,7 @@ public class S2Obstacles : MonoBehaviour
                     Player.TurnYellow();
                     source.Play();
                     ballSpawner.triggerCondition = 'C';
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                     oldTime = Time.time;
                 }
                 else if (!triggered)
@@ -2462,7 +2472,7 @@ public class S2Obstacles : MonoBehaviour
                     Player.TurnYellow();
                     source.Play();
                     ballSpawner.triggerCondition = 'D';
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                     oldTime = Time.time;
                 }
                 else if (!triggered)
@@ -2540,7 +2550,7 @@ public class S2Obstacles : MonoBehaviour
                 {
                     Player.TurnYellow();
                     source.Play();
-                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+                    ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
                 }
             });
 
@@ -2718,6 +2728,7 @@ public class S2Obstacles : MonoBehaviour
 
     private void Update()
     {
+        AttributionTick();
         LogSpeedStudy("tracking_lost");
         if (modeSelected == (int)BallSpawner.Mode.dynamicStop)
         {
@@ -2897,11 +2908,11 @@ public class S2Obstacles : MonoBehaviour
     {
         indexFromWristDirection = Vector3.zero;
 
-        bool hasIndex = HandJointUtils.TryGetJointPose(
+        bool hasIndex = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.IndexTip,
             Handedness.Any,
             out MixedRealityPose indexTipPose);
-        bool hasWrist = HandJointUtils.TryGetJointPose(
+        bool hasWrist = Study3HandSamplingDiagnostics.TryGetJointPose(this,
             TrackedHandJoint.Wrist,
             Handedness.Any,
             out MixedRealityPose wristPose);
@@ -2955,6 +2966,7 @@ public class S2Obstacles : MonoBehaviour
         fastTapCancelTriggered = true;
         fastTapReentryRequired = true;
         fastTapCanceledUntilExit = true;
+        AttributionCancelBranch("TriggerFastTapCancel");
         canceled = true;
         handInBall = false;
         ballSpawner.isReact = false;
@@ -3005,7 +3017,7 @@ public class S2Obstacles : MonoBehaviour
         ballSpawner.triggerCondition = 'W';
         Player.TurnYellow();
         source.Play();
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         ballSpawner.isReact = false;
         handInBall = false;
         handInBall2 = false;
@@ -3023,6 +3035,7 @@ public class S2Obstacles : MonoBehaviour
         }
 
         reactReleaseReentryRequired = true;
+        AttributionCancelBranch("TriggerReactReleaseCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -3063,6 +3076,7 @@ public class S2Obstacles : MonoBehaviour
             speedReleaseMinSpeedMet, speedReleaseTriggered,
             speedReleaseReentryRequired || direction010ReentryRequired, allowHighSpeedTrigger);
         snapshot.ExperimentStarted = logWriter3.IsExperimentRunning;
+        logWriter3.RecordAttributionSpeed(this, snapshot, eventName, reason);
         if (eventName == "sample") logWriter3.RegisterSpeedStudyObserver(speedStudyTelemetry);
         switch (eventName)
         {
@@ -3152,7 +3166,7 @@ public class S2Obstacles : MonoBehaviour
         ballSpawner.triggerCondition = 'S';
         Player.TurnYellow();
         source.Play();
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         handInBall = false;
         handInBall2 = false;
         inBall = false;
@@ -3170,6 +3184,7 @@ public class S2Obstacles : MonoBehaviour
 
         LogSpeedStudy("cancel", "release");
         speedReleaseReentryRequired = true;
+        AttributionCancelBranch("TriggerSpeedReleaseCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -3194,6 +3209,7 @@ public class S2Obstacles : MonoBehaviour
 
         LogSpeedStudy("cancel", requireReentry ? "dwell" : "contact transition");
         speedReleaseReentryRequired = requireReentry;
+        AttributionCancelBranch("TriggerSpeedObstacleCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -3313,7 +3329,7 @@ public class S2Obstacles : MonoBehaviour
         Player.TurnYellow();
         source.Play();
         ballSpawner.triggerCondition = 'P';
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         oldTime = Time.time;
     }
 
@@ -3389,6 +3405,7 @@ public class S2Obstacles : MonoBehaviour
         pinchDirectionCancelTriggered = true;
         pinchDirectionReentryRequired = true;
         pinchReleaseTriggerArmed = false;
+        AttributionCancelBranch("TriggerPinchDirectionObstacleCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -3680,8 +3697,8 @@ public class S2Obstacles : MonoBehaviour
     private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
     {
         centerPoint = Vector3.zero;
-        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
-        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
         if (!hasIndexTip || !hasThumbTip)
         {
             return false;
@@ -3754,7 +3771,7 @@ public class S2Obstacles : MonoBehaviour
             speedPass,
             ballCenter,
             centerPosition,
-            viewerPosition);
+            viewerPosition, this);
     }
 
     private Vector3 GetCurrentPinchDirectionCenterForDebug()
@@ -4102,10 +4119,10 @@ public class S2Obstacles : MonoBehaviour
         closestPointOnIndex = Vector3.zero;
         thumbProjectionOnIndex = 0f;
 
-        bool hasIndexTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
-        bool hasIndexDistal = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose indexDistalPose);
-        bool hasIndexMiddle = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out MixedRealityPose indexMiddlePose);
-        bool hasThumbTip = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
+        bool hasIndexDistal = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out MixedRealityPose indexDistalPose);
+        bool hasIndexMiddle = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out MixedRealityPose indexMiddlePose);
+        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
 
         if (!hasIndexTip || !hasThumbTip)
         {
@@ -4144,7 +4161,7 @@ public class S2Obstacles : MonoBehaviour
         Player.TurnYellow();
         source.Play();
         ballSpawner.triggeredBy = inBall ? "index" : "thumb";
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         ResetPinchThumbSwipeTracking();
     }
 
@@ -4152,6 +4169,7 @@ public class S2Obstacles : MonoBehaviour
     {
         pinchThumbSwipeCanceled = true;
         pinchThumbSwipeReentryRequired = true;
+        AttributionCancelBranch("CancelPinchThumbSwipeObstacle");
         canceled = true;
         Acce.SetInvoked();
         Player.TurnShallowBack();
@@ -4218,22 +4236,26 @@ public class S2Obstacles : MonoBehaviour
         float threshold = Mathf.Max(0f, ballSpawner.pinchWristTiltCancelAngleThreshold);
         if (threshold > 180f || !pinchWristTiltHasEntryRotation)
         {
+            AttributionWristDecision(float.NaN, threshold, false);
             return false;
         }
 
         if (!TryGetWristRotation(out Quaternion currentRotation))
         {
+            AttributionWristDecision(float.NaN, threshold, false);
             return false;
         }
 
-        return Quaternion.Angle(pinchWristTiltEntryRotation, currentRotation) >= threshold;
+        float attributionAngle = Quaternion.Angle(pinchWristTiltEntryRotation, currentRotation);
+        AttributionWristDecision(attributionAngle, threshold, true);
+        return attributionAngle >= threshold;
     }
 
     private bool TryGetWristRotation(out Quaternion wristRotation)
     {
         wristRotation = Quaternion.identity;
 
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.Wrist, Handedness.Any, out MixedRealityPose wristPose))
+        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.Wrist, Handedness.Any, out MixedRealityPose wristPose))
         {
             wristRotation = wristPose.Rotation;
             return true;
@@ -4271,7 +4293,7 @@ public class S2Obstacles : MonoBehaviour
         source.Play();
         ballSpawner.triggeredBy = "index";
         ballSpawner.triggerCondition = triggerCondition;
-        ballSpawner.RegisterObstacleErrorTrigger(ballIndex);
+        ballSpawner.RegisterObstacleErrorTrigger(ballIndex, this);
         ResetPinchWristTiltTracking();
     }
 
@@ -4284,6 +4306,7 @@ public class S2Obstacles : MonoBehaviour
 
         pinchWristTiltCanceled = true;
         pinchWristTiltReentryRequired = true;
+        AttributionCancelBranch("CancelPinchWristTiltObstacle");
         canceled = true;
         Acce.SetInvoked();
         Player.TurnShallowBack();
@@ -4394,6 +4417,7 @@ public class S2Obstacles : MonoBehaviour
         dwellReleaseInside = false;
         dwellReleaseEntryTimestamp = -1f;
         handInBall2 = false;
+        AttributionCancelBranch("TriggerDwellReleaseCancel");
         canceled = true;
 
         Acce.SetInvoked();
@@ -4456,6 +4480,7 @@ public class S2Obstacles : MonoBehaviour
         dwellWithdrawCurrentVelocityDirection = Vector3.zero;
         dwellWithdrawPositionHistory.Clear();
         handInBall2 = false;
+        AttributionCancelBranch("TriggerDwellWithdrawCancel");
         canceled = true;
 
         Acce.SetInvoked();
@@ -4555,6 +4580,7 @@ public class S2Obstacles : MonoBehaviour
         rainbowCancelTriggered = true;
         rainbowConfirmBlocked = true;
         rainbowReentryRequiresExit = true;
+        AttributionCancelBranch("TriggerRainbowCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -4756,6 +4782,7 @@ public class S2Obstacles : MonoBehaviour
         LogSpeedStudy("cancel", "direction");
         direction010CancelTriggered = true;
         direction010ReentryRequired = true;
+        AttributionCancelBranch("TriggerDirection010ObstacleCancel");
         canceled = true;
         handInBall = false;
         handInBall2 = false;
@@ -5071,7 +5098,7 @@ public class S2Obstacles : MonoBehaviour
             speedPass,
             ballCenter,
             indexPosition,
-            viewerPosition);
+            viewerPosition, this);
     }
 
     private Vector3 GetViewerPositionForDirectionDebug()
@@ -5427,6 +5454,7 @@ public class S2Obstacles : MonoBehaviour
 
     private void OnDisable()
     {
+        attributionBridge?.Disable("source_disabled_before_outcome");
         LogSpeedStudy("disabled");
         logWriter3?.UnregisterSpeedStudyObserver(speedStudyTelemetry);
         dynamicStopMotion.Reset();

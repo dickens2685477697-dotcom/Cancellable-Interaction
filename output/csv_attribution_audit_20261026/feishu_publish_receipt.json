@@ -1,0 +1,6071 @@
+{
+  "title": "Study3实验输出CSV说明与成功失败归因审计（2026-10-26）",
+  "app_id": "cli_aa5dc48806f8dc2e",
+  "source_sha256": "c0f24957eca2ca7c713b3626cb41b3ff94f196a6cff5bac37bf65376d07c0722",
+  "roots_written": 80,
+  "tables": [
+    {
+      "block_id": "doxcnpFi2bHVHcssVAEfQhqYzJh",
+      "cells": [
+        "doxcnM3cZt3a7MTMcvZMlSsnKAb",
+        "doxcnw8h2SxqJqRGjhKQOtgS8jf",
+        "doxcnvDmTASOrs6H0vYycixEpGg",
+        "doxcnKLPfTujJXrVe4iYO1YWKYf",
+        "doxcnO8tIdzakRjXp7C9A6MNLGe",
+        "doxcn0ef1xyW8K71ObJl3kYTZZc",
+        "doxcn9ZtpsjPqtz1GlhaoHVjnff",
+        "doxcnjzw8vDQlGQNQyoGg1EOeHb",
+        "doxcnLRIuTQTdRA2dPDQzc7ctCh",
+        "doxcnk9wiMkMX4Y2gE7s8aSz3Bf",
+        "doxcnkxF5j8BPrhskG7wIVEXneh",
+        "doxcnAa67Pfi3Effmv8pAwHPLdc",
+        "doxcnxtw7gsrUQVWmqumtvKEfeC",
+        "doxcnpEj4CBNy2jWWHaD8WCQrCb",
+        "doxcnoPYNOMxtRrQPnIU9ECgYog",
+        "doxcnoYUw2P2t01WC4wxGgeolWh",
+        "doxcnFunenZ2JfctTylbqESVRhh",
+        "doxcnbWGwlqCm8fa3rJBSJzphzb",
+        "doxcnfus6kLYPy9ZyrFRI4OxqGf",
+        "doxcnlPjhbQj9XvRTfBJP1YZmVg",
+        "doxcnhLC7tRkBjiOuFXRRNuTpzd",
+        "doxcnmAviuBZkTHsd2w39w693Oc",
+        "doxcnSydsTTH8z9jgutLk3qim6b",
+        "doxcn9Tn1KUTq738kZzrwyvc43b"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "需要回答的问题",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "当前证据",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "仍有的边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "普通目标是否最终提交、雷球是否成功取消、障碍是否误触"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time 的任务/结果字段、errorLoc 和专用事件"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time 先修正结构；未完成 trial 不一定有结果行，trigger 也不天然表示任务成功"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed 未准备、准备后未越高速、方向阻断、退出后才高速"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "speed-boundary-debug、speed-entry-summary、session-settings"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "边界候选只能证明离散采样现象，不能证明球内连续真实速度或帧率是唯一原因"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Magic2 / IxDL 触发时速度和加速度是否通过"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "common-motion；time 四项快照；IxDL 另有 ixdl-trigger"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time 当前错位；需按 sampleAccepted、hasAcceleration、inside、selected 解读，且任务意图仍需独立标记"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "方向取消为什么发生／未发生"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "direction-debug 的窗口、方向角、速度门限及通过标志"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "没有通用 entry 唯一键；部分是中间检查状态，不是试次最终失败；平滑/模式参数快照不完整"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Pinch-Release-Trigger／Thumb-Swipe 的开始、松开、接触距离"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "pinch-release-distance 的事件和阈值"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "记录时会重新查询姿态，不保证是判定原子样本；不是所有 Pinch 模式都覆盖"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Pinch-Dwell／Pinch-Direction 松开门限与每步失败"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time 原因文本，Direction 另有方向调试"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "距离日志不覆盖这两种模式；session-settings 也未保存 pinchEndDistanceThreshold，仍无法完整复现"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Dwell／010／Release／腕倾／Dynamic Stop 全部判定过程"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time 的原因串及部分轨迹、方向记录"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "缺统一状态转换、关键数值和实际门限快照；Dynamic Stop 无 common-motion 专用逐判定流"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnZ7nSbLK01Brt1UYrbVbTPb",
+      "cells": [
+        "doxcnsRnfpWFNf9jLskIqnCsAyf",
+        "doxcn0AQOuaZWog6hl25eW86vzc",
+        "doxcn40iylTG97MrJe6deJ2raQe",
+        "doxcnUXoIBxCQ2UfLM51EOZHM9g",
+        "doxcn3dvmYWyQJnABHjsa8f1yrf",
+        "doxcnsSZJ8c4rg6XOdaTYITKYxg",
+        "doxcnr8B9dGwhPt4Wr7kJaC0lGP",
+        "doxcnz33a4TCh1FKKtozDdKweqg",
+        "doxcnTYwh1HSBDyAWgyhS2CuGQ8"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "需要回答的问题",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "当前证据",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "仍有的边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "未触发后主动放弃、对象停用、实验中断、未闭合尝试"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed 有 aborted、未闭合检查；共同运动有部分失追状态"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "其他模式没有统一 trial/entry 终止事件；崩溃/未刷盘仍可能只留下部分日志"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "意外触发是否违背参与者意图、失败是否由于理解或疲劳"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "雷球颜色任务给出一部分任务真值"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "正常选择/球内画圈/无选择意图未统一写入；不能仅凭低速或触发就归因于人的意图"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcncu1sAc3ZRYhowD8DxCT1rb",
+      "cells": [
+        "doxcnBYPnjCNZ5EY5M028LJIg4g",
+        "doxcnch6nKqTFaCu7jzWrUjpA7e",
+        "doxcnObw3XOuhgj9bfgsLTTFaEh",
+        "doxcnEX2WVGQmUN8afBeW52mmed",
+        "doxcnBCr3hbY64dSQD8QiuZZcyh",
+        "doxcnxIgZy9t2gBlpFRy6NKAiSJ",
+        "doxcnHElOiXa0XyHkTUFRSAx0pd",
+        "doxcnsU1KqpTfPdiB0L0UZ3RNZd",
+        "doxcngi0RGNfei67pYXrXYON0Qf",
+        "doxcn6z9vVS9Q64tN3brOd9XmSh",
+        "doxcnNr1Z6kqrFaywCrfIsuhG3b",
+        "doxcnHmZUo7Zflpp2slu47UpTUe",
+        "doxcn5MvC0Db1uCKrMls9yEKaWe",
+        "doxcnnp9huHcJuSFsqAFWrMV3Qc",
+        "doxcnEkLluq9tje99LqMZJq8Oaf",
+        "doxcntmDsg7RznNuuOrj91kkPZe",
+        "doxcndFXmg24GGczlcKUO8ZKLob",
+        "doxcnlXCQawPfQNQs0ckiOkuXVv",
+        "doxcnkmn4UhNDuWjGzR4cGA341f",
+        "doxcnpuvL3vzBNKLffpki9LSsvg",
+        "doxcnOs5b0juChdJ1Zjy086M9vg",
+        "doxcnOJbw92NfJcTyLsC5rw59md",
+        "doxcnJKp2IObLqTKdIxVR7tbSVb",
+        "doxcnR8kGegZKdyhzefBudI9BEh"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "文件后缀",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一行代表什么",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "适用范围",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "time.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "最终完成的一个试次汇总"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Study3 各技术；没有全部未完成尝试"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "trajectory.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "固定更新中的一条轨迹/状态快照"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "正式实验；结束后可另写少量收尾行"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "errorLoc.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "试次内一个障碍误触的位置"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "试次完成时批量写出"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "direction-debug.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一次方向判断过程"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Direction 相关技术，目标/障碍按调用来源区分"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "pinch-release-distance.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一次捏合/松开/贴合事件观测"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标侧只覆盖 Pinch-Release-Trigger 和 Pinch-Thumb-Swipe；Pinch-Dwell/Direction 可只有表头"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "speed-boundary-debug.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed 进入期间事件与实际检查"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed、Speed-Dwell、Speed-Release、Speed-Direction、Speed-Wrist-Tilt；目标/雷球/障碍"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "speed-entry-summary.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一次进入的最终结果"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "与 Speed debug 同 schema；trigger/cancel/exit/aborted"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnPp1h7Rm9XdY4KME7TvZuwh",
+      "cells": [
+        "doxcnP2AsprAlAnYo5EXCKwxNmb",
+        "doxcnmdHWWtx0vmwnbwCRwEPQ6f",
+        "doxcn5ZjTG8BHXC1WJUgVwwypQ5",
+        "doxcnEm2FnXf1Kk945fWibIjfbc",
+        "doxcnbvFWzk5oWSJQey1zFPaFte",
+        "doxcnutZAZXzN8CaxXzHLoFTzYc",
+        "doxcn5PVIkd6zqsiWSOSa6tuKad",
+        "doxcntqgfFbMZSjr3a3z2LeAd3f",
+        "doxcnFuL9ZJxjXjZQOfEq4UNSY5",
+        "doxcnK3JnWHsADMr7MAKRhy4lWg",
+        "doxcnknFdRsQNsPT0Jut3XG81Wg",
+        "doxcnvolv294zVOlpwWaCEdZMnT"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "文件后缀",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一行代表什么",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "适用范围",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "session-settings.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "开始、结束、trial 结束或受监测参数变化的快照"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "各 Study3 模式；当前 schema=4，参数覆盖不完整"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "common-motion.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "缓存更新读取与是否接受/触发"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Magic Tap 2.0、IxDL Dynamic；schema=1，shared-provider-v3"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "ixdl-trigger.csv"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "一个真实 IxDL 触发事件"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标、雷球、障碍；schema=2，不包含未触发的全过程"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcncB9lSJmi3vsxj9JikbAegb",
+      "cells": [
+        "doxcnjEE7hq5z9lxys7b1E4NGpf",
+        "doxcnHmGkRNzXB2jZiNbJdvdd3d",
+        "doxcnCgbgeFYYLrexjWBirgxfYg",
+        "doxcnYMy8Vn37VoJkEcMEXBtyCh",
+        "doxcn4zqXNDD9TSyiOxS4mCMiLg",
+        "doxcn8V9HvkYztV7ogr5oWYLrxd",
+        "doxcnPHOxI1WeqaWrmsdslALSEe",
+        "doxcnRcd4C9kvGqnsmENwU7b51b",
+        "doxcnJHWtsm3oP9dTHsSVXTZqGB",
+        "doxcnpX5PSfNac2MEWqB1vhbgde",
+        "doxcnZhiuv4XM3su1Z18TTaw4wg",
+        "doxcnBOTAFQ5gSMxCyINvDdaF7e",
+        "doxcn8ENAPqVnRrvCPvDsnm2pZc",
+        "doxcnwEbdyemh70SMWR46D6UIhc",
+        "doxcnIags0GBn97XJhnJxVwYjgh",
+        "doxcnBb69Ka7cudp24md8oLSQug"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ID",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Case 是试次编号；ID 是难度/几何条件，不是被试编号。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "inTargetTimes",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "errorTimes",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "errorInTimes",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标进入次数、障碍误触次数、障碍进入次数；是试次累计计数。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "enable_preview",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enableMineBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enabledOb",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "预览、雷球任务、障碍物开关。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "usedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "reactTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "triggerTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "cancelTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "单位秒。试次用时与 React/触发/首次取消计时；普通目标无取消时 cancelTime=-1。triggerTime 写入时会按 lastBallEntryTimestamp 重算，不应未经核对当成所有模式统一的“手势开始到提交延迟”。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "triggerCondition",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "start",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "direction(0 for )",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "modeSelected",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "触发分支字符、初始目标索引、旋转方向、技术名称、目标索引；分支字符不是任务成功标签。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "react_frequency",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "obstacle_react_frequency",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标和障碍的 React 阶段进入/反应计数。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "isMineBall(need cancel)",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "successfully_Canceled",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "前者是本试次是否应取消；后者仅在雷球任务中记录取消是否成功，普通目标为 NA。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnhXgSB4z5MjtovVYGfQBEDb",
+      "cells": [
+        "doxcnBae6zSTvfp6FuwrcQ5cxUh",
+        "doxcn7QgpXO6b8ms7MdASxivjZe",
+        "doxcn4OdqXU0UMi58DVHTf4nX7c",
+        "doxcnmvQqDtwApm61Kden0tUJIh",
+        "doxcngGQrGDRrBAugHQ0VeAmpWd",
+        "doxcnreTEjufChVYw8w65RtRgGb",
+        "doxcnRfzkaANc6rJX9LHA8FQkUc",
+        "doxcnUWmtV2HDP9Aoz4Aqty3tgg",
+        "doxcn7HLdxQZCVCikp4rv9qmLhb",
+        "doxcn2AaxB5Tx2C19bPOtEJn1ac"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "cancelReason",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "no trigger reason",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "cancelTimes",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "取消原因串、按 entry 序号拼接的未触发原因串、累计取消次数。可能一试次内多次失败后最终成功；原因串不是逐时刻全条件快照。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "directionAngleFrame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "directionSpeedMin",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "最后记录的方向角/相对进入帧及最低速度条件摘要；不是完整方向时间序列。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "targetX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "targetY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "targetZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "表头重复 15 组；实际写圆心加全部目标点。当前 16 球输出为 17 组三维坐标，必须按实际列数解析，不能按重复列名字典覆盖。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "triggerSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "triggerAcceleration",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "仅 Magic Tap 2.0 / IxDL Dynamic 的目标实际触发保存四项快照，其他情况 NA。速度单位 m/s，加速度单位 m/s²；新共同规则使用速度向量差的模长。现有 time 表头错位，按列名读取前必须先处理结构。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnLCPoG5ylHXTBxJClWTAAvg",
+      "cells": [
+        "doxcnc6FEl6aMll3045P8IgbiRg",
+        "doxcnNelq6S8XlUFl224HJrAI0b",
+        "doxcnPagVi3oSDX1LxiVyJ0w5Fb",
+        "doxcnH0DocYuVyUDxXcSt5uqDid",
+        "doxcnnpG9ZIgD159CfrYPuYWSxg",
+        "doxcnqG162ntBRUZSyaRNsdQFUe",
+        "doxcno6ZdyPB56ZOROTeiAPp3ch",
+        "doxcn5tuQk2POfADSUCRTYOQc95",
+        "doxcnk0WYax5pBK66tug7Wb6fSd",
+        "doxcnRAIxacD7TBdLgMLNgMpK3d",
+        "doxcndWt63fRxgZ1lWEX2iLwfLe",
+        "doxcnl0nwL1qcgPEX9q8Kr0UDTd",
+        "doxcnT3FTxa8Z9UZu2bWzA0xryh",
+        "doxcnZ5RBj7DRp4DxQSpzNdco6g",
+        "doxcnozsMppnYLDo3Tz7BnIuMqg",
+        "doxcnhbZgveWhSEwCKfyxTQQOLe"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ID",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "modeSelected",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "area_type",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "index",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "试次、条件、技术、区域类型、对象索引；area_type/index 是程序上下文，不直接代表成功。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "indexLocX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexLocY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexLocZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Spawner 的指尖与拇指坐标（m）；误触时可替换为待写错误快照。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "ori_a",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ori_v",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "temp 对象 AcceStimulate 的加速度和速率；不能默认与当前活动球判定速度同源。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "angle",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "wristX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "wristY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "wristZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "wristSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "食指/手腕夹角（度）、手腕位置（m）、手腕速度（m/s）；取活动对象 ReactTap，必要时回退 temp。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "isAOK",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isVOK",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "A_vec",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "V_vec",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "模式对应的加速度/速度条件布尔值和数值；Magic2、IxDL、Dynamic Stop 有各自路由。不能跨模式直接混用定义。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "errorTriggered",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isReact",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "currentInBallDistance",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "本行是否错误快照、是否处于 React 阶段、球内移动距离（m）。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "realtime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "渲染帧编号、游戏时间、固定游戏时间、实际经过时间（后三项秒）。frame 不是运动采样唯一编号。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnmh1j6tfCqPgFFKyEqPJyXg",
+      "cells": [
+        "doxcn8S6HetZ8ghvlVyKYavqEbh",
+        "doxcnwHyBOwJZ9vZu3TDUpST5Cg",
+        "doxcnwzMOUY86pdLe3RLEzU2x7d",
+        "doxcnrxI3PrSnitBXfsci9ZhBdh",
+        "doxcnOog7lWeDcoYTnwr3t41Jmf",
+        "doxcnA2LN4m7U8u0kdYSUNOKfzd",
+        "doxcnxmuXhfp7BIhUOPgrl2TIqg",
+        "doxcnjioYObfXjNOITZO8URMNP4"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "fixedDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "requestedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "timeScale",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "固定步长（s）、1/步长配置频率（Hz）、请求采样率（Hz）、游戏时间倍率。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "trajectorySampleSequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionSampleSequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionFixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "本轨迹写入序号、temp 运动序号及该运动计算时间和除数（s）；不证明硬件新帧。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "tipPoseValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalPoseValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "velocitySource",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "schemaVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "temp 姿态查询有效性、distal 坐标、速度来源标识、格式版本。有效标记不自动验证 Spawner 的 index/thumb 坐标。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcntHUnzU826wxtAShKiTU9Cd",
+      "cells": [
+        "doxcn9MBxPVWSAjNeeR2LUM2hQ8",
+        "doxcn5U19CtxIAZ7gklfRaITJee",
+        "doxcn00n62pG3D27Oxy3yCCqZBd",
+        "doxcnjXQOj6R9ezJoLwyBNSmgif",
+        "doxcndUu4eoVYlJHcJdZ6v07Ioh",
+        "doxcnR8IHOy8AYHSZJVnwrPKiDg"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "modeSelected",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "发生障碍误触所属试次和技术。没有 ID、时间、事件序号或速度阈值快照。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "indexLocXError",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexLocYError",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexLocZError",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "obstacleX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "obstacleY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "obstacleZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "误触指尖位置和障碍中心（m）；按试次结束批量写出，不能单独精确定位同帧多事件顺序。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnvCD7hvsX7osp9vIcUciqrb",
+      "cells": [
+        "doxcnhKg50hxGLpBWlR1j9RH4xe",
+        "doxcnqZSe6Jd7qqFxbVKgvQ5Add",
+        "doxcnLRYHAZABsMV8wxxGFHcpmh",
+        "doxcnfpKokCrRk9lgsOrIYCB9Ye",
+        "doxcnn1lEoW9QM5LdzTe4OgnMA3",
+        "doxcnRpEBiCFYEpwHui1Lxcbdjh",
+        "doxcnlZ6a5FkADeQYcoFEJdPGmd",
+        "doxcnWG0RUHEewIZKJzPZb6jRjg",
+        "doxcnY8UIgZd1yLtJm3hje0CHKh",
+        "doxcnbCSlyl0G6FDgxd8JCfNune",
+        "doxcnS9UsD52es8LKbkP3MdGljc",
+        "doxcnC3FnhOkT2SlVuDkztvSYpc",
+        "doxcnlBSuwB4Au63IDNMCXXDuhg",
+        "doxcnJ8xOFPZeS38dC8DMcWJhsb",
+        "doxcnz8X3EN0DARawC6aUiGXEIU",
+        "doxcnlHEVllnI86Cia5dWECaOJe"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "source",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "帧、游戏时间（s）、试次、条件、技术数值枚举、调用来源、对象索引和类型；没有统一 entrySequence/sourceInstanceId。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "failReason",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "finalCancelPass",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "handInBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "directionReentryRequired",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "cancelAlreadyTriggered",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "本次方向判断路径、最终方向取消是否通过、接触/重入/取消状态。中间 failReason 可能是正常预备阶段，不等于试次失败。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "sampleCount",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "windowFrameCount",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "windowReady",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "窗口已有样本、配置窗口长度、窗口是否就绪；低速样本可能跳过。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "windowMovementX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "windowMovementY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "windowMovementZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "windowMovementMagnitude",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "窗口位移向量及模长（m）。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "smoothedDirX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "smoothedDirY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "smoothedDirZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "hasSmoothedDirection",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "userFacingDirX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "userFacingDirY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "userFacingDirZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "平滑方向、有效性、比较参照方向（单位向量）；当前世界 -Z 模式参考为 (0,0,-1)。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "angleDeg",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "angleThresholdDeg",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "anglePass",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "minSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedPass",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "方向角/门限（度）与速度/门限（m/s）及各自通过标志。Pinch-Direction 的方向/速度逻辑按中心点实现解释，列名不能替代源码来源。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "ballCenterX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballCenterY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballCenterZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexPosX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexPosY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexPosZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "viewerPosX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "viewerPosY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "viewerPosZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标中心、食指位置、观察者位置（m）；参照轴模式下 viewer 不必是实际参照来源。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnnejYpBuLHfHp23nv7R63yf",
+      "cells": [
+        "doxcno355bDI2XgY44chH4tVQte",
+        "doxcnmRQIrCKA1pwP7sBSNXoskf",
+        "doxcnp052MKkOYtGTnH8Xqjtljf",
+        "doxcntZ86CSBdwdXCSxAyxc2Apd",
+        "doxcnG36pKAFDPjmDCgyGivjCDe",
+        "doxcnhigGOAHpIFZP21z5c8rPEc",
+        "doxcnn7zJVSLdYXDTJh6TYiwyAe",
+        "doxcnqUXfxsmy0uqlqchwc5qAwd",
+        "doxcnvlJl811rpXGDgODw5rnitd",
+        "doxcnfi4T9mHcj7FBpvdHXQpy3f",
+        "doxcnm7n6Wrwx56h9iV9NrfJkff",
+        "doxcnUwJN5PJ2cA73k9MJW7EPrb"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "event",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "reason",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isMineBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "事件时间和对象上下文；mode 为数值枚举；没有通用进入唯一编号。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "pending",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isPinch",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexInBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbInBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "triggeredBy",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryElapsed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "是否等待提交、捏合状态、两指入球状态、触发来源、进入后时间（s）。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "poseValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "activateThresholdMeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "deactivateThresholdMeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distanceMeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distanceMillimeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "两指姿态有效性，捏合开始/松开门限（m），两指距离（m 和 mm）。这是事件记录时重新查询的姿态，不保证与 Pinch.Update 判断是同一个原子样本。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "swipeContactValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "swipeContactDistanceMeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "swipeContactDistanceMillimeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "swipeContactThresholdMeters",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "拇指贴合食指数据的有效性、距离（m/mm）及门限（m）；无效写 NA。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "indexX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "thumbZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "两指位置（m）；poseValid=false 时 NA。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnimsxVtcmWOHCQkHVlff5ux",
+      "cells": [
+        "doxcnFFfTPRH0af4hfVlQTHVEsd",
+        "doxcncfIm1CVm5O1T68LfnJOXnc",
+        "doxcnVzxLeRtS8Wv4JX4x8dfh3d",
+        "doxcnaUuTSKENrUIjrRmpCKfeMb",
+        "doxcnPbYFRzOjZ53c952iEb2mDg",
+        "doxcn3654qyzR0vptQGj8zfWcmS",
+        "doxcneFtrLTqv4HZTEAoHh9FaGg",
+        "doxcn3NcChq0G71YcpSyTX2UxUb",
+        "doxcnCVB7y7jHZ18sCehMoMaE5e",
+        "doxcnqNsK9usHW7y0GUi4ITBqxg",
+        "doxcnJIIex8ZSj8s4VxR6X661rd",
+        "doxcnOqhuFJ11OryuhoRHPw5Acd",
+        "doxcnOvlRRC3zIFeDghX527Wfqg",
+        "doxcnra6MKcg1anJYhi0Nd3UvXc",
+        "doxcnNDWz5up1Ugj6o95ZwU4CBg",
+        "doxcns2JwCiygK6VOeVd5rzaV7I"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "realtime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "inFixedStep",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "渲染帧、游戏/固定游戏/实际时间（s）、是否在 FixedUpdate 中调用。Update 可重复检查最近一次固定样本。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entrySequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isMineBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "source",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sourceInstanceId",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "进入时锁定的试次/对象上下文；entrySequence 在单一会话内唯一，source 区分 target/obstacle。跨会话需加 sessionId。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "event",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "reason",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "outcome",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "enter/sample/check/armed/trigger/cancel/exit/tracking_lost/disabled 等观测；最终 outcome 为 trigger/cancel/exit/aborted，pending 是过程状态。实际停用写 aborted 结果，不能按文件文档中的标签猜枚举。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "handInBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedMinArmed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedTriggered",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enableTrigger",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "reentryRequired",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "allowHighSpeedTrigger",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "当前球内/低速准备/触发状态及总触发许可、重入门控、方向高速许可。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "speedMaxObservedInside",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedMaxObservedAfterArmed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "armedEver",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "insideSampleCount",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "本次进入是否观察到球内高速、准备后高速、是否曾准备、独立固定运动样本数；不是独立硬件样本数。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "decisionSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "lastInsideSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "exitFrameSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "minSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "maxSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "实际判定速度、最后球内速度、退出速度、低/高门限（m/s）；非退出事件 exitFrameSpeed=NA。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "entryElapsed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "armedLatencyMs",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "lastInsideFixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "进入后时间、进入时间、准备延迟（ms）、最后球内固定时间；除标注 ms 外均为秒。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnBfB6vbnFvjIyldYbtfG0uS",
+      "cells": [
+        "doxcnmgmPXnKwEbFLMdTP5bGHzb",
+        "doxcnSWdIqFSkhVUqAEUXqxQfZe",
+        "doxcnoCpoLRt37Fuwg5xd8QaVle",
+        "doxcnQjp0wHfBtcAkhlhKuXPgTg",
+        "doxcnx3mioKrZ0BO2nNe5zRrYQd",
+        "doxcnL6ZepcwPNXHTMvTxAHZa3c",
+        "doxcn1RpY0YCIEniJ8ZMO1GWpJf",
+        "doxcnq7r1JJBjDkWhCrsqCwSfdh",
+        "doxcnjhb1MO7jDg3CtjCxsnr7mb",
+        "doxcnNeDbs0WyZACktPXx8WeRIg",
+        "doxcnH1ZPGr3S192FAtwVcIUBuh",
+        "doxcnaEyw2nvh1fN6dCPIVaq2kd",
+        "doxcnA7NB4TTyi39aJVDZZyaZPe",
+        "doxcnuCA12rAmxSABnPfN99DIyc",
+        "doxcnFdTNPd6qXFBp9EJFobwiSg",
+        "doxcn32HPEzWYjjf0WWTG0py6Ac"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "tipInside",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalInside",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousIndexX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousIndexY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousIndexZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "参与判定的入区域状态与本次/前次指尖、distal 坐标（m）；旧算法区域是 Collider.bounds 的包围盒，tip OR distal。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "boundsCenterX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "boundsCenterY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "boundsCenterZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "boundsExtentX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "boundsExtentY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "boundsExtentZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "判定包围盒中心和半长（m），用于离线复核几何边界。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "fixedDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "requestedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "timeScale",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionSampleSequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionFixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "velocitySource",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "采样配置、时间倍率、原判定组件的运动序号、时间和 dt、速度来源。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "tipPoseValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "distalPoseValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionTrackingGapSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "trackingLossObserved",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "对应组件 SDK 查询有效性、追踪间隔（s）、进入期间是否观察到失追/异常间隔。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "boundaryHighSpeedCandidate",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "边界高速候选：已准备，最后球内未达高速，退出样本达高速，且满足追踪/区域条件；不是“已经证实帧率导致漏触”。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "currentCase",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "currentId",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryFixedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryMinSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryMaxSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mixedSamplingRate",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "settingsChanged",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "写入时试次/条件、进入时频率和门限，以及进入中频率/速度门限/Dwell取消时长/timeScale 是否改变；不覆盖所有技术参数。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "dwellTimeoutSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryExperimentStarted",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "currentExperimentStarted",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "schemaVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed-Dwell 超时秒数、进入/当前是否正式实验、格式版本；预热和中止应单列。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnJF99SLDajHcKj4Cv0308vd",
+      "cells": [
+        "doxcnNcmgLFdKutCKqGr0MTq42b",
+        "doxcnIlYazf8hqNSnN5f2BRofEb",
+        "doxcnNdKyvXupkhYN1a8kzQcY2b",
+        "doxcn4Lde8GxpraSvc6M7565NEe",
+        "doxcnrQfyYEOxbDnyCySpfAAXfb",
+        "doxcnpqgnyZorQujDxjrjBb5Mad",
+        "doxcn07OdIqjBPk98P0yCUa4xXc",
+        "doxcnuFQCWDBzyiaRGmKBa7Sohg",
+        "doxcnYd5JpnA2bQr7RBpKNkKNCg",
+        "doxcntH75PgTczF4C4IqJBK5Oeh",
+        "doxcne7QoKmDD2HWt8SmuGrUld1",
+        "doxcnSaMbJWUDEx5W2AVz5PTwUe",
+        "doxcnOmDaqN3mVxPS6VWR2jRq5c",
+        "doxcnb9tJzvsMprKeRJ3GQCEVUf",
+        "doxcnlu3ck6kSTJMNUsUKRuakih",
+        "doxcnkt3ZLFHykScMNEGaiU4jOc"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "event",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "realtime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "会话开始、实验开始/结束、试次结束、受监测参数变化；时间和当前试次/技术上下文。没有每次进入状态机。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "requestedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "timeScale",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "请求与实际配置采样率（Hz）、固定步长（s）、时间倍率。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "minSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "maxSpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "dwellTimeoutSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Speed 低/高速度门限（m/s）、pinchDwellCancelTime（s）；dwellTimeoutSeconds 不是 longPressTimeThreshold 的完整替代。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "directionAngleThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "directionSmoothingAlpha",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "directionMinSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "directionWindowSamples",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "useEntryDirectionAxis",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "entryDirectionConeHalfAngle",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "direction010 方向角/平滑/速度/窗口和世界轴开关/半锥角；没有独立 Pinch-Direction 三项和所有其他方向组。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "releaseDistanceDeltaThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "wristTiltThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "释放距离单帧增量（m）、腕倾门限（度）。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "targetSelectionMode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enableMineBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enabledOb",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "enablePreview",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "目标序列与任务开关；不包含全部目标几何、非目标触发开关和显色延迟。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "magicTap2SpeedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "magicTap2AccelerationThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ixdlAccelerationThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ixdlInputSpeedMin",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ixdlInputSpeedMax",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ixdlSpeedThresholdMin",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ixdlSpeedThresholdMax",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "Magic 独立速度/加速度门限与 IxDL 独立加速度、线性映射端点（速度 m/s，加速度 m/s²）。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnoYWZ8s611W0uPkSoeYj4bh",
+      "cells": [
+        "doxcnoqfU8ATumGJWs4Oho93Xob",
+        "doxcnU4VuJ00efBoH0aFSlt5UUb",
+        "doxcnD7CT93UqLzKWGYl91z6lp5",
+        "doxcnPdqY8zN6UcE3msfdwE9ZJp"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "motionRulesVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionTimestampKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "schemaVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "共同规则和时间类型及 schema=4。旧模式记录 legacy_other_mode / legacy_fixed_step；不是完整应用构建版本。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcn3RA2uqefZ0Ub5xbzcOKTWc",
+      "cells": [
+        "doxcnui4zBtro9JP9QYZcF2WWze",
+        "doxcngVJeJTZe1vtkN47Xipqpwf",
+        "doxcne4KfnwMWUsKkkJ8Q8gnPec",
+        "doxcn03OaoP7bM1QfQXT7ur9RYg",
+        "doxcnOXANRzhURYPOpdCp5PBRHg",
+        "doxcnReCQfcVfnbxk9whBU2qN3X",
+        "doxcnv3ITqtfb0wbQtqO9M9PkGf",
+        "doxcnq8wT3Qnm9ycjh7gVPDUuwc",
+        "doxcnPJFb5jxvQ0sXnlP0TMPocZ",
+        "doxcniNLWn2aAjV2n42nbtQdyec",
+        "doxcndJ0607p1VIyO9eiqvi9ffH",
+        "doxcnhR0EWofViEQjVZNq0Mrt8c"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "realtime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "source",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sourceInstanceId",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "experimentStarted",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "读取时刻与试次/对象上下文；无 isMineBall 和统一 entrySequence，需结合试次结果，未完成试次仍有真值关联缺口。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "trackingValid",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "inside",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleSourceId",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleSequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleTimestamp",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "timestampKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleAgeSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "trackingEpoch",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "追踪状态、实际几何区域、MRTK 来源/更新序号/接收时间（s）、时间类型、缓存年龄（s）、失追世代。接收时间不是硬件采集时间。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "acceptedMotionDtSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleAccepted",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleStatus",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "hasVelocity",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "hasAcceleration",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "最近一次接受运动的 dt（s）、本次是否接受及原因、速度/加速度历史是否准备。未接受行运动数值是保留状态，不能当新测量。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "triggerSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "triggerAcceleration",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "accelerationThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "selected",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "当前/前次速率、当次速度门限、向量加速度及门限、是否本次选中。这里 triggerSpeed 在非触发行也是当前速率；只有 selected=true 才是触发事件。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "indexX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "motionRulesVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "schemaVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "缓存的指尖位置（m）、共同规则 shared-provider-v3、格式版本 1；没有统一 entry 终止 outcome 或显式每项 gate 位。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcn8TWXCLFU1Ep6KwtDGiJmzg",
+      "cells": [
+        "doxcnWGSjJrD8XESI9T6fhmUlne",
+        "doxcn9avAGxTlDEyUffefVqDpbe",
+        "doxcndVt3Ds4LpRPxVdO84X2Pjg",
+        "doxcnUWJc4YnXWZIQLy9kEPZe2f",
+        "doxcnQ0Zk0ri2vqxetrKRcKwhKb",
+        "doxcndZmqLv6a5dOsNdER5V6bPd",
+        "doxcnnfYijlN2ZjH73XWJQ1ybJc",
+        "doxcnCL69CbnlrK9GVVMXauiEOe",
+        "doxcn9XFp2gAcz3k9qYTonm6cab",
+        "doxcnjmgiFGnphlELGssfOt9lfh"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义、单位与读取边界",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "frame",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "fixedTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "realtime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "case",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "id",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "mode",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "source",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sourceInstanceId",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballIndex",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "ballKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "isMineBall",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "experimentStarted",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "实际 IxDL 触发时锁定上下文；source=target/obstacle，isMineBall 决定目标触发是正确提交还是雷球误触。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "triggerSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "previousSpeed",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "speedThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "triggerAcceleration",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "accelerationThreshold",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "实际触发的速率/前次速率/速度门限/向量加速度和当模式独立加速度门限（m/s 或 m/s²）；不是旧有符号速率变化率。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "fixedDeltaTime",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "requestedSamplingHz",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexX",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexY",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "indexZ",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "固定配置步长（s）、请求频率（Hz）和指尖位置（m）；共同规则的真实运动 dt 应看 sampleDtSeconds。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "motionRulesVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleSequence",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleTimestamp",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "sampleDtSeconds",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "timestampKind",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "schemaVersion",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "共同规则版本、接受更新序号/接收时间/实际 dt（s）和时间类型；格式版本 2。仅写实际触发，不覆盖未触发/取消全过程。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcn8TQZ5CT81bLpbvEdJoPISf",
+      "cells": [
+        "doxcn4snhKUvoc0UVHCvTdP5Pag",
+        "doxcnLartPd1SPGR1QGKDrBjq3d",
+        "doxcnjNisP6FfehhixTr7Zg9ire",
+        "doxcneWfR9fbfj6u0ifShMZwBec",
+        "doxcntkvoUMApwjHJXdVIFAewnf",
+        "doxcnq6v5PdDoO0imPCZy7Hz3Nd"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义与单位",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "phase",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "trial_index",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "target_color",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "cancel_threshold_ms",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "pilot/formal、阶段内试次编号、绿/黄任务、取消时间阈值（ms）；阶段反复循环时缺少 block 唯一编号。"
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "used_time_ms",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "success",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "time_in_target_ms",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "final_index_x",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "final_index_y",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "final_index_z",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "完成耗时、按颜色任务判定成功（1/0）、目标内停留（ms）、最终指尖位置（m）；没有统一中止原因/失追状态/设备构建快照。"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "block_id": "doxcnUjGSS1vrEzQ5ybwQn4g40c",
+      "cells": [
+        "doxcn8rkYj4maT40mvCDLU6gGHd",
+        "doxcnir9wRM3Uv0eRInBaRvRbbh",
+        "doxcndb3i6dnrul4FFzHi5MVJph",
+        "doxcnv4PY4nvNeyqsFO2IhhuTxH"
+      ],
+      "elements": [
+        [
+          {
+            "text_run": {
+              "content": "字段",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "含义与单位",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "phase",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "trial_index",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "elapsed_ms",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "x",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "y",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "、"
+            }
+          },
+          {
+            "text_run": {
+              "content": "z",
+              "text_element_style": {
+                "inline_code": true
+              }
+            }
+          }
+        ],
+        [
+          {
+            "text_run": {
+              "content": "阶段/试次、经过时间（ms）、指尖轨迹（m）；不能单独区分无采样是失追、停用还是未开始。"
+            }
+          }
+        ]
+      ]
+    }
+  ],
+  "document_id": "ZMpbdDtTZoHTylxpqg0cHYNznKc",
+  "url": "https://kvxm3gyd38.feishu.cn/docx/ZMpbdDtTZoHTylxpqg0cHYNznKc",
+  "cells_written": 237,
+  "completed": true,
+  "body_verified": true,
+  "verified_table_cells": 237,
+  "root_count": 80,
+  "total_blocks": 555,
+  "tables_verified": 19
+}

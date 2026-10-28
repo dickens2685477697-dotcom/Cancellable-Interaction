@@ -1,0 +1,252 @@
+{
+  "scope": "Numeric participant directories only; old archives and project copies excluded. Framerate tests separate.",
+  "repeated_position_definition": "Equal serialized numeric XYZ in consecutive valid trajectory rows within the same completed case/ID. Does not identify MRTK update identity.",
+  "same_frame_definition": "Consecutive motion sequence, increasing fixedTime, identical frame, identical index and distal XYZ, valid joints, zero decision speed. Scheduling evidence, not a hardware frame ID.",
+  "speed_check_definition": "Repeated check events reusing the same AcceStudy3 motionSampleSequence within a target entry; this is not the MRTK provider sequence.",
+  "formal_definition": "Completed Case 1-48 and ID 1-3; modern trajectory further limited by trial lifecycle; boundary entries require entryExperimentStarted=1.",
+  "source_files_unchanged": true,
+  "sources": 151,
+  "totals": [
+    {
+      "cohort": "main",
+      "condition": "Cancel",
+      "sessions": 15,
+      "formal_trials": 704,
+      "rows": 66603,
+      "pairs": 65899,
+      "repeated_positions": 2580,
+      "repeated_zero_speed": 2428,
+      "inside_pairs": 54764,
+      "inside_repeated_positions": 2056,
+      "timed_pairs": 0,
+      "trials_with_repeated_positions": 671
+    },
+    {
+      "cohort": "main",
+      "condition": "Trigger",
+      "sessions": 47,
+      "formal_trials": 2256,
+      "rows": 175481,
+      "pairs": 173225,
+      "repeated_positions": 2545,
+      "repeated_zero_speed": 2520,
+      "inside_pairs": 163201,
+      "inside_repeated_positions": 2427,
+      "timed_pairs": 31094,
+      "trials_with_repeated_positions": 1259
+    },
+    {
+      "cohort": "framerate",
+      "condition": "30hz_50hz_analysis",
+      "sessions": 5,
+      "formal_trials": 240,
+      "rows": 17655,
+      "pairs": 17252,
+      "repeated_positions": 421,
+      "repeated_zero_speed": 417,
+      "inside_pairs": 17012,
+      "inside_repeated_positions": 421,
+      "timed_pairs": 17252,
+      "trials_with_repeated_positions": 127
+    }
+  ],
+  "excluded_trial_rows": [
+    {
+      "session": "20260829-14-28-01",
+      "case": "49",
+      "id": "2",
+      "reason": "outside_case_1_48_or_id_1_3"
+    }
+  ],
+  "older_trial_prefixes": [
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-21-08-05\\20260731-21-08-05-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-21-28-37\\20260731-21-28-37-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-21-54-19\\20260731-21-54-19-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-21-57-26\\20260731-21-57-26-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-22-05-33\\20260731-22-05-33-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-22-19-06\\20260731-22-19-06-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-22-22-17\\20260731-22-22-17-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    },
+    {
+      "path": "D:\\2026.7.18PilotStudy\\3\\Trigger\\20260731-22-31-47\\20260731-22-31-47-time.csv",
+      "note": "Older named prefix; only Case, ID, mode, entry count and outcome are used. Duplicate target coordinate names are not used."
+    }
+  ],
+  "duplicate_source_sessions": [],
+  "no_provider_sequence_available": true,
+  "trajectory_timestamp_limit": "Trajectory frame is the logger frame and motionFixedTime may lag fixedTime. A zero same-frame count from trajectory is not absence of repeated reads; use speed-boundary-debug for decision-time evidence.",
+  "speed_summaries": [
+    {
+      "cohort": "main",
+      "participant": "2",
+      "condition": "Trigger",
+      "session": "20261027-11-14-50",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 67,
+      "checks": 3347,
+      "unique_checked_measurements": 1433,
+      "repeated_measurement_checks": 1914,
+      "inside_motion_samples": 1433,
+      "same_frame_zero_tip_distal": 20,
+      "armed_events": 60,
+      "armed_at_zero": 12,
+      "armed_at_same_frame_repeat": 12,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 11
+    },
+    {
+      "cohort": "main",
+      "participant": "2",
+      "condition": "Trigger",
+      "session": "20261027-11-41-48",
+      "mode": "speedDwell",
+      "technique": "9 Speed-Dwell",
+      "entries": 57,
+      "checks": 3107,
+      "unique_checked_measurements": 1331,
+      "repeated_measurement_checks": 1776,
+      "inside_motion_samples": 1331,
+      "same_frame_zero_tip_distal": 14,
+      "armed_events": 53,
+      "armed_at_zero": 5,
+      "armed_at_same_frame_repeat": 5,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 5
+    },
+    {
+      "cohort": "main",
+      "participant": "2",
+      "condition": "Trigger",
+      "session": "20261027-11-47-05",
+      "mode": "speedRelease",
+      "technique": "10 Speed-Release",
+      "entries": 61,
+      "checks": 2784,
+      "unique_checked_measurements": 1199,
+      "repeated_measurement_checks": 1585,
+      "inside_motion_samples": 1199,
+      "same_frame_zero_tip_distal": 23,
+      "armed_events": 54,
+      "armed_at_zero": 10,
+      "armed_at_same_frame_repeat": 10,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 9
+    },
+    {
+      "cohort": "framerate",
+      "participant": "self_test",
+      "condition": "30hz_50hz_analysis",
+      "session": "20261022-10-41-13",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 72,
+      "checks": 3860,
+      "unique_checked_measurements": 1173,
+      "repeated_measurement_checks": 2687,
+      "inside_motion_samples": 1173,
+      "same_frame_zero_tip_distal": 0,
+      "armed_events": 67,
+      "armed_at_zero": 0,
+      "armed_at_same_frame_repeat": 0,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 0
+    },
+    {
+      "cohort": "framerate",
+      "participant": "self_test",
+      "condition": "30hz_50hz_analysis",
+      "session": "20261022-10-46-41",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 68,
+      "checks": 3530,
+      "unique_checked_measurements": 1479,
+      "repeated_measurement_checks": 2051,
+      "inside_motion_samples": 1479,
+      "same_frame_zero_tip_distal": 26,
+      "armed_events": 62,
+      "armed_at_zero": 12,
+      "armed_at_same_frame_repeat": 12,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 11
+    },
+    {
+      "cohort": "framerate",
+      "participant": "self_test",
+      "condition": "30hz_50hz_analysis",
+      "session": "20261022-10-48-38",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 62,
+      "checks": 3080,
+      "unique_checked_measurements": 944,
+      "repeated_measurement_checks": 2136,
+      "inside_motion_samples": 944,
+      "same_frame_zero_tip_distal": 0,
+      "armed_events": 54,
+      "armed_at_zero": 0,
+      "armed_at_same_frame_repeat": 0,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 0
+    },
+    {
+      "cohort": "framerate",
+      "participant": "self_test",
+      "condition": "30hz_50hz_analysis",
+      "session": "20261022-10-50-32",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 59,
+      "checks": 2946,
+      "unique_checked_measurements": 1238,
+      "repeated_measurement_checks": 1708,
+      "inside_motion_samples": 1238,
+      "same_frame_zero_tip_distal": 29,
+      "armed_events": 51,
+      "armed_at_zero": 14,
+      "armed_at_same_frame_repeat": 14,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 13
+    },
+    {
+      "cohort": "framerate",
+      "participant": "self_test",
+      "condition": "30hz_50hz_analysis",
+      "session": "speed正常选择3ID",
+      "mode": "speed",
+      "technique": "8 Speed",
+      "entries": 72,
+      "checks": 4145,
+      "unique_checked_measurements": 1735,
+      "repeated_measurement_checks": 2410,
+      "inside_motion_samples": 1735,
+      "same_frame_zero_tip_distal": 36,
+      "armed_events": 65,
+      "armed_at_zero": 13,
+      "armed_at_same_frame_repeat": 13,
+      "trigger_events": 48,
+      "trigger_after_same_frame_repeat_arming": 11
+    }
+  ]
+}

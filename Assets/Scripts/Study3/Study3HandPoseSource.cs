@@ -70,6 +70,7 @@ public sealed class Study3HandPoseSource : MonoBehaviour, IMixedRealityHandJoint
 
     private void Unregister()
     {
+        foreach (uint id in samples.Keys) Study3HandSamplingDiagnostics.SourceEvent(id, "provider_unregistered");
         if (registeredSystem != null)
         {
             registeredSystem.UnregisterHandler<IMixedRealityHandJointHandler>(this);
@@ -82,14 +83,20 @@ public sealed class Study3HandPoseSource : MonoBehaviour, IMixedRealityHandJoint
     {
         uint id = eventData.InputSource.SourceId;
         if (eventData.InputData == null || !eventData.InputData.TryGetValue(TrackedHandJoint.IndexTip, out MixedRealityPose pose))
-        { samples.Remove(id); epochs.Remove(id); return; }
+        {
+            Study3HandSamplingDiagnostics.ProviderUpdate(eventData, 0);
+            samples.Remove(id); epochs.Remove(id); return;
+        }
         if (!epochs.ContainsKey(id)) epochs[id] = ++nextEpoch;
         samples[id] = new Study3MotionSample(id, ++sequence, Time.realtimeSinceStartupAsDouble, pose.Position, epochs[id]);
+        Study3HandSamplingDiagnostics.ProviderUpdate(eventData, sequence, samples[id].Timestamp);
     }
-    public void OnSourceDetected(SourceStateEventData eventData) { }
+    public void OnSourceDetected(SourceStateEventData eventData)
+        => Study3HandSamplingDiagnostics.SourceEvent(eventData.InputSource.SourceId, "source_detected");
     public void OnSourceLost(SourceStateEventData eventData)
     {
         uint id = eventData.InputSource.SourceId;
+        Study3HandSamplingDiagnostics.SourceEvent(id, "source_lost");
         samples.Remove(id); epochs.Remove(id);
         if (selectedSource == id) selectedSource = null;
     }

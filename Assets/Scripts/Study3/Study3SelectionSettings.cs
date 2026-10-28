@@ -15,10 +15,18 @@ public sealed class Study3SelectionSettings : ScriptableObject
     public bool useEntryDirectionAxisForDirectionCancel;
     [Range(0f, 180f)] public float entryDirectionConeHalfAngle = 45f;
 
-    [Header("010 Direction")]
+    [Header("Direction正式实验参数")]
+    [InspectorName("Direction Cancel Angle Threshold (°)")]
+    [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用。Use Entry Direction Axis关闭时，食指移动方向与朝向用户方向在水平面内的夹角小于或等于此值时取消，单位度；开启时改用Entry Direction Cone Half Angle。")]
     public float direction010CDAngleThreshold = 20f;
+    [InspectorName("Direction Smoothing Alpha")]
+    [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用。仅在Use Entry Direction Axis关闭时生效；越小越平滑但反应越慢，越大越灵敏。")]
     [Range(0f, 1f)] public float direction010SmoothingAlpha = 0.25f;
+    [InspectorName("Direction Min Speed Threshold (m/s)")]
+    [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用的食指方向取消速度阈值，单位米/秒。Use Entry Direction Axis开启时，速度必须严格大于此值；关闭时，速度低于此值不取消。")]
     [Min(0f)] public float direction010MinSpeedThreshold = 0.05f;
+    [InspectorName("Direction Window Frame Count")]
+    [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用的方向判断窗口，至少为2帧。Use Entry Direction Axis开启时，低于Speed Min Threshold的帧不计入，累计达到窗口帧数后，以窗口内各段单位方向的平均方向判定。Speed-Direction还需先满足低速准备条件，方向判定就绪且在取消锥体外后才允许高速确认。")]
     [Min(2)] public int direction010WindowFrameCount = 10;
 
     [Header("Pinch Direction")]

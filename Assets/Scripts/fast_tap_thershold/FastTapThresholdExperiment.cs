@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FastTapThresholdExperiment : MonoBehaviour
+public partial class FastTapThresholdExperiment : MonoBehaviour
 {
     public enum FastTapThresholdPreset
     {
@@ -115,7 +115,10 @@ public class FastTapThresholdExperiment : MonoBehaviour
 
     private void Update()
     {
+        EnsureHandSamplingLog();
+        handSamplingSession?.Tick();
         bool hasFinger = TryGetIndexTipPosition(out Vector3 fingerPosition);
+        CacheAttributionInput(hasFinger, fingerPosition);
 
         switch (state)
         {
@@ -415,6 +418,7 @@ public class FastTapThresholdExperiment : MonoBehaviour
 
     private void UpdateTargetInput(bool hasFinger, Vector3 fingerPosition)
     {
+        ObserveAttributionInput(hasFinger, fingerPosition);
         if (!hasFinger)
         {
             if (fingerInsideTarget)
@@ -437,6 +441,7 @@ public class FastTapThresholdExperiment : MonoBehaviour
             timeInTargetSeconds = 0f;
             AssignTrialColorIfNeeded();
             ApplyTargetTrialMaterial();
+            WriteAttribution("target_enter", "color_assigned_on_entry");
         }
 
         if (inside)
@@ -475,6 +480,7 @@ public class FastTapThresholdExperiment : MonoBehaviour
 
     private void PrepareNewBlock()
     {
+        BeginAttributionBlock();
         currentTrialIndex = 0;
         blockSequence.Clear();
 
@@ -515,11 +521,13 @@ public class FastTapThresholdExperiment : MonoBehaviour
         targetBallObject.SetActive(true);
         ApplyTargetIdleMaterial();
         state = ExperimentState.TargetActive;
+        BeginAttributionAttempt();
     }
 
     private void CompleteTrial(bool triggered, Vector3 finalPosition)
     {
         bool success = EvaluateSuccess(triggered);
+        CompleteAttributionAttempt(triggered, success);
         PlayFeedback(success);
 
         FastTapTrialResult result = new FastTapTrialResult
@@ -723,7 +731,7 @@ public class FastTapThresholdExperiment : MonoBehaviour
 
     private bool TryGetIndexTipPosition(out Vector3 position)
     {
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
+        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose pose))
         {
             position = pose.Position;
             return true;

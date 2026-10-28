@@ -39,6 +39,7 @@ public class OVRSkeleton : MonoBehaviour
 		public bool IsDataValid { get; set; }
 		public bool IsDataHighConfidence { get; set; }
 		public int SkeletonChangedCount { get; set; }
+		public OVRHandSamplingMetadata SamplingMetadata { get; set; }
 	}
 
 	public enum SkeletonType
@@ -352,6 +353,12 @@ public class OVRSkeleton : MonoBehaviour
 		}
 	}
 
+	// Metadata is copied only when these bone transforms are actually applied.
+	public OVRHandSamplingMetadata AppliedSamplingMetadata { get; private set; }
+	public long SamplingApplySequence { get; private set; }
+	public double SamplingAppliedRealtime { get; private set; }
+	public bool SamplingPoseValid { get; private set; }
+
 	private void Update()
 	{
 #if UNITY_EDITOR
@@ -363,6 +370,7 @@ public class OVRSkeleton : MonoBehaviour
 
 		if (!IsInitialized || _dataProvider == null)
 		{
+			SamplingPoseValid = false;
 			IsDataValid = false;
 			IsDataHighConfidence = false;
 
@@ -372,6 +380,7 @@ public class OVRSkeleton : MonoBehaviour
 		var data = _dataProvider.GetSkeletonPoseData();
 
 		IsDataValid = data.IsDataValid;
+		SamplingPoseValid = false;
 		if (data.IsDataValid)
 		{
 			if (SkeletonChangedCount != data.SkeletonChangedCount)
@@ -412,6 +421,10 @@ public class OVRSkeleton : MonoBehaviour
 					boneTransform.localRotation = data.BoneRotations[i].FromFlippedZQuatf();
 				}
 			}
+			AppliedSamplingMetadata = data.SamplingMetadata;
+			SamplingApplySequence++;
+			SamplingAppliedRealtime = Time.realtimeSinceStartupAsDouble;
+			SamplingPoseValid = data.SamplingMetadata.ReadSucceeded;
 		}
 	}
 

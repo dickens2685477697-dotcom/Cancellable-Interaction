@@ -182,7 +182,7 @@ public class AcceStudy3 : MonoBehaviour
         IndexDistalPoseValid = false;
         SampleTipInside = SampleDistalInside = false;
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        IndexTipPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2);
+        IndexTipPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2, MotionSampleSequence);
         if (IndexTipPoseValid)
         {
             MotionTrackingGapSeconds = double.IsNaN(previousValidMotionTime)
@@ -196,7 +196,7 @@ public class AcceStudy3 : MonoBehaviour
                 indexTipPositionPreviousFrame = IndexTipPose2.Position;
                 indexTipPositionTwoFramesAgo = IndexTipPose2.Position;
                 indexTipSampleCount = 1;
-                IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
+                IndexDistalPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose, MotionSampleSequence);
                 previousDistalPosition = IndexDistalPose.Position;
                 return;
 
@@ -227,8 +227,8 @@ public class AcceStudy3 : MonoBehaviour
 
             #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
+            IndexDistalPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose, MotionSampleSequence);
+            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose, MotionSampleSequence);
             bool tipInside = Bounds.Contains(IndexTipPose2.Position);
             bool distalInside = Bounds.Contains(IndexDistalPose.Position);
             SampleTipInside = tipInside;

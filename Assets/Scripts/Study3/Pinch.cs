@@ -13,6 +13,11 @@ public class Pinch : MonoBehaviour
     public float distance = 1.0f;
     public bool isPinch = false;
     public UnityEvent PinchStart, PinchEnd;
+    public event System.Action AttributionObserved;
+    public long AttributionSampleSequence { get; private set; }
+    public double AttributionSampleTime { get; private set; }
+    public bool AttributionIndexValid { get; private set; }
+    public bool AttributionThumbValid { get; private set; }
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +29,12 @@ public class Pinch : MonoBehaviour
     void Update()
     {
         Handedness handedness = Handedness.Any;
-        HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
-        HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
+        AttributionSampleSequence++;
+        AttributionSampleTime = Time.realtimeSinceStartupAsDouble;
+        AttributionIndexValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
+        AttributionThumbValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
         distance = Vector3.Distance(indexPose.Position, thumbPose.Position);
+        AttributionObserved?.Invoke();
         if (distance > DeactivateDistance)
         {
             if (isPinch)

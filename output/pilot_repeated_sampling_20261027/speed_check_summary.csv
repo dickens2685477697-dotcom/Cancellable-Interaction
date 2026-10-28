@@ -1,0 +1,9 @@
+﻿cohort,participant,condition,session,mode,technique,entries,checks,unique_checked_measurements,repeated_measurement_checks,inside_motion_samples,same_frame_zero_tip_distal,armed_events,armed_at_zero,armed_at_same_frame_repeat,trigger_events,trigger_after_same_frame_repeat_arming
+main,2,Trigger,20261027-11-14-50,speed,8 Speed,67,3347,1433,1914,1433,20,60,12,12,48,11
+main,2,Trigger,20261027-11-41-48,speedDwell,9 Speed-Dwell,57,3107,1331,1776,1331,14,53,5,5,48,5
+main,2,Trigger,20261027-11-47-05,speedRelease,10 Speed-Release,61,2784,1199,1585,1199,23,54,10,10,48,9
+framerate,self_test,30hz_50hz_analysis,20261022-10-41-13,speed,8 Speed,72,3860,1173,2687,1173,0,67,0,0,48,0
+framerate,self_test,30hz_50hz_analysis,20261022-10-46-41,speed,8 Speed,68,3530,1479,2051,1479,26,62,12,12,48,11
+framerate,self_test,30hz_50hz_analysis,20261022-10-48-38,speed,8 Speed,62,3080,944,2136,944,0,54,0,0,48,0
+framerate,self_test,30hz_50hz_analysis,20261022-10-50-32,speed,8 Speed,59,2946,1238,1708,1238,29,51,14,14,48,13
+framerate,self_test,30hz_50hz_analysis,speed正常选择3ID,speed,8 Speed,72,4145,1735,2410,1735,36,65,13,13,48,11

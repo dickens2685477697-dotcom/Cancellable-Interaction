@@ -264,10 +264,10 @@ public class ReactTap : MonoBehaviour
     void FixedUpdate()
     {
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        if (HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2) &&
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose) &&
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.Wrist, Handedness.Any, out WristPose) &&
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexKnuckle, Handedness.Any, out IndexKnucklePose)) // Get current wrist pose
+        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2) &&
+            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose) &&
+            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.Wrist, Handedness.Any, out WristPose) &&
+            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexKnuckle, Handedness.Any, out IndexKnucklePose)) // Get current wrist pose
         {
             #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
             if (Init)

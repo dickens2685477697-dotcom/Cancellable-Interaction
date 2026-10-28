@@ -24,6 +24,17 @@ public class ReleaseGesture : MonoBehaviour
     public float indexThumbDistanceDelta;
     public float indexThumbOpeningSpeed;
 
+    public event System.Action AttributionObserved;
+    private void PublishAttribution() => AttributionObserved?.Invoke();
+    public string AttributionObservation { get; private set; } = "none";
+    public double AttributionSampleTime { get; private set; }
+    public bool AttributionPoseValid { get; private set; }
+    public bool AttributionGatePassed { get; private set; }
+    public bool AttributionHistoryReady { get; private set; }
+    public float AttributionDistanceDelta { get; private set; }
+    public float AttributionOpeningSpeed { get; private set; }
+    public float AttributionThreshold { get; private set; }
+
     private bool hasPreviousDistance = false;
     private bool hasPreviousIndexThumbDistance = false;
 
@@ -40,9 +51,17 @@ public class ReleaseGesture : MonoBehaviour
 
     public bool CheckRelease(Handedness handedness = Handedness.Any)
     {
-        if (!TryGetAverageDistance(handedness, out float averageDistance))
+        AttributionObservation = "folded_fingers_release";
+        AttributionSampleTime = Time.realtimeSinceStartupAsDouble;
+        AttributionGatePassed = false;
+        AttributionHistoryReady = false;
+        AttributionDistanceDelta = AttributionOpeningSpeed = float.NaN;
+        AttributionThreshold = distanceDeltaThreshold;
+        AttributionPoseValid = TryGetAverageDistance(handedness, out float averageDistance);
+        if (!AttributionPoseValid)
         {
             ResetGesture();
+            PublishAttribution();
             return false;
         }
 
@@ -52,29 +71,43 @@ public class ReleaseGesture : MonoBehaviour
         {
             previousAverageDistance = averageDistance;
             hasPreviousDistance = true;
+            PublishAttribution();
             return false;
         }
 
         // A release is detected only when the average distance increases enough
         // compared with the previous frame.
         currentDistanceDelta = averageDistance - previousAverageDistance;
+        AttributionHistoryReady = true;
         previousAverageDistance = averageDistance;
 
+        AttributionDistanceDelta = currentDistanceDelta;
+        AttributionGatePassed = currentDistanceDelta >= distanceDeltaThreshold;
         if (currentDistanceDelta >= distanceDeltaThreshold)
         {
+            PublishAttribution();
             ReleaseEvent.Invoke();
             ResetGesture();
             return true;
         }
 
+        PublishAttribution();
         return false;
     }
 
     public bool CheckIndexThumbRelease(float openingSpeedThreshold, Handedness handedness = Handedness.Any)
     {
-        if (!TryGetIndexThumbDistance(handedness, out float distance))
+        AttributionObservation = "index_thumb_release";
+        AttributionSampleTime = Time.realtimeSinceStartupAsDouble;
+        AttributionGatePassed = false;
+        AttributionHistoryReady = false;
+        AttributionDistanceDelta = AttributionOpeningSpeed = float.NaN;
+        AttributionThreshold = openingSpeedThreshold;
+        AttributionPoseValid = TryGetIndexThumbDistance(handedness, out float distance);
+        if (!AttributionPoseValid)
         {
             ResetGesture();
+            PublishAttribution();
             return false;
         }
 
@@ -84,22 +117,29 @@ public class ReleaseGesture : MonoBehaviour
         {
             previousIndexThumbDistance = distance;
             hasPreviousIndexThumbDistance = true;
+            PublishAttribution();
             return false;
         }
 
         indexThumbDistanceDelta = distance - previousIndexThumbDistance;
+        AttributionHistoryReady = true;
         previousIndexThumbDistance = distance;
         indexThumbOpeningSpeed = Time.deltaTime > 0f
             ? indexThumbDistanceDelta / Time.deltaTime
             : 0f;
 
+        AttributionDistanceDelta = indexThumbDistanceDelta;
+        AttributionOpeningSpeed = indexThumbOpeningSpeed;
+        AttributionGatePassed = indexThumbOpeningSpeed >= openingSpeedThreshold;
         if (indexThumbOpeningSpeed >= openingSpeedThreshold)
         {
+            PublishAttribution();
             ReleaseEvent.Invoke();
             ResetGesture();
             return true;
         }
 
+        PublishAttribution();
         return false;
     }
 
@@ -110,10 +150,10 @@ public class ReleaseGesture : MonoBehaviour
         // MRTK hand joints used by this mode: thumb tip against middle, ring,
         // and pinky tips. The index finger is intentionally excluded because it
         // is used for pointing at the ball.
-        bool hasThumb = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
-        bool hasMiddle = HandJointUtils.TryGetJointPose(TrackedHandJoint.MiddleTip, handedness, out MixedRealityPose middlePose);
-        bool hasRing = HandJointUtils.TryGetJointPose(TrackedHandJoint.RingTip, handedness, out MixedRealityPose ringPose);
-        bool hasPinky = HandJointUtils.TryGetJointPose(TrackedHandJoint.PinkyTip, handedness, out MixedRealityPose pinkyPose);
+        bool hasThumb = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
+        bool hasMiddle = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.MiddleTip, handedness, out MixedRealityPose middlePose);
+        bool hasRing = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.RingTip, handedness, out MixedRealityPose ringPose);
+        bool hasPinky = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.PinkyTip, handedness, out MixedRealityPose pinkyPose);
 
         if (!hasThumb || !hasMiddle || !hasRing || !hasPinky)
         {
@@ -131,8 +171,8 @@ public class ReleaseGesture : MonoBehaviour
     {
         distance = 0f;
 
-        bool hasIndex = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
-        bool hasThumb = HandJointUtils.TryGetJointPose(TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
+        bool hasIndex = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, handedness, out MixedRealityPose indexPose);
+        bool hasThumb = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, handedness, out MixedRealityPose thumbPose);
 
         if (!hasIndex || !hasThumb)
         {

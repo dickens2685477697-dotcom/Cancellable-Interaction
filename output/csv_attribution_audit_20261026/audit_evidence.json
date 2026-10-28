@@ -1,0 +1,70 @@
+{
+  "as_of": "2026-10-26",
+  "commit": "7e82baa",
+  "source_sha256": {
+    "LogWriter3.cs": "a32e33c0326dd30b2501901882f760dd49bcb12b2b0afca35755dbd52423b78b",
+    "LogWriter2.cs": "c1f9a9f57ae570784187ed54664667fcb1bce4eb3d9ce7fd2f3e4242d26170b7",
+    "LogWriter4.cs": "67aeef2a024dba30302b50f0469990d792177bf9073090c50d9ddcbc8d1ab70d",
+    "SpeedStudyTelemetry.cs": "a5360610e1778d6dd12e0374f85922c0df281566b359a47b1fe84115ecfcbe2a",
+    "S2AccMode.cs": "6d0c6208b051b4013617b5b5eeea7f90828d904945c128597efa114731434468",
+    "S2Obstacles.cs": "72cd5296b8c1a076120c26190ba81621c7ead7e990db661c56f4c10e022269e5",
+    "BallSpawner.cs": "7a5d3278394afbcafccd1f35c05d66cfdd73227ade69a5779f5daa3fec7f50a1",
+    "Study3MotionTracker.cs": "3dabbfcc016eb7d83605fc70fc5d3b653d8e4df336b1479a88e5cb9cf936f85f",
+    "MagicTap2MotionTracker.cs": "ce11f635ebd8dcc977495c0132deef7c82b25f1215cf6de8006a216ae84a7882",
+    "IxDLDynamicMotionTracker.cs": "772c70f55816548306b184eaae194928546de10f85eae9eb688afa87a5f1b996",
+    "DynamicStopMotionTracker.cs": "c195c12cdec064a7f580e9f94f0b2d9a50bf8d9dab3aeddf9c6bdc0d35c9b6de",
+    "Study3SelectionSettings.asset": "198e97f2b8f136497f01278017f0821dbaf74641ada4d761a289600156e938b2"
+  },
+  "samples": [
+    {
+      "session": "20261026-20-29-04",
+      "mode": "pinchDwell",
+      "trials": 48,
+      "header_columns": 75,
+      "row_lengths": {
+        "81": 48
+      },
+      "file": "D:\\2026.7.18PilotStudy\\2\\Trigger\\20261026-20-29-04\\20261026-20-29-04-time.csv",
+      "sha256": "9d940b5a8ba15c1088c076938d6a93322b8574b6e0c6723a6ddee80eadd7603d",
+      "named_trigger_first_row": {
+        "triggerSpeed": "0.2474873",
+        "previousSpeed": "0.8525126",
+        "speedThreshold": "0.537",
+        "triggerAcceleration": "0.3233579"
+      },
+      "true_last_four": [
+        "NA",
+        "NA",
+        "NA",
+        "NA"
+      ]
+    },
+    {
+      "session": "20261026-20-32-52",
+      "mode": "pinchDirection",
+      "trials": 48,
+      "header_columns": 75,
+      "row_lengths": {
+        "81": 48
+      },
+      "file": "D:\\2026.7.18PilotStudy\\2\\Trigger\\20261026-20-32-52\\20261026-20-32-52-time.csv",
+      "sha256": "887a1d2a19b82ef57c5d890a7ad9ec0fbe03d49ec27734b6b73a914a15cdb325",
+      "named_trigger_first_row": {
+        "triggerSpeed": "0.2474873",
+        "previousSpeed": "0.8525126",
+        "speedThreshold": "0.537",
+        "triggerAcceleration": "0.3233579"
+      },
+      "true_last_four": [
+        "NA",
+        "NA",
+        "NA",
+        "NA"
+      ]
+    }
+  ],
+  "schema_dictionary_coverage": "all current named columns checked",
+  "runtime_changed": false,
+  "raw_data_changed": false,
+  "report_sha256": "c0f24957eca2ca7c713b3626cb41b3ff94f196a6cff5bac37bf65376d07c0722"
+}

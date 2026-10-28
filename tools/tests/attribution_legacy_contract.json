@@ -1,0 +1,52 @@
+{
+  "headers": {
+    "Assets/Scripts/Study3/LogWriter3.cs": [
+      "Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,no trigger reason,cancelTimes,directionAngleFrame,directionSpeedMin,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,targetX,targetY,targetZ,",
+      "frame,time,case,id,mode,source,ballIndex,ballKind,failReason,finalCancelPass,handInBall,directionReentryRequired,cancelAlreadyTriggered,sampleCount,windowFrameCount,windowReady,windowMovementX,windowMovementY,windowMovementZ,windowMovementMagnitude,smoothedDirX,smoothedDirY,smoothedDirZ,hasSmoothedDirection,userFacingDirX,userFacingDirY,userFacingDirZ,angleDeg,angleThresholdDeg,anglePass,indexSpeed,minSpeedThreshold,speedPass,ballCenterX,ballCenterY,ballCenterZ,indexPosX,indexPosY,indexPosZ,viewerPosX,viewerPosY,viewerPosZ",
+      "frame,time,case,id,mode,event,reason,ballIndex,ballKind,isMineBall,pending,isPinch,indexInBall,thumbInBall,triggeredBy,entryElapsed,poseValid,activateThresholdMeters,deactivateThresholdMeters,distanceMeters,distanceMillimeters,swipeContactValid,swipeContactDistanceMeters,swipeContactDistanceMillimeters,swipeContactThresholdMeters,indexX,indexY,indexZ,thumbX,thumbY,thumbZ"
+    ],
+    "Assets/Scripts/Study3/LogWriter2.cs": [
+      "Case,ID,indexLocX,indexLocY,indexLocZ,ori_a,ori_v,modeSelected,area_type,index,angle,wristX,wristY,wristZ,wristSpeed,isAOK,isVOK,A_vec,V_vec,errorTriggered,isReact,currentInBallDistance,thumbX,thumbY,thumbZ,frame,time,fixedTime,fixedDeltaTime,fixedSamplingHz,requestedSamplingHz,realtime,timeScale,trajectorySampleSequence,motionSampleSequence,motionFixedTime,motionDeltaTime,tipPoseValid,distalPoseValid,distalX,distalY,distalZ,velocitySource,schemaVersion"
+    ],
+    "Assets/Scripts/Study3/LogWriter4.cs": [
+      "Case,indexLocXError,indexLocYError,indexLocZError,obstacleX,obstacleY,obstacleZ,modeSelected"
+    ]
+  },
+  "serializers": [
+    {
+      "file": "Assets/Scripts/Study3/LogWriter3.cs",
+      "marker": "    public string FormatMsg()",
+      "sha256": "0fd30864efd999702c23d9799da275649c41bab1c0b67634567f9f079d855e53"
+    },
+    {
+      "file": "Assets/Scripts/Study3/LogWriter3.cs",
+      "marker": "    private string FormatDirectionDebug(",
+      "sha256": "fd31dd65ac747907a2eb11b7b25d0b150206eb1da6725c034a16a21016f14524"
+    },
+    {
+      "file": "Assets/Scripts/Study3/LogWriter3.cs",
+      "marker": "    private string FormatPinchReleaseDistance(",
+      "sha256": "8383cd5f7824a7107cdeeb1ed7266df4cae3fbec2e3fc05d078430036be9f4da"
+    },
+    {
+      "file": "Assets/Scripts/Study3/LogWriter2.cs",
+      "marker": "    public string FormatMsg()",
+      "sha256": "bb39a4751468fbdd353b1f31728b4dc4ed04f4e638808130956a031bb31275b1"
+    },
+    {
+      "file": "Assets/Scripts/Study3/LogWriter4.cs",
+      "marker": "    public void Write2()",
+      "sha256": "47513384d3bd06d925b5b469fab6ec9e576bc0c16362e69d4dc38e369db5f1d6"
+    },
+    {
+      "file": "Assets/Scripts/fast_tap_thershold/FastTapThresholdLogger.cs",
+      "marker": "    public void WriteTrial(",
+      "sha256": "b3f1f64389bd3845b84f4878271d561893b3dd9ebef1a9df2b51e9df68870a7c"
+    },
+    {
+      "file": "Assets/Scripts/fast_tap_thershold/FastTapThresholdLogger.cs",
+      "marker": "    public void WriteTrajectorySample(",
+      "sha256": "64433c78e73f43e307563fb00812e291651c8ec0dac3bb3bf99c6bb9ba357200"
+    }
+  ]
+}
