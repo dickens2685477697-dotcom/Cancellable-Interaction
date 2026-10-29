@@ -252,3 +252,5 @@ public class OVRHand : MonoBehaviour,
 		return data;
 	}
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

@@ -124,6 +124,11 @@ public partial class S2AccMode : MonoBehaviour
     private bool pinchDirectionCancelTriggered = false;
     private bool pinchDirectionReentryRequired = false;
     private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
+    private readonly Queue<double> pinchDirectionCenterTimeHistory = new Queue<double>();
+    private bool pinchDirectionHasSample;
+    private uint pinchDirectionSourceId;
+    private long pinchDirectionEpoch, pinchDirectionSequence;
+    private double pinchDirectionPreviousSampleTime;
     private bool pinchDirectionHasSmoothedDirection = false;
     private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
     private int pinchDirectionFramesSinceEntry = 0;
@@ -157,7 +162,70 @@ public partial class S2AccMode : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (UsesMagicTap2 || UsesIxDLDynamic) UpdateSharedMotionSelection();
+        if (!(UsesMagicTap2 || UsesIxDLDynamic)) return;
+        Study3MotionTracker motion = UsesMagicTap2 ? magicTap2Motion.Motion : ixdlDynamicMotion.Motion;
+        if (ballSpawner == null || Acce == null || !Acce.enabled || !ballSpawner.enable_trigger ||
+            (motion.HasPosition && Time.realtimeSinceStartupAsDouble - motion.LastSample.Timestamp > Study3MotionTracker.MaximumAgeSeconds))
+            UpdateSharedMotionSelection(default, false);
+    }
+
+    private void OnEnable()
+    {
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleEvaluated -= OnMotionSampleEvaluated;
+        Study3HandPoseSource.JointSampleEvaluated += OnMotionSampleEvaluated;
+        if (Acce != null) { Acce.MotionInterrupted -= OnLegacyMotionInterrupted; Acce.MotionInterrupted += OnLegacyMotionInterrupted; }
+        if (UsesMagicTap2 || UsesIxDLDynamic) SubscribeSharedMotion();
+    }
+
+    private void OnLegacyMotionInterrupted()
+    {
+        AttributionMotionUnavailable("tracking lost");
+        handInBall = handInBall2 = inBall = false;
+        speedReleaseMinSpeedMet = false;
+        reactReleaseSpeedAcceMet = false;
+        ResetReleaseGestureTracking();
+        ResetPinchDirectionTrackingWindow();
+        ResetDirection010TrackingWindow();
+    }
+
+    private void OnMotionSampleEvaluated(Study3JointSample sample)
+    {
+        if (!isActiveAndEnabled || ballSpawner == null) return;
+        if (modeSelected == 14 && handInBall && reactReleaseSpeedAcceMet && !reactReleaseTriggered && !reactReleaseReentryRequired)
+        {
+            CheckReactReleaseCancel();
+            CheckReactReleaseIndexTrigger();
+        }
+        // Speed-Direction (21) checks inside InEvent using directionDecisionReady;
+        // an unconditional third-phase check would bypass its direction gate.
+        if ((modeSelected == 15 || modeSelected == 20 || modeSelected == 22)
+            && handInBall && !speedReleaseTriggered && !speedReleaseReentryRequired)
+        {
+            if (modeSelected == 20) CheckSpeedWristTiltCancel();
+            else if (modeSelected == 15) CheckSpeedReleaseCancel();
+            CheckSpeedReleaseIndexTrigger();
+        }
+    }
+
+    private void SubscribeSharedMotion()
+    {
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleProcessed -= OnSharedMotionJointSample;
+        Study3HandPoseSource.SelectedSourceLost -= OnSharedMotionSourceLost;
+        Study3HandPoseSource.JointSampleProcessed += OnSharedMotionJointSample;
+        Study3HandPoseSource.SelectedSourceLost += OnSharedMotionSourceLost;
+    }
+
+    private void OnSharedMotionJointSample(Study3JointSample joints)
+    {
+        if (!(UsesMagicTap2 || UsesIxDLDynamic) || !joints.TryGetJointPose(TrackedHandJoint.IndexTip, out MixedRealityPose pose)) return;
+        UpdateSharedMotionSelection(new Study3MotionSample(joints.SourceId, joints.Sequence, joints.Timestamp, pose.Position, joints.TrackingEpoch), true);
+    }
+
+    private void OnSharedMotionSourceLost(uint sourceId)
+    {
+        if (UsesMagicTap2 || UsesIxDLDynamic) UpdateSharedMotionSelection(default, false);
     }
 
     void Update()
@@ -214,7 +282,6 @@ public partial class S2AccMode : MonoBehaviour
             && !reactReleaseReentryRequired)
         {
             CheckReactReleaseCancel();
-            CheckReactReleaseIndexTrigger();
         }
         if ((modeSelected == 15 || modeSelected == 20 || modeSelected == 21 || modeSelected == 22)
             && handInBall
@@ -230,7 +297,6 @@ public partial class S2AccMode : MonoBehaviour
                 CheckSpeedReleaseCancel();
             }
 
-            CheckSpeedReleaseIndexTrigger();
 
             if (modeSelected == 22
                 && !speedReleaseTriggered
@@ -307,6 +373,7 @@ public partial class S2AccMode : MonoBehaviour
     public void Start()
     {
         Acce = GetComponent<AcceStudy3>();
+        if (Acce != null) { Acce.MotionInterrupted -= OnLegacyMotionInterrupted; Acce.MotionInterrupted += OnLegacyMotionInterrupted; }
         Acce2 = GetComponent<AcceStudy3_2>();
         reactTap = GetComponent<ReactTap>();
         Player = GetComponentInChildren<S2Player>();
@@ -1693,12 +1760,12 @@ public partial class S2AccMode : MonoBehaviour
     }
     public void SetMagicTap2Mode()
     {
-        Study3HandPoseSource.EnsureAvailable();
+        SubscribeSharedMotion();
         magicTap2Collider = GetComponent<Collider>();
         magicTap2Motion.Reset();
     }
 
-    private void UpdateSharedMotionSelection()
+    private void UpdateSharedMotionSelection(Study3MotionSample sample, bool hasSample)
     {
         Study3MotionTracker motion = UsesMagicTap2 ? magicTap2Motion.Motion : ixdlDynamicMotion.Motion;
         if (ballSpawner == null || Acce == null || !Acce.enabled || logWriter3 == null || !ballSpawner.enable_trigger)
@@ -1708,7 +1775,6 @@ public partial class S2AccMode : MonoBehaviour
             return;
         }
         float accelerationLimit = UsesMagicTap2 ? ballSpawner.magicTap2AccelerationThreshold : ballSpawner.ixdlAccelerationThreshold;
-        bool hasSample = Study3HandPoseSource.TryGetSample(out Study3MotionSample sample);
         Study3HandSamplingDiagnostics.SharedRead(this, hasSample, sample);
         if (!hasSample)
         {
@@ -1814,7 +1880,7 @@ public partial class S2AccMode : MonoBehaviour
 
     public void SetDynamicStopMode()
     {
-        if (UsesIxDLDynamic) Study3HandPoseSource.EnsureAvailable();
+        if (UsesIxDLDynamic) SubscribeSharedMotion();
         dynamicStopCollider = GetComponent<Collider>();
         dynamicStopMotion.Reset();
         ixdlDynamicMotion.Reset();
@@ -3699,7 +3765,7 @@ public partial class S2AccMode : MonoBehaviour
                     }
                 }
 
-                if (Acce.v > ballSpawner.pressSpeedThershold)
+                if (Acce.IndexTipPoseValid && Acce.v != float.MaxValue && Acce.v > ballSpawner.pressSpeedThershold)
                 {
                     TriggerPressMode();
                 }
@@ -4252,14 +4318,31 @@ public partial class S2AccMode : MonoBehaviour
     private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
     {
         centerSpeed = 0f;
-        if (!TryGetPinchDirectionCenterPoint(out Vector3 currentCenter))
+        Study3JointSample sample = Acce.CurrentJointSample;
+        if (sample.Sequence <= 0 || !TryGetPinchDirectionCenterPoint(out Vector3 currentCenter))
         {
+            ResetPinchDirectionTrackingWindow();
             return Vector3.zero;
         }
+        if (pinchDirectionHasSample && sample.SourceId == pinchDirectionSourceId
+            && sample.TrackingEpoch == pinchDirectionEpoch && sample.Sequence <= pinchDirectionSequence)
+            return Vector3.zero;
+        double elapsed = sample.Timestamp - pinchDirectionPreviousSampleTime;
+        if (pinchDirectionHasSample && (sample.SourceId != pinchDirectionSourceId
+            || sample.TrackingEpoch != pinchDirectionEpoch || elapsed <= 0
+            || elapsed > Study3MotionTracker.MaximumAgeSeconds))
+        {
+            ResetPinchDirectionTrackingWindow();
+        }
+        float sampleDelta = pinchDirectionHasSample ? (float)elapsed : 0f;
+        pinchDirectionHasSample = true;
+        pinchDirectionSourceId = sample.SourceId;
+        pinchDirectionEpoch = sample.TrackingEpoch;
+        pinchDirectionSequence = sample.Sequence;
+        pinchDirectionPreviousSampleTime = sample.Timestamp;
 
         if (IsEntryDirectionAxisMode())
         {
-            float entrySampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
             if (!pinchDirectionHasRawPosition)
             {
                 pinchDirectionPreviousRawPosition = currentCenter;
@@ -4270,7 +4353,7 @@ public partial class S2AccMode : MonoBehaviour
             }
 
             Vector3 rawMovement = currentCenter - pinchDirectionPreviousRawPosition;
-            centerSpeed = rawMovement.magnitude / entrySampleDeltaTime;
+            centerSpeed = rawMovement.magnitude / sampleDelta;
             pinchDirectionPreviousRawPosition = currentCenter;
             pinchDirectionFramesSinceEntry++;
 
@@ -4296,9 +4379,11 @@ public partial class S2AccMode : MonoBehaviour
 
             int entryWindowFrameCount = GetPinchDirectionWindowFrameCount();
             pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+            pinchDirectionCenterTimeHistory.Enqueue(sample.Timestamp);
             while (pinchDirectionCenterPositionHistory.Count > entryWindowFrameCount)
             {
                 pinchDirectionCenterPositionHistory.Dequeue();
+                pinchDirectionCenterTimeHistory.Dequeue();
             }
 
             if (pinchDirectionCenterPositionHistory.Count < entryWindowFrameCount)
@@ -4329,18 +4414,21 @@ public partial class S2AccMode : MonoBehaviour
         pinchDirectionFramesSinceEntry++;
         int windowFrameCount = GetPinchDirectionWindowFrameCount();
         pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
+        pinchDirectionCenterTimeHistory.Enqueue(sample.Timestamp);
 
         while (pinchDirectionCenterPositionHistory.Count > windowFrameCount)
         {
             pinchDirectionCenterPositionHistory.Dequeue();
+            pinchDirectionCenterTimeHistory.Dequeue();
         }
 
         Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
+        double[] times = pinchDirectionCenterTimeHistory.ToArray();
         float currentSegmentSpeed = 0f;
         if (positions.Length >= 2)
         {
             Vector3 currentSegment = positions[positions.Length - 1] - positions[positions.Length - 2];
-            currentSegmentSpeed = currentSegment.magnitude / Mathf.Max(Time.fixedDeltaTime, 0.000001f);
+            currentSegmentSpeed = currentSegment.magnitude / (float)(times[times.Length - 1] - times[times.Length - 2]);
         }
 
         if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
@@ -4353,7 +4441,7 @@ public partial class S2AccMode : MonoBehaviour
         }
 
         Vector3 averageDirection = Vector3.zero;
-        float totalSegmentDistance = 0f;
+        float totalSegmentSpeed = 0f;
         int validSegmentCount = 0;
 
         for (int i = 1; i < positions.Length; i++)
@@ -4365,7 +4453,7 @@ public partial class S2AccMode : MonoBehaviour
             }
 
             averageDirection += segment.normalized;
-            totalSegmentDistance += segment.magnitude;
+            totalSegmentSpeed += segment.magnitude / (float)(times[i] - times[i - 1]);
             validSegmentCount++;
         }
 
@@ -4374,18 +4462,19 @@ public partial class S2AccMode : MonoBehaviour
             return Vector3.zero;
         }
 
-        float sampleDeltaTime = Mathf.Max(Time.fixedDeltaTime, 0.000001f);
         centerSpeed = IsEntryDirectionAxisMode()
             ? currentSegmentSpeed
-            : (totalSegmentDistance / validSegmentCount) / sampleDeltaTime;
+            : totalSegmentSpeed / validSegmentCount;
         return averageDirection / validSegmentCount;
     }
 
     private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
     {
         centerPoint = Vector3.zero;
-        bool hasIndexTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out MixedRealityPose indexTipPose);
-        bool hasThumbTip = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out MixedRealityPose thumbTipPose);
+        if (Acce == null) return false;
+        Study3JointSample sample = Acce.CurrentJointSample;
+        bool hasIndexTip = sample.TryGetJointPose(TrackedHandJoint.IndexTip, out MixedRealityPose indexTipPose);
+        bool hasThumbTip = sample.TryGetJointPose(TrackedHandJoint.ThumbTip, out MixedRealityPose thumbTipPose);
         if (!hasIndexTip || !hasThumbTip)
         {
             return false;
@@ -4587,6 +4676,9 @@ public partial class S2AccMode : MonoBehaviour
     private void ResetPinchDirectionTrackingWindow()
     {
         pinchDirectionCenterPositionHistory.Clear();
+        pinchDirectionCenterTimeHistory.Clear();
+        pinchDirectionHasSample = false;
+        pinchDirectionPreviousSampleTime = 0;
         pinchDirectionHasSmoothedDirection = false;
         pinchDirectionSmoothedDirection = Vector3.zero;
         pinchDirectionFramesSinceEntry = 0;
@@ -5509,7 +5601,7 @@ public partial class S2AccMode : MonoBehaviour
             return;
         }
 
-        if (reactTap.V_vec >= ballSpawner.reactReleaseIndexSpeedThreshold)
+        if (reactTap != null && reactTap.MotionSampleValid && reactTap.V_vec >= ballSpawner.reactReleaseIndexSpeedThreshold)
         {
             TriggerReactRelease();
         }
@@ -5626,6 +5718,7 @@ public partial class S2AccMode : MonoBehaviour
         }
 
         float indexSpeed = GetCurrentIndexSpeed();
+        if (float.IsNaN(indexSpeed) || float.IsInfinity(indexSpeed)) return;
         if (!speedReleaseMinSpeedMet)
         {
             if (indexSpeed <= Mathf.Max(0f, ballSpawner.speedMinThreshold))
@@ -5661,17 +5754,17 @@ public partial class S2AccMode : MonoBehaviour
 
     private float GetCurrentIndexSpeed()
     {
-        if (Acce != null && Acce.v != float.MaxValue)
+        if (Acce != null && Acce.IndexTipPoseValid && Acce.v != float.MaxValue)
         {
             return Mathf.Max(0f, Acce.v);
         }
 
-        if (reactTap != null)
+        if (reactTap != null && reactTap.MotionSampleValid)
         {
             return Mathf.Max(0f, reactTap.V_vec);
         }
 
-        return 0f;
+        return float.NaN;
     }
 
     private void TriggerSpeedRelease()
@@ -7115,7 +7208,7 @@ public partial class S2AccMode : MonoBehaviour
             return currentFingerPosition;
         }
 
-        return currentFingerPosition - Acce.IndexVelocity * Time.fixedDeltaTime;
+        return currentFingerPosition - Acce.IndexVelocity * Acce.MotionSampleDeltaTime;
     }
 
     private Vector3 GetContact010CrossingDirection(Vector3 previousFingerPosition, Vector3 currentFingerPosition, float shellRadius)
@@ -7519,6 +7612,10 @@ public partial class S2AccMode : MonoBehaviour
 
     private void OnDisable()
     {
+        Study3HandPoseSource.JointSampleEvaluated -= OnMotionSampleEvaluated;
+        if (Acce != null) Acce.MotionInterrupted -= OnLegacyMotionInterrupted;
+        Study3HandPoseSource.JointSampleProcessed -= OnSharedMotionJointSample;
+        Study3HandPoseSource.SelectedSourceLost -= OnSharedMotionSourceLost;
         attributionBridge?.Disable("source_disabled_before_outcome");
         LogSpeedStudy("disabled");
         logWriter3?.UnregisterSpeedStudyObserver(speedStudyTelemetry);

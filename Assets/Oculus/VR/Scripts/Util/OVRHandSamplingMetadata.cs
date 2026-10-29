@@ -18,3 +18,5 @@ public struct OVRHandSamplingMetadata
     public OVRPlugin.TrackingConfidence Confidence;
     public bool IsTracked;
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

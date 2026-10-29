@@ -21,3 +21,5 @@ public partial class FastTapThresholdExperiment
         handSamplingSession?.Dispose(); handSamplingSession = null;
     }
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

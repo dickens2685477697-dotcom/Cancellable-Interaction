@@ -27,3 +27,5 @@ public static class Study3SamplingCorrelation
     private static bool Finite(Vector3 value) => !float.IsNaN(value.x) && !float.IsInfinity(value.x)
         && !float.IsNaN(value.y) && !float.IsInfinity(value.y) && !float.IsNaN(value.z) && !float.IsInfinity(value.z);
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

@@ -17,6 +17,7 @@ namespace UnityEngine {
   public Vector3(float x,float y,float z) { this.x=x;this.y=y;this.z=z; }
   public static Vector3 zero => new Vector3(); public static Vector3 right => new Vector3(1,0,0);
   public float sqrMagnitude => x*x+y*y+z*z; public float magnitude => (float)Math.Sqrt(sqrMagnitude);
+  public static float Distance(Vector3 a,Vector3 b) => (a-b).magnitude;
   public static Vector3 operator -(Vector3 a,Vector3 b) => new Vector3(a.x-b.x,a.y-b.y,a.z-b.z);
   public static Vector3 operator /(Vector3 a,float b) => new Vector3(a.x/b,a.y/b,a.z/b);
   public static Vector3 operator *(Vector3 a,float b) => new Vector3(a.x*b,a.y*b,a.z*b);
@@ -38,9 +39,11 @@ namespace UnityEngine {
  public class Transform { public Vector3 lossyScale=new Vector3(1,1,1); public Vector3 TransformPoint(Vector3 p) => p; }
  public class SphereCollider : Collider { public Transform transform=new Transform(); public float radius=1; public Vector3 center; }
 }
+namespace UnityEngine.Events { public class UnityEvent { private event Action listeners; public void AddListener(Action f) { listeners += f; } public void Invoke() { listeners?.Invoke(); } } }
+namespace UnityEngine.Serialization { public class FormerlySerializedAsAttribute : Attribute { public FormerlySerializedAsAttribute(string value) {} } }
 namespace Microsoft.MixedReality.Toolkit.Utilities {
  public enum Handedness { None=0,Left=1,Right=2,Any=3 }
- public enum TrackedHandJoint { IndexTip }
+ public enum TrackedHandJoint { IndexTip, ThumbTip, Wrist }
  public struct MixedRealityPose { public UnityEngine.Vector3 Position; }
 }
 namespace Microsoft.MixedReality.Toolkit.Input {
@@ -69,9 +72,12 @@ $stubPath = Join-Path $testDirectory 'Stubs.cs'
 $stubs | Set-Content -LiteralPath $stubPath -Encoding utf8
 $source = Join-Path $projectRoot 'Assets\Scripts\Study3'
 Add-Type -Path @($stubPath, (Join-Path $source 'Study3MotionTracker.cs'),
+    (Join-Path $source 'Study3JointSample.cs'),
     (Join-Path $source 'MagicTap2MotionTracker.cs'), (Join-Path $source 'IxDLDynamicMotionTracker.cs'),
     (Join-Path $source 'IxDLDynamicTriggerRecord.cs'), (Join-Path $source 'Study3HandPoseSource.cs'),
+    (Join-Path $source 'Pinch.cs'), (Join-Path $PSScriptRoot 'tests\PinchSampleChecks.cs'),
     (Join-Path $source 'Editor\CommonMotionValidation.cs'), (Join-Path $PSScriptRoot 'tests\CommonHandPoseSourceChecks.cs'))
 $count = [CommonMotionValidation]::RunMotionChecks()
 $providerCount = [CommonHandPoseSourceChecks]::Run()
-Write-Output "Common motion validation passed: $count calculation assertions, $providerCount provider assertions (isolated replay; not a Quest run)."
+$pinchCount = [PinchSampleChecks]::Run()
+Write-Output "Common motion validation passed: $count calculation assertions, $providerCount provider assertions, $pinchCount pinch assertions (isolated replay; not a Quest run)."

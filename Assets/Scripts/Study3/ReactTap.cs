@@ -188,6 +188,162 @@ public class ReactTap : MonoBehaviour
     // CWC: 新增变量用于跟踪角度变化过大且手指在球内的状态
     private bool angleExceededInBall = false; // 角度变化过大且手指在球内的状态
 
+    private bool hasMotionBaseline;
+    private bool hasMotionVelocity;
+    private bool motionReady;
+    private float motionPreviousWristSpeed;
+    private uint motionSourceId;
+    private long motionTrackingEpoch;
+    private long motionSequence;
+    private double motionTimestamp;
+    private float motionSampleDeltaTime;
+    private long lastProcessedSequence;
+    private bool initialized;
+    public bool MotionSampleValid => motionReady && Time.realtimeSinceStartupAsDouble - motionTimestamp <= Study3MotionTracker.MaximumAgeSeconds;
+
+    private void OnEnable()
+    {
+        ResetMotionBaseline();
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleUpdated += OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed += OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost += OnSelectedSourceLost;
+    }
+
+    private void OnDisable()
+    {
+        Study3HandPoseSource.JointSampleUpdated -= OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed -= OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost -= OnSelectedSourceLost;
+        ResetMotionBaseline();
+    }
+
+    private void ResetMotionBaseline()
+    {
+        hasMotionBaseline = hasMotionVelocity = motionReady = false;
+        motionSampleDeltaTime = 0f;
+        lastProcessedSequence = 0;
+        crossedThreshold = false;
+        Init = true;
+        v = vpre = a = apre = V_vec = A_vec = V_vec_pre = A_vec_pre = 0f;
+        V_x = V_y = V_z = A_x = A_y = A_z = 0f;
+        V_xpre = V_ypre = V_zpre = A_xpre = A_ypre = A_zpre = 0f;
+        wristSpeed = wristSpeedPre = motionPreviousWristSpeed = angleVelocity = 0f;
+        Distance = a_abs = 0f;
+        // A lost hand or new source must not complete the previous contact on recovery.
+        Entered = Prepared = Hesitated = CloseSti = false;
+        B_triggered = BF_EventEnabled = B_EventEnabled = C_EventEnabled = false;
+        wristSpeedTriggersDisabledB = initialAngleSet = hasEnteredBall = false;
+        shouldStopRecording = shouldStopDistanceCalculation = false;
+        reacConditionFullyMet = speedAcceConditionMet = angleExceededInBall = false;
+        UpdateT = PrepTime = currentInBallDistance = currentAngleChange = 0f;
+        speedAcceMetPosition = Vector3.zero;
+    }
+
+    private void OnSelectedSourceLost(uint sourceId)
+    {
+        if (hasMotionBaseline && sourceId == motionSourceId) ResetMotionBaseline();
+    }
+
+    private static bool FinitePosition(MixedRealityPose pose)
+    {
+        Vector3 p = pose.Position;
+        return !float.IsNaN(p.x) && !float.IsInfinity(p.x)
+            && !float.IsNaN(p.y) && !float.IsInfinity(p.y)
+            && !float.IsNaN(p.z) && !float.IsInfinity(p.z);
+    }
+
+    private void OnJointSampleUpdated(Study3JointSample sample)
+    {
+        if (!initialized) return;
+        if (!sample.TryGetJointPose(TrackedHandJoint.IndexTip, out MixedRealityPose tip)
+            || !sample.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, out MixedRealityPose distal)
+            || !sample.TryGetJointPose(TrackedHandJoint.Wrist, out MixedRealityPose wrist)
+            || !sample.TryGetJointPose(TrackedHandJoint.IndexKnuckle, out MixedRealityPose knuckle)
+            || !FinitePosition(tip) || !FinitePosition(distal) || !FinitePosition(wrist) || !FinitePosition(knuckle)
+            || double.IsNaN(sample.Timestamp) || double.IsInfinity(sample.Timestamp))
+        {
+            ResetMotionBaseline();
+            return;
+        }
+        if (hasMotionBaseline && sample.SourceId == motionSourceId
+            && sample.TrackingEpoch == motionTrackingEpoch && sample.Sequence <= motionSequence) return;
+
+        double elapsed = sample.Timestamp - motionTimestamp;
+        if (!hasMotionBaseline || Init || sample.SourceId != motionSourceId
+            || sample.TrackingEpoch != motionTrackingEpoch || elapsed <= 0 || (float)elapsed <= 0f
+            || elapsed > Study3MotionTracker.MaximumAgeSeconds)
+        {
+            ResetMotionBaseline();
+            hasMotionBaseline = true;
+            motionSourceId = sample.SourceId;
+            motionTrackingEpoch = sample.TrackingEpoch;
+            motionSequence = sample.Sequence;
+            motionTimestamp = sample.Timestamp;
+            IndexTipPose1 = IndexTipPose2 = tip;
+            IndexDistalPose = distal;
+            IndexKnucklePose = knuckle;
+            WristPosePre = WristPose = wrist;
+            currentAngle = previousAngle = CalculateAngle_between_finger_wrist();
+            Init = false;
+            return;
+        }
+
+        float dt = (float)elapsed;
+        IndexTipPose1 = IndexTipPose2;
+        IndexTipPose2 = tip;
+        IndexDistalPose = distal;
+        IndexKnucklePose = knuckle;
+        WristPosePre = WristPose;
+        WristPose = wrist;
+        Vector3 delta = IndexTipPose2.Position - IndexTipPose1.Position;
+        Distance = delta.magnitude;
+        X_distance = delta.x; Y_distance = delta.y; Z_distance = delta.z;
+        V_x = delta.x / dt; V_y = delta.y / dt; V_z = delta.z / dt;
+        v = Distance / dt;
+        V_vec = new Vector3(V_x, V_y, V_z).magnitude;
+        if (hasMotionVelocity)
+        {
+            a = (v - vpre) / dt;
+            A_x = (V_x - V_xpre) / dt; A_y = (V_y - V_ypre) / dt; A_z = (V_z - V_zpre) / dt;
+            A_vec = new Vector3(A_x, A_y, A_z).magnitude;
+            a_abs = Mathf.Abs(a);
+            motionReady = true;
+        }
+        wristSpeed = (WristPose.Position - WristPosePre.Position).magnitude / dt;
+        crossedThreshold = (motionPreviousWristSpeed < WristSpeedThreshold && wristSpeed >= WristSpeedThreshold)
+            || (motionPreviousWristSpeed > WristSpeedThreshold && wristSpeed <= WristSpeedThreshold);
+        motionPreviousWristSpeed = wristSpeed;
+        currentAngle = CalculateAngle_between_finger_wrist();
+        angleVelocity = Mathf.Abs(currentAngle - previousAngle) / dt;
+        if (float.IsNaN(v) || float.IsInfinity(v) || float.IsNaN(A_vec) || float.IsInfinity(A_vec)
+            || float.IsNaN(wristSpeed) || float.IsInfinity(wristSpeed)
+            || float.IsNaN(angleVelocity) || float.IsInfinity(angleVelocity))
+        {
+            ResetMotionBaseline();
+            return;
+        }
+        previousAngle = currentAngle;
+        V_vec_pre = hasMotionVelocity ? new Vector3(V_xpre, V_ypre, V_zpre).magnitude : 0f;
+        A_vec_pre = new Vector3(A_xpre, A_ypre, A_zpre).magnitude;
+        vpre = v; apre = a;
+        V_xpre = V_x; V_ypre = V_y; V_zpre = V_z;
+        A_xpre = A_x; A_ypre = A_y; A_zpre = A_z;
+        hasMotionVelocity = true;
+        motionSequence = sample.Sequence;
+        motionTimestamp = sample.Timestamp;
+        motionSampleDeltaTime = dt;
+    }
+
+    private void OnJointSampleProcessed(Study3JointSample sample)
+    {
+        if (!initialized || !hasMotionBaseline || sample.SourceId != motionSourceId ||
+            sample.TrackingEpoch != motionTrackingEpoch || sample.Sequence != motionSequence ||
+            sample.Sequence == lastProcessedSequence) return;
+        lastProcessedSequence = sample.Sequence;
+        ProcessSample(motionSampleDeltaTime);
+    }
+
     void Start()
     {
         condition = 'N';
@@ -253,6 +409,7 @@ public class ReactTap : MonoBehaviour
         // CWC: 初始化新添加的变量
         speedAcceMetPosition = Vector3.zero;
         speedAcceConditionMet = false;
+        initialized = true;
     }
 
     void Update()
@@ -263,71 +420,15 @@ public class ReactTap : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (hasMotionBaseline && !MotionSampleValid && Time.realtimeSinceStartupAsDouble - motionTimestamp > Study3MotionTracker.MaximumAgeSeconds)
+            ResetMotionBaseline();
+    }
+
+    private void ProcessSample(float sampleDeltaTime)
+    {
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        if (Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2) &&
-            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose) &&
-            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.Wrist, Handedness.Any, out WristPose) &&
-            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexKnuckle, Handedness.Any, out IndexKnucklePose)) // Get current wrist pose
+        if (hasMotionBaseline && !Init)
         {
-            #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
-            if (Init)
-            {
-                Init = false;
-                IndexTipPose1 = IndexTipPose2;
-                WristPosePre = WristPose; // Store current wrist pose as previous
-                previousAngle = CalculateAngle_between_finger_wrist();// Initialize previous angle
-                return;
-
-            }
-            //old
-            Distance = (IndexTipPose2.Position - IndexTipPose1.Position).magnitude;
-            if (Distance < 0.001f)
-            {
-                return;
-            }
-            v = Distance / Time.fixedDeltaTime;
-
-            a = (v - vpre) / Time.fixedDeltaTime;
-
-            vpre = v;
-            apre = a;
-            // Replace with directional velocity and acceleration calculation
-            X_distance = IndexTipPose2.Position.x - IndexTipPose1.Position.x;
-            Y_distance = IndexTipPose2.Position.y - IndexTipPose1.Position.y;
-            Z_distance = IndexTipPose2.Position.z - IndexTipPose1.Position.z;
-            V_x = X_distance / Time.fixedDeltaTime;
-            V_y = Y_distance / Time.fixedDeltaTime;
-            V_z = Z_distance / Time.fixedDeltaTime;
-            IndexTipPose1 = IndexTipPose2;
-            A_x = (V_x - V_xpre) / Time.fixedDeltaTime;
-            A_y = (V_y - V_ypre) / Time.fixedDeltaTime;
-            A_z = (V_z - V_zpre) / Time.fixedDeltaTime;
-
-            V_vec = math.sqrt(V_x * V_x + V_y * V_y + V_z * V_z);
-            A_vec = math.sqrt(A_x * A_x + A_y * A_y + A_z * A_z);
-            V_vec_pre = math.sqrt(V_xpre * V_xpre + V_ypre * V_ypre + V_zpre * V_zpre);
-            A_vec_pre = math.sqrt(A_xpre * A_xpre + A_ypre * A_ypre + A_zpre * A_zpre);
-            A_xpre = A_x;
-            A_ypre = A_y;
-            A_zpre = A_z;
-            V_xpre = V_x;
-            V_ypre = V_y;
-            V_zpre = V_z;
-            a_abs = math.abs(a);
-
-            // Calculate wrist speed
-            float wristDistance = (WristPose.Position - WristPosePre.Position).magnitude;
-            wristSpeed = wristDistance / Time.fixedDeltaTime;
-
-            WristPosePre = WristPose; // Update previous wrist position
-            // csr: calculate wrist speed (in every frame)
-            crossedThreshold = (wristSpeedPre < WristSpeedThreshold && wristSpeed >= WristSpeedThreshold) ||
-                                                (wristSpeedPre > WristSpeedThreshold && wristSpeed <= WristSpeedThreshold);
-            // Calculate angle
-            currentAngle = CalculateAngle_between_finger_wrist();
-            angleVelocity = Mathf.Abs(currentAngle - previousAngle) / Time.fixedDeltaTime;
-            previousAngle = currentAngle;
-            #endregion
 
             // CWC: 首先检查手指是否在球内，无论shouldStopRecording状态如何
             bool isInBall = Bounds.Contains(IndexTipPose2.Position) || Bounds.Contains(IndexDistalPose.Position);
@@ -772,7 +873,7 @@ public class ReactTap : MonoBehaviour
                     }
                     //InMaterial();
                 }
-                UpdateT += Time.deltaTime;
+                UpdateT += sampleDeltaTime;
 
 
 
@@ -943,6 +1044,7 @@ public class ReactTap : MonoBehaviour
 
     public bool JudgeV_vec()
     {
+        if (!MotionSampleValid) return false;
         if (vpre != float.MaxValue && apre != float.MaxValue)
         {
             float velocityThreshold = GetCurrentVelocityThreshold();
@@ -987,6 +1089,7 @@ public class ReactTap : MonoBehaviour
 
     public bool JudgeAdaptiveRealtimeV_vec()
     {
+        if (!MotionSampleValid) return false;
         if (vpre != float.MaxValue && apre != float.MaxValue)
         {
             float velocityThreshold = GetAdaptiveRealtimeVelocityThreshold();
@@ -1058,6 +1161,7 @@ public class ReactTap : MonoBehaviour
 
     public bool JudgeA_vec()
     {
+        if (!MotionSampleValid) return false;
         if (vpre != float.MaxValue && apre != float.MaxValue)
         {
             if (A_vec < A_)

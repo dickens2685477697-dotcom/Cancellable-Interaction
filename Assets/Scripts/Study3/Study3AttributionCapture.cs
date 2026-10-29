@@ -32,6 +32,8 @@ public static class Study3AttributionCapture
             v["indexSpeed"] = acce.v == float.MaxValue ? null : (object)acce.v;
             v["signedRateAcceleration"] = acce.a == float.MaxValue ? null : (object)acce.a;
             v["motionDt"] = acce.MotionSampleDeltaTime; v["motionFixedTime"] = acce.MotionSampleFixedTime;
+            v["motionTimestamp"] = acce.MotionSampleTimestamp;
+            v["motionTimestampKind"] = "mrtk_update_received_realtime";
             v["tipValid"] = acce.IndexTipPoseValid; v["distalValid"] = acce.IndexDistalPoseValid;
             v["index"] = acce.IndexTipPoseValid ? Vector(acce.IndexTipPose2.Position) : null;
             v["previousIndex"] = Vector(acce.MotionPreviousTipPosition);

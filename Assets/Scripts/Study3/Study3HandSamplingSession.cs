@@ -100,3 +100,5 @@ public sealed class Study3HandSamplingSession : IDisposable
         Study3HandSamplingDiagnostics.Remove(this);
     }
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

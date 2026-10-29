@@ -1021,6 +1021,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  studyParticipantId: 
+  studyProtocolVersion: 
+  studyBlockLabel: 
+  studyTaskCondition: 
+  studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 0}
   executionMode: 0
   samplingRateHz: 50
@@ -1057,6 +1062,8 @@ MonoBehaviour:
   speedMinThreshold: 0.05
   speedMaxThreshold: 0.2
   longPressTimeThreshold: 0.5
+  magicTap2SpeedThreshold: 0.2
+  magicTap2AccelerationThreshold: 11.661
   dynamicStopSampleMs: 16
   dynamicStopSpeedMin: 0.02
   dynamicStopSpeedMax: 0.12
@@ -2272,10 +2279,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  studyParticipantId: 
+  studyProtocolVersion: 
+  studyBlockLabel: 
+  studyTaskCondition: 
+  studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
   executionMode: 0
   samplingRateHz: 50
-  modeSelected: 31
+  modeSelected: 2
   targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
@@ -2308,6 +2320,8 @@ MonoBehaviour:
   speedMinThreshold: 0.067
   speedMaxThreshold: 0.375
   longPressTimeThreshold: 0.7
+  magicTap2SpeedThreshold: 0.2
+  magicTap2AccelerationThreshold: 11.661
   dynamicStopSampleMs: 16
   dynamicStopSpeedMin: 0.067
   dynamicStopSpeedMax: 0.196
@@ -3555,6 +3569,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb18acb07a694d468f4f133356d0660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  studyParticipantId: 
+  studyProtocolVersion: 
+  studyBlockLabel: 
+  studyTaskCondition: 
+  studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 0}
   executionMode: 0
   samplingRateHz: 50
@@ -3591,6 +3610,8 @@ MonoBehaviour:
   speedMinThreshold: 0.05
   speedMaxThreshold: 0.2
   longPressTimeThreshold: 0.5
+  magicTap2SpeedThreshold: 0.2
+  magicTap2AccelerationThreshold: 11.661
   dynamicStopSampleMs: 16
   dynamicStopSpeedMin: 0.02
   dynamicStopSpeedMax: 0.12

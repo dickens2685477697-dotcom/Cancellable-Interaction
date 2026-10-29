@@ -642,3 +642,5 @@ public class OVRBoneCapsule
 		CapsuleCollider = capsuleCollider;
 	}
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.

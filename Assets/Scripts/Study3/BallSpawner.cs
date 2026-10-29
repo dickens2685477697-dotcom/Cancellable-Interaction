@@ -155,7 +155,7 @@ using System;
 
      [Header("采样设置")]
      [InspectorName("Sampling Rate (Hz)"), Min(1f)]
-     [Tooltip("Study3Experiment 的 FixedUpdate 采样率，单位 Hz；同时影响手部运动计算和 trajectory 轨迹日志。运行时可调整，实际手部新数据频率受设备限制。")]
+     [Tooltip("Study3Experiment 的全局 FixedUpdate 频率，单位 Hz；影响物理步和 trajectory 轨迹日志。MRTK 手部运动计算使用实际更新接收间隔，其更新频率不由此设置决定。")]
      public float samplingRateHz = 50f;
      private string logSessionTimestamp;
      public string LogSessionTimestamp => logSessionTimestamp

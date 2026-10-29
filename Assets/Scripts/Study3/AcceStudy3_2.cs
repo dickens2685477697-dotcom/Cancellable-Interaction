@@ -88,10 +88,123 @@ public class AcceStudy3_2 : MonoBehaviour
     public float Distance;
 
     public bool AttributionPoseValid { get; private set; }
+    private bool hasMotionBaseline;
+    private uint motionSourceId;
+    private long motionTrackingEpoch;
+    private long motionSequence;
+    private long lastProcessedSequence;
+    private double motionTimestamp;
+    private float motionSampleDeltaTime;
+    private bool initialized;
     // Set Condition C's bound to Acceleration instead of Velocity.
     public bool useAcce = false;
     public float AccelerationBoundForConditionC;
     public float triggerDis = 0.015f;
+
+    private void OnEnable()
+    {
+        ResetMotionBaseline();
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleUpdated += OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed += OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost += OnSelectedSourceLost;
+    }
+
+    private void OnDisable()
+    {
+        Study3HandPoseSource.JointSampleUpdated -= OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed -= OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost -= OnSelectedSourceLost;
+        ResetMotionBaseline();
+    }
+
+    private void ResetMotionBaseline()
+    {
+        hasMotionBaseline = false;
+        lastProcessedSequence = 0;
+        motionSampleDeltaTime = 0f;
+        AttributionPoseValid = false;
+        Init = true;
+        v = vpre = a = apre = float.MaxValue;
+        Distance = 0f;
+        // Do not complete a contact from an invalid or replaced tracking source.
+        Entered = Prepared = Hesitated = CloseSti = false;
+        UpdateT = PrepTime = 0f;
+    }
+
+    private void OnSelectedSourceLost(uint sourceId)
+    {
+        if (hasMotionBaseline && sourceId == motionSourceId)
+            ResetMotionBaseline();
+    }
+
+    private void OnJointSampleProcessed(Study3JointSample sample)
+    {
+        if (initialized && hasMotionBaseline && sample.SourceId == motionSourceId
+            && sample.TrackingEpoch == motionTrackingEpoch && sample.Sequence == motionSequence
+            && sample.Sequence != lastProcessedSequence)
+        {
+            lastProcessedSequence = sample.Sequence;
+            ProcessSample(motionSampleDeltaTime);
+        }
+    }
+
+    private void OnJointSampleUpdated(Study3JointSample sample)
+    {
+        if (!initialized) return;
+        if (!sample.TryGetJointPose(TrackedHandJoint.ThumbTip, out MixedRealityPose tip)
+            || double.IsNaN(sample.Timestamp) || double.IsInfinity(sample.Timestamp)
+            || float.IsNaN(tip.Position.x) || float.IsInfinity(tip.Position.x)
+            || float.IsNaN(tip.Position.y) || float.IsInfinity(tip.Position.y)
+            || float.IsNaN(tip.Position.z) || float.IsInfinity(tip.Position.z))
+        {
+            ResetMotionBaseline();
+            return;
+        }
+
+        if (hasMotionBaseline && sample.SourceId == motionSourceId
+            && sample.TrackingEpoch == motionTrackingEpoch && sample.Sequence <= motionSequence)
+            return;
+
+        double elapsed = sample.Timestamp - motionTimestamp;
+        bool reset = !hasMotionBaseline || Init || sample.SourceId != motionSourceId
+            || sample.TrackingEpoch != motionTrackingEpoch || elapsed <= 0 || (float)elapsed <= 0f
+            || elapsed > Study3MotionTracker.MaximumAgeSeconds;
+        if (reset)
+        {
+            ResetMotionBaseline();
+            hasMotionBaseline = true;
+            motionSourceId = sample.SourceId;
+            motionTrackingEpoch = sample.TrackingEpoch;
+            motionSequence = sample.Sequence;
+            motionTimestamp = sample.Timestamp;
+            ThumbTipPose1 = ThumbTipPose2 = tip;
+            sample.TryGetJointPose(TrackedHandJoint.ThumbDistalJoint, out ThumbDistalPose);
+            AttributionPoseValid = true;
+            Init = false;
+            return;
+        }
+
+        ThumbTipPose1 = ThumbTipPose2;
+        ThumbTipPose2 = tip;
+        sample.TryGetJointPose(TrackedHandJoint.ThumbDistalJoint, out ThumbDistalPose);
+        Distance = (ThumbTipPose2.Position - ThumbTipPose1.Position).magnitude;
+        v = Distance / (float)elapsed;
+        if (vpre != float.MaxValue)
+            a = (v - vpre) / (float)elapsed;
+        if (float.IsNaN(v) || float.IsInfinity(v) || float.IsNaN(a) || float.IsInfinity(a))
+        {
+            ResetMotionBaseline();
+            return;
+        }
+        vpre = v;
+        apre = a;
+        motionSequence = sample.Sequence;
+        motionTimestamp = sample.Timestamp;
+        motionSampleDeltaTime = (float)elapsed;
+        AttributionPoseValid = true;
+    }
+
     void Start()
     {
         condition = 'N';
@@ -122,6 +235,8 @@ public class AcceStudy3_2 : MonoBehaviour
         OutEvent ??= new UnityEvent();
         AfterOutEvent ??= new UnityEvent();
 
+        initialized = true;
+
     }
 
     void Update()
@@ -137,41 +252,17 @@ public class AcceStudy3_2 : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (hasMotionBaseline && Time.realtimeSinceStartupAsDouble - motionTimestamp > Study3MotionTracker.MaximumAgeSeconds)
+            ResetMotionBaseline();
+    }
+
+    private void ProcessSample(float sampleDeltaTime)
+    {
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        AttributionPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbTip, Handedness.Any, out ThumbTipPose2);
-        if (AttributionPoseValid)
+        if (AttributionPoseValid && !Init)
         {
-            #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
-            if (Init)
-            {
-                Init = false;
-                ThumbTipPose1 = ThumbTipPose2;
-                return;
-
-            }
-
-            Distance = (ThumbTipPose2.Position - ThumbTipPose1.Position).magnitude;
-            v = Distance / Time.fixedDeltaTime;
-            //print("P1  " + ThumbTipPose1.Position.ToString("F5"));
-            //print("P2  " + ThumbTipPose2.Position.ToString("F5"));
-            //if (v > Vb)
-            //    curBigger = true;
-            //else
-            //    curBigger = false;
-            ThumbTipPose1 = ThumbTipPose2;
-            if (vpre != float.MaxValue)
-            {
-                a = (v - vpre) / Time.fixedDeltaTime;
-            }
-            //UnityEngine.Debug.LogFormat("{0}, {1}, {2}",vpre, v, a);
-            vpre = v;
-            apre = a;
-
-            #endregion
-
             #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbDistalJoint, Handedness.Any, out ThumbDistalPose);
             //Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.ThumbMiddleJoint, Handedness.Any, out ThumbMiddlePose);
             // Judge if the fingertip is inside
             if (Vector3.Distance(Bounds.center, ThumbTipPose2.Position) <= triggerDis)
@@ -195,7 +286,7 @@ public class AcceStudy3_2 : MonoBehaviour
                 // Change Outlook ,���ﲻ��Ҫ�ı�outlook��ֻ��Ҫ�����¼�����
                 //if (!CloseSti && !HighLighted)
                 //    meshRenderer.material = InMate;
-                UpdateT += Time.deltaTime;
+                UpdateT += sampleDeltaTime;
 
                 // If already enter hesitate state, do not act more
                 if (Hesitated)
@@ -218,7 +309,7 @@ public class AcceStudy3_2 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -246,7 +337,7 @@ public class AcceStudy3_2 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime > HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -274,7 +365,7 @@ public class AcceStudy3_2 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime

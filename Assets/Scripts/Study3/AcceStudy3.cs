@@ -92,7 +92,17 @@ public class AcceStudy3 : MonoBehaviour
     public double MotionSampleFixedTime { get; private set; }
     public float MotionSampleDeltaTime { get; private set; }
     public double MotionTrackingGapSeconds { get; private set; }
+    public double MotionSampleTimestamp { get; private set; } = double.NaN;
+    public Study3JointSample CurrentJointSample { get; private set; }
+    public event System.Action MotionInterrupted;
     private double previousValidMotionTime = double.NaN;
+    private Vector3 previousMotionPosition;
+    private uint motionSourceId;
+    private long motionTrackingEpoch;
+    private long lastMotionSequence;
+    private long lastProcessedSequence;
+    private bool hasMotionPosition;
+    private bool motionStarted;
     public Vector3 MotionPreviousTipPosition { get; private set; }
     public Bounds MotionSampleBounds => Bounds;
     public bool IndexTipPoseValid { get; private set; }
@@ -160,6 +170,126 @@ public class AcceStudy3 : MonoBehaviour
         OutEvent ??= new UnityEvent();
         AfterOutEvent ??= new UnityEvent();
 
+        motionStarted = true;
+        SubscribeMotion();
+
+    }
+
+    private void OnEnable()
+    {
+        if (motionStarted) SubscribeMotion();
+    }
+
+    private void OnDisable()
+    {
+        Study3HandPoseSource.JointSampleUpdated -= OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed -= OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost -= OnMotionSourceLost;
+        ResetMotion(false);
+    }
+
+    private void SubscribeMotion()
+    {
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleUpdated -= OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed -= OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost -= OnMotionSourceLost;
+        Study3HandPoseSource.JointSampleUpdated += OnJointSampleUpdated;
+        Study3HandPoseSource.JointSampleProcessed += OnJointSampleProcessed;
+        Study3HandPoseSource.SelectedSourceLost += OnMotionSourceLost;
+    }
+
+    private void OnMotionSourceLost(uint sourceId)
+    {
+        if (hasMotionPosition && sourceId == motionSourceId) ResetMotion();
+    }
+
+    private void ResetMotion(bool notify = true)
+    {
+        bool interrupted = hasMotionPosition;
+        hasMotionPosition = false;
+        lastProcessedSequence = 0;
+        previousValidMotionTime = double.NaN;
+        MotionSampleDeltaTime = 0f;
+        MotionSampleTimestamp = double.NaN;
+        CurrentJointSample = default;
+        MotionTrackingGapSeconds = double.NaN;
+        IndexTipPoseValid = IndexDistalPoseValid = false;
+        SampleTipInside = SampleDistalInside = false;
+        Init = true;
+        Entered = Prepared = Hesitated = CloseSti = false;
+        UpdateT = PrepTime = 0f;
+        HasSurfaceEntryPoint = false;
+        IndexVelocity = IndexVelocityDirection = Vector3.zero;
+        v = vpre = a = apre = float.MaxValue;
+        if (notify && interrupted) MotionInterrupted?.Invoke();
+    }
+
+    private void OnJointSampleUpdated(Study3JointSample sample)
+    {
+        if (!sample.TryGetJointPose(TrackedHandJoint.IndexTip, out MixedRealityPose pose) ||
+            !sample.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, out MixedRealityPose distalPose) ||
+            double.IsNaN(sample.Timestamp) || double.IsInfinity(sample.Timestamp) ||
+            float.IsNaN(pose.Position.x) || float.IsInfinity(pose.Position.x) ||
+            float.IsNaN(pose.Position.y) || float.IsInfinity(pose.Position.y) ||
+            float.IsNaN(pose.Position.z) || float.IsInfinity(pose.Position.z) ||
+            float.IsNaN(distalPose.Position.x) || float.IsInfinity(distalPose.Position.x) ||
+            float.IsNaN(distalPose.Position.y) || float.IsInfinity(distalPose.Position.y) ||
+            float.IsNaN(distalPose.Position.z) || float.IsInfinity(distalPose.Position.z))
+        {
+            ResetMotion();
+            return;
+        }
+
+        if (hasMotionPosition && sample.SourceId == motionSourceId &&
+            sample.TrackingEpoch == motionTrackingEpoch && sample.Sequence <= lastMotionSequence)
+            return;
+        double elapsed = sample.Timestamp - previousValidMotionTime;
+        if (!hasMotionPosition || sample.SourceId != motionSourceId ||
+            sample.TrackingEpoch != motionTrackingEpoch || double.IsNaN(elapsed) ||
+            elapsed <= 0 || (float)elapsed <= 0f || elapsed > Study3MotionTracker.MaximumAgeSeconds)
+        {
+            ResetMotion();
+            hasMotionPosition = true;
+            motionSourceId = sample.SourceId;
+            motionTrackingEpoch = sample.TrackingEpoch;
+            lastMotionSequence = sample.Sequence;
+            previousMotionPosition = pose.Position;
+            MotionPreviousTipPosition = pose.Position;
+            previousValidMotionTime = sample.Timestamp;
+            return;
+        }
+
+        MotionTrackingGapSeconds = elapsed;
+        MotionSampleDeltaTime = (float)elapsed;
+        MotionPreviousTipPosition = previousMotionPosition;
+        Vector3 delta = pose.Position - previousMotionPosition;
+        Distance = delta.magnitude;
+        IndexVelocity = delta / MotionSampleDeltaTime;
+        IndexVelocityDirection = delta.sqrMagnitude > 0f ? delta.normalized : Vector3.zero;
+        v = Distance / MotionSampleDeltaTime;
+        if (vpre != float.MaxValue) a = (v - vpre) / MotionSampleDeltaTime;
+        if (float.IsNaN(v) || float.IsInfinity(v) || float.IsNaN(a) || float.IsInfinity(a))
+        {
+            ResetMotion();
+            return;
+        }
+        vpre = v;
+        apre = a;
+        previousMotionPosition = pose.Position;
+        previousValidMotionTime = sample.Timestamp;
+        lastMotionSequence = sample.Sequence;
+    }
+
+    private void OnJointSampleProcessed(Study3JointSample sample)
+    {
+        if (hasMotionPosition && sample.SourceId == motionSourceId &&
+            sample.TrackingEpoch == motionTrackingEpoch && sample.Sequence == lastMotionSequence &&
+            sample.Sequence != lastProcessedSequence)
+        {
+            lastProcessedSequence = sample.Sequence;
+            ProcessJointSample(sample, MotionSampleDeltaTime);
+        }
     }
 
     void Update()
@@ -175,19 +305,23 @@ public class AcceStudy3 : MonoBehaviour
 
     void FixedUpdate()
     {
-        MotionSampleSequence++;
+        if (hasMotionPosition && Time.realtimeSinceStartupAsDouble - previousValidMotionTime > Study3MotionTracker.MaximumAgeSeconds)
+            ResetMotion();
+    }
+
+    private void ProcessJointSample(Study3JointSample sample, float sampleDeltaTime)
+    {
+        CurrentJointSample = sample;
+        MotionSampleSequence = sample.Sequence;
+        MotionSampleTimestamp = sample.Timestamp;
         MotionSampleFixedTime = Time.fixedTimeAsDouble;
-        MotionSampleDeltaTime = Time.fixedDeltaTime;
-        MotionPreviousTipPosition = IndexTipPose1.Position;
         IndexDistalPoseValid = false;
         SampleTipInside = SampleDistalInside = false;
         Bounds = gameObject.GetComponent<Collider>().bounds;
-        IndexTipPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexTip, Handedness.Any, out IndexTipPose2, MotionSampleSequence);
+        MixedRealityPose previousIndexPose = IndexTipPose2;
+        IndexTipPoseValid = sample.TryGetJointPose(TrackedHandJoint.IndexTip, out IndexTipPose2);
         if (IndexTipPoseValid)
         {
-            MotionTrackingGapSeconds = double.IsNaN(previousValidMotionTime)
-                ? double.NaN : MotionSampleFixedTime - previousValidMotionTime;
-            previousValidMotionTime = MotionSampleFixedTime;
             #region V and A Calculation: V is without +-, A has +- for V's tendency to change bigger or smaller
             if (Init)
             {
@@ -196,17 +330,12 @@ public class AcceStudy3 : MonoBehaviour
                 indexTipPositionPreviousFrame = IndexTipPose2.Position;
                 indexTipPositionTwoFramesAgo = IndexTipPose2.Position;
                 indexTipSampleCount = 1;
-                IndexDistalPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose, MotionSampleSequence);
+                IndexDistalPoseValid = sample.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, out IndexDistalPose);
                 previousDistalPosition = IndexDistalPose.Position;
                 return;
 
             }
 
-            Vector3 indexDelta = IndexTipPose2.Position - IndexTipPose1.Position;
-            Distance = indexDelta.magnitude;
-            IndexVelocity = Time.fixedDeltaTime > 0f ? indexDelta / Time.fixedDeltaTime : Vector3.zero;
-            IndexVelocityDirection = indexDelta.sqrMagnitude > 0f ? indexDelta.normalized : Vector3.zero;
-            v = Distance / Time.fixedDeltaTime;
             indexTipSampleCount = Mathf.Min(indexTipSampleCount + 1, 3);
             //print("P1  " + IndexTipPose1.Position.ToString("F5"));
             //print("P2  " + IndexTipPose2.Position.ToString("F5"));
@@ -214,23 +343,16 @@ public class AcceStudy3 : MonoBehaviour
             //    curBigger = true;
             //else
             //    curBigger = false;
-            IndexTipPose1 = IndexTipPose2;
-            if (vpre != float.MaxValue)
-            {
-                a = (v - vpre) / Time.fixedDeltaTime;
-            }
-            //UnityEngine.Debug.LogFormat("{0}, {1}, {2}",vpre, v, a);
-            vpre = v;
-            apre = a;
+            IndexTipPose1 = previousIndexPose;
 
             #endregion
 
             #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            IndexDistalPoseValid = Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose, MotionSampleSequence);
-            Study3HandSamplingDiagnostics.TryGetJointPose(this, TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose, MotionSampleSequence);
+            IndexDistalPoseValid = sample.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, out IndexDistalPose);
+            sample.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, out IndexMiddlePose);
             bool tipInside = Bounds.Contains(IndexTipPose2.Position);
-            bool distalInside = Bounds.Contains(IndexDistalPose.Position);
+            bool distalInside = IndexDistalPoseValid && Bounds.Contains(IndexDistalPose.Position);
             SampleTipInside = tipInside;
             SampleDistalInside = distalInside;
             // Judge if the fingertip is inside
@@ -253,7 +375,7 @@ public class AcceStudy3 : MonoBehaviour
                     entryCurrentIndexTipPosition = IndexTipPose2.Position;
                     hasEntryIndexTipDirectionSamples = indexTipSampleCount >= 3;
                     Vector3 candidateCurrent = tipInside ? IndexTipPose2.Position : IndexDistalPose.Position;
-                    Vector3 candidatePrevious = tipInside ? IndexTipPose1.Position : previousDistalPosition;
+                    Vector3 candidatePrevious = tipInside ? MotionPreviousTipPosition : previousDistalPosition;
                     SurfaceEntryPoint = EstimateSurfaceEntryPoint(candidatePrevious, candidateCurrent);
                     HasSurfaceEntryPoint = true;
                 }
@@ -268,7 +390,7 @@ public class AcceStudy3 : MonoBehaviour
                 // Change Outlook ,���ﲻ��Ҫ�ı�outlook��ֻ��Ҫ�����¼�����
                 //if (!CloseSti && !HighLighted)
                 //    meshRenderer.material = InMate;
-                UpdateT += Time.deltaTime;
+                UpdateT += sampleDeltaTime;
 
                 // If already enter hesitate state, do not act more
                 if (Hesitated)
@@ -291,7 +413,7 @@ public class AcceStudy3 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -319,7 +441,7 @@ public class AcceStudy3 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime > HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -347,7 +469,7 @@ public class AcceStudy3 : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime

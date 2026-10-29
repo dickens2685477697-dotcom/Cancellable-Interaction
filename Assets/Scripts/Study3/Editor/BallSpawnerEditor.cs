@@ -68,8 +68,8 @@ public sealed class BallSpawnerEditor : Editor
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("samplingRateHz"));
         EditorGUILayout.HelpBox(
-            "控制 Study3Experiment 的全局 FixedUpdate 判定频率（默认50 Hz）和trajectory日志。"
-            + "Magic Tap 2.0与IxDL共用新MRTK更新，运动计算使用更新接收时间间隔；固定回调频率不等于新姿态频率。停用Spawner后恢复原时间步。Dynamic Stop仍受Sample Interval限制。",
+            "控制 Study3Experiment 的全局 FixedUpdate 和 trajectory 日志频率（默认50 Hz）。"
+            + "MRTK 样本驱动的运动与触发使用关节更新的接收时间；固定步频率不等于手部数据更新频率。停用Spawner后恢复原时间步。Dynamic Stop仍受Sample Interval限制。",
             MessageType.Info);
         EditorGUILayout.Space();
 

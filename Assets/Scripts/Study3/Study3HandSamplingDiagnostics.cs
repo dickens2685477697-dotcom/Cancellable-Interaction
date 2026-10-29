@@ -237,3 +237,5 @@ public static class Study3HandSamplingDiagnostics
                 pose, source, hand, providerId, sharedSequence, status, repeated, tracked, motionSequence);
     }
 }
+
+// Sampling baseline diagnostics import verification (2026-10-28); no selection rule change.
