@@ -1,11 +1,15 @@
 using System.Collections;
+using System;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 
 public class ExperimentCounter : MonoBehaviour
 {
     public int count = 0;
-    public int MaxCount = 10;
+    public int MaxCount = 20;
+    [Min(0.01f)] public float HoldDuration = 3f;
+    [Min(0f)] public float EndCaptureDelay = 1f;
     public int TaskNum = 1;
 
     public float coolDown = 1f;
@@ -26,10 +30,29 @@ public class ExperimentCounter : MonoBehaviour
     public Material shallowBall;
     public Material oriBall;
     private bool isCoolingDown = false; // Add a flag to check if the coroutine is running
+    public event Action<string, int, double> TrialEvent;
+    private bool study1Protocol, trialInside, holdComplete, protocolFinished;
+    private double entryTime;
 
     // Start is called before the first frame update
     void Start()
     {
+        study1Protocol = gameObject.scene.path == "Assets/Scenes/Study1.unity";
+        if (study1Protocol)
+        {
+            MaxCount = Mathf.Max(1, MaxCount);
+            HoldDuration = Mathf.Max(0.01f, HoldDuration);
+            SphereCollider = GetComponent<Collider>();
+            acce = GetComponent<AcceStimulate>();
+            startBallBehavior = GetComponentInChildren<StartBallBehavior2>(true);
+            acce.InEvent.AddListener(OnStudy1Inside);
+            acce.AfterOutEvent.AddListener(OnStudy1Exit);
+            acce.MotionTrackingInterrupted += OnTrackingInterrupted;
+            DisplayNum.text = MaxCount.ToString();
+            TaskPrompt.text = "Touch green";
+            GesturePrompt.text = "";
+            return;
+        }
         DisplayNum.text = 10.ToString();
         SphereCollider = gameObject.GetComponent<Collider>();
         acce = GetComponent<AcceStimulate>();
@@ -37,6 +60,7 @@ public class ExperimentCounter : MonoBehaviour
         acce.OutEvent.AddListener(UpdateCount);
         acce.OutEvent.AddListener(TurnShallowBack);
         startBallBehavior = GetComponentInChildren<StartBallBehavior2>();
+        acce.MotionTrackingInterrupted += OnTrackingInterrupted;
         TaskNum = 0;
         SwitchTask();
     }
@@ -44,12 +68,78 @@ public class ExperimentCounter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (study1Protocol) return;
         if (count == MaxCount && !isCoolingDown) // Check if the coroutine is not running
         {
             count = 0;
             StartCoroutine(CoolDown());
             SphereCollider.enabled = true;
         }
+    }
+
+    private void EmitTrial(string kind, double timestamp)
+    {
+        TrialEvent?.Invoke(kind, count + 1, timestamp);
+    }
+
+    private void OnStudy1Inside()
+    {
+        if (protocolFinished || startBallBehavior == null || !startBallBehavior.GetState()) return;
+        double now = acce.MotionSampleTimestamp;
+        if (!trialInside)
+        {
+            trialInside = true;
+            holdComplete = false;
+            entryTime = now;
+            TurnShallow();
+            TaskPrompt.text = "Hold: " + (Math.Ceiling(HoldDuration * 100d) / 100d).ToString("F2", CultureInfo.InvariantCulture) + " s";
+            GesturePrompt.text = "";
+            EmitTrial("enter", now);
+        }
+        if (!holdComplete)
+        {
+            double remaining = Math.Max(0d, HoldDuration - (now - entryTime));
+            if (remaining > 0d)
+                TaskPrompt.text = "Hold: " + (Math.Ceiling(remaining * 100d) / 100d).ToString("F2", CultureInfo.InvariantCulture) + " s";
+            else
+            {
+                holdComplete = true;
+                TaskPrompt.text = "0.00s Withdraw";
+                GesturePrompt.text = "";
+                EmitTrial("hold_complete", now);
+            }
+        }
+    }
+
+    private void OnStudy1Exit()
+    {
+        if (!trialInside || protocolFinished) return;
+        double now = acce.MotionSampleTimestamp;
+        bool completed = holdComplete;
+        EmitTrial(completed ? "success" : "early_exit", now);
+        trialInside = holdComplete = false;
+        if (completed) count++;
+        DisplayNum.text = Mathf.Max(0, MaxCount - count).ToString();
+        GetComponent<MeshRenderer>().material = oriBall;
+        if (count >= MaxCount)
+        {
+            protocolFinished = true;
+            TaskPrompt.text = "Thanks";
+            GesturePrompt.text = "";
+            if (startBallBehavior != null) startBallBehavior.gameObject.SetActive(false);
+            StartCoroutine(FinishAfterCapture());
+            return;
+        }
+        TaskPrompt.text = completed ? "Touch green" : "Too early";
+        GesturePrompt.text = "";
+        startBallBehavior.TureUnstarted();
+    }
+
+    private IEnumerator FinishAfterCapture()
+    {
+        yield return new WaitForSecondsRealtime(Mathf.Max(0f, EndCaptureDelay));
+        SphereCollider.enabled = false;
+        acce.enabled = false;
     }
 
     public void UpdateCount()
@@ -128,5 +218,45 @@ public class ExperimentCounter : MonoBehaviour
     {
         gameObject.GetComponent<MeshRenderer>().material = oriBall;
         startBallBehavior.TureUnstarted();
+    }
+
+    private void OnTrackingInterrupted()
+    {
+        if (!acce.UsesMrtkJointUpdates) return;
+        if (study1Protocol)
+        {
+            if (trialInside) EmitTrial("tracking_interrupted", Time.realtimeSinceStartupAsDouble);
+            trialInside = holdComplete = false;
+            if (!protocolFinished) TaskPrompt.text = "Tracking lost";
+        }
+        GetComponent<MeshRenderer>().material = oriBall;
+        if (!protocolFinished && startBallBehavior != null) startBallBehavior.TureUnstarted();
+    }
+
+    /// <summary>Abort an unfinished trial when the tracking origin changes.</summary>
+    public void OnReferenceSpaceReset()
+    {
+        if (!study1Protocol) return;
+        if (protocolFinished)
+        {
+            // Deactivating this object stops the tail coroutine; finish capture explicitly.
+            StopAllCoroutines();
+            if (SphereCollider != null) SphereCollider.enabled = false;
+            if (acce != null) acce.enabled = false;
+            if (startBallBehavior != null) startBallBehavior.gameObject.SetActive(false);
+            return;
+        }
+        if (trialInside) EmitTrial("recenter_interrupted", Time.realtimeSinceStartupAsDouble);
+        trialInside = holdComplete = false;
+        acce.ResetForReferenceSpaceChange();
+        TaskPrompt.text = "Touch green";
+        GesturePrompt.text = "";
+        GetComponent<MeshRenderer>().material = oriBall;
+        if (startBallBehavior != null) startBallBehavior.TureUnstarted();
+    }
+
+    private void OnDestroy()
+    {
+        if (acce != null) acce.MotionTrackingInterrupted -= OnTrackingInterrupted;
     }
 }

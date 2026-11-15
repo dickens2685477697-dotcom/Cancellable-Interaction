@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>Speed 低速阈值：时间约束分析</title>
+<style>body{font-family:system-ui,"Microsoft YaHei",sans-serif;max-width:1000px;margin:40px auto;padding:0 24px;line-height:1.75;color:#172332}h1{font-size:28px}h2{font-size:21px;margin-top:32px}table{border-collapse:collapse;width:100%;margin:20px 0}td,th{padding:9px 14px;border-bottom:1px solid #d7e1eb;text-align:left}th{background:#edf3f8}img{width:100%}code{background:#edf3f8;padding:2px 5px}.note{background:#f1f5f9;padding:16px;border-radius:8px}a{color:#155ba3}</style>
+<h1>从 15 人运动学数据反推 Speed 低速准备阈值</h1><p>2026-11-11 · 15 名被试代号、300 次成功试次、76,324 个球内样本。</p>
+<p>若目标定义为“入球后 200 ms 内至少一次达到低速”，并采用覆盖 90% 试次的示例准则，样本内最低阈值为 <strong>0.066573 m/s</strong>，向上取三位小数为 <strong>0.067 m/s</strong>。这可作为快速进入 Ready 的运动学选值依据。</p>
+<div class="note">该结果不证明用户已经主观感觉稳定，也不是端到端视觉反馈延迟。100/150/200 ms 是设计时间目标，90%/95% 是本次比较的覆盖标准；它们不是人类感知的普适阈值。</div>
+<h2>数据与方法</h2><p>以原始 enter 事件为时间零点，采用实际应用接收间隔重建的三维食指速度。读取未平滑、未 IQR 删点的连续有效样本，不使用旧速度或加速度分段来定义新准备状态。对任意候选 v，计算首次观测到速度≤v 的时刻 τ(v)。在要求覆盖比例 c 的条件下，选择满足 P(τ(v)≤T)≥c 的最低 v。</p>
+<p>每位被试均有20次试次，因此总体试次覆盖率与被试等权平均覆盖率相同。逐被试结果另列，不能将总体90%理解为每个人90%。分析使用应用接收时间，未测量硬件采集到显示的总延迟。P10–P15真实身份沿用既有待核记录。</p>
+<table><tr><th>时间目标</th><th>覆盖90%的最低 v</th><th>覆盖95%的最低 v</th></tr><tr><td>100 ms</td><td>0.183195 m/s</td><td>0.221680 m/s</td></tr><tr><td>150 ms</td><td>0.108095 m/s</td><td>0.137036 m/s</td></tr><tr><td>200 ms</td><td>0.066573 m/s</td><td>0.077631 m/s</td></tr></table>
+<h2>原阈值 0.067 m/s 的表现</h2><table><tr><th>准备判据</th><th>中位耗时</th><th>P90耗时</th><th>100/150/200 ms内达标率</th></tr><tr><td>首次达到低速</td><td>111.1 ms</td><td>195.0 ms</td><td>49.0% / 71.3% / 90.7%</td></tr><tr><td>连续低速至少50 ms</td><td>223.5 ms</td><td>361.7 ms</td><td>4.0% / 11.7% / 38.7%</td></tr></table>
+<p>50 ms 是用于敏感性分析的工程确认时长，而不是文献验证的稳定知觉时长。要求连续50 ms低速且90%试次在200 ms内达标，阈值需提高至约0.2033 m/s；提高阈值会改变“低速”的含义，不能只为达标而提高。</p>
+<p>0.067 m/s 的瞬时低速判据在200 ms内的逐被试覆盖率为75%–100%。按其余14人拟合阈值、留1人评估，200 ms/90%条件的平均留出覆盖率约90.3%，最差被试70%；此为当前任务的内部验证。</p>
+<p>首次≤0.067后，6/300次在接下来的100 ms出现≥0.375的速度样本；连续低速50 ms后为0/300。这些是离线速度条件候选，不是实机完整Speed系统的误提交率；现有任务没有实际触发/取消意图标签。</p>
+<h2>图表</h2><img src="entry_deceleration.png" alt="入球后的速度曲线"><img src="ready_coverage_50ms.png" alt="连续50毫秒低速的累计达标比例">
+<h2>文献与适用范围</h2><ul>
+<li>Nielsen (1993), <a href="https://www.nngroup.com/articles/response-times-3-important-limits/">Response Times: The 3 Important Limits</a>：约100 ms是即时系统响应的经典设计指导，不是手部稳定感知阈值。</li>
+<li>Kaaresoja, Brewster &amp; Lantz (2014), <a href="https://doi.org/10.1145/2611387">Towards the Temporally Perfect Virtual Button</a>, ACM Transactions on Applied Perception：触屏按键研究中，视觉反馈在100到150 ms延迟条件间的质量评分下降；该任务与XR自然减速不同。</li>
+<li>Long et al. (2022), <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8799383/">Proprioceptive sensitivity to imposed finger deflections</a>, Journal of Neurophysiology：被动食指关节运动中约18%–32%的角速度变化可被区分；不能直接换算为主动三维指尖m/s阈值。</li>
+<li>Hohnsbein &amp; Mateeff (1998), <a href="https://doi.org/10.1016/S0042-6989(98)00014-5">The time it takes to detect changes in speed and direction of visual motion</a>, Vision Research：视觉速度变化检出的时间依赖速度变化条件，研究刺激为随机点运动，不直接给出本任务稳定阈值。</li></ul>
+<h2>复核与文件</h2><p>30份原始continuous/events文件SHA-256与既有清单一致；全部76,324行速度和试次相对时间由原始坐标、完整精度事件独立复核。两种独立算法核对15,600组候选×试次计算。</p><ul><li><a href="threshold_summary.csv">候选阈值汇总</a></li><li><a href="minimum_threshold_by_deadline.csv">各时间目标的最低阈值</a></li><li><a href="participant_results.csv">逐被试结果</a></li><li><a href="leave_one_participant_out.csv">逐被试留出验证</a></li><li><a href="trial_results.csv">逐试次结果</a></li><li><a href="analyze_time_threshold.py">主分析脚本</a> / <a href="verify_sources.py">原始数据复核脚本</a> / <a href="analyze_post_ready_rebound.py">速度反弹检查脚本</a></li></ul></html>

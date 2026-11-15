@@ -13,6 +13,7 @@ public class StartBallBehavior2 : MonoBehaviour
     void Start()
     {
         acce = GetComponent<AcceStimulate>();
+        acce.MotionTrackingInterrupted += OnTrackingInterrupted;
         acce.InEvent.AddListener(() =>
         {
             startCorrectly = true;
@@ -40,5 +41,15 @@ public class StartBallBehavior2 : MonoBehaviour
         startCorrectly = false;
         gameObject.GetComponent<MeshRenderer>().material = oriBall;
         gameObject.SetActive(true);
+    }
+
+    private void OnTrackingInterrupted()
+    {
+        if (acce.UsesMrtkJointUpdates) TureUnstarted();
+    }
+
+    private void OnDestroy()
+    {
+        if (acce != null) acce.MotionTrackingInterrupted -= OnTrackingInterrupted;
     }
 }

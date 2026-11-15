@@ -1,0 +1,9 @@
+[LicensingClient] Error: Code 10 while verifying Licensing Client signature (process Id: 37620, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] Warning: LicensingClient has failed validation; ignoring
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Neo_Luo" (connect: 0.00s, validation: 0.01s, handshake: 0.03s)
+Entitlement-based licensing initiated
+[LicensingClient] Licenses updated successfully
+BatchMode: Unity has not been activated with a valid License. Could be a new activation or renewal...
+[UnityConnectServicesConfig] config is NOT valid, switching to default
+Request timed out while processing request "https://public-cdn.cloud.unitychina.cn/config/production", HTTP error code 0
+.[UnityConnect] Request timed out.

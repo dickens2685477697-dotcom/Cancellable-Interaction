@@ -156,6 +156,34 @@ public partial class S2AccMode : MonoBehaviour
     private bool rainbowReentryRequiresExit = false;
     private float rainbowFrameDepth = 0.0015f;
     private FacingFeedbackRing modeReadyRing;
+    private readonly Study3PendingStateTimer pendingStateTimer = new Study3PendingStateTimer();
+
+    private void ObservePendingContact(int finger, bool inside)
+    {
+        if (inside && (ballSpawner == null || !ballSpawner.enable_trigger)) return;
+        pendingStateTimer.Contact(finger, inside, Time.timeAsDouble);
+    }
+
+    private void RecordPendingStateEntry() => pendingStateTimer.EnterPending(Time.timeAsDouble);
+
+    private void InitializePendingStateObservation()
+    {
+        pendingStateTimer.Reset();
+        if (UsesDynamicMotion || UsesMagicTap2) return;
+        // Register before the selection callbacks, including callbacks that immediately complete.
+        if (Acce != null)
+        {
+            Acce.InEvent.AddListener(() => ObservePendingContact(1, true));
+            Acce.AfterOutEvent.AddListener(() => ObservePendingContact(1, false));
+        }
+        bool usesThumbContact = modeSelected == 4 || modeSelected == 8 || modeSelected == 9
+            || modeSelected == 13 || modeSelected == 16 || modeSelected == 27;
+        if (usesThumbContact && Acce2 != null)
+        {
+            Acce2.InEvent.AddListener(() => ObservePendingContact(2, true));
+            Acce2.AfterOutEvent.AddListener(() => ObservePendingContact(2, false));
+        }
+    }
     private DirectionCDArrowVisual directionCDArrowVisual;
     //public AudioSource source;
     //public AudioClip clip;
@@ -171,6 +199,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void OnEnable()
     {
+        pendingStateTimer.Reset();
         Study3HandPoseSource.EnsureAvailable();
         Study3HandPoseSource.JointSampleEvaluated -= OnMotionSampleEvaluated;
         Study3HandPoseSource.JointSampleEvaluated += OnMotionSampleEvaluated;
@@ -180,6 +209,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void OnLegacyMotionInterrupted()
     {
+        pendingStateTimer.Reset();
         AttributionMotionUnavailable("tracking lost");
         handInBall = handInBall2 = inBall = false;
         speedReleaseMinSpeedMet = false;
@@ -402,6 +432,7 @@ public partial class S2AccMode : MonoBehaviour
         ApplyPinchSettings();
         EnsureReleaseGesture();
         InitializeAttributionObservation();
+        InitializePendingStateObservation();
         switch (modeSelected)
         {
             case 0:
@@ -556,6 +587,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void CompleteSelection()
     {
+        logWriter3.pendingStateTimeSeconds = pendingStateTimer.ElapsedSeconds;
         AttributionBeforeComplete();
         if (!standalonePreview)
         {
@@ -1811,6 +1843,7 @@ public partial class S2AccMode : MonoBehaviour
         if (!inside && wasInside) EndSharedMotionContact("contact transition");
         else if (inside && !wasInside)
         {
+            ObservePendingContact(1, true);
             handInBall = handInBall2 = inBall = true;
             canceled = false;
             RegisterNoTriggerSource();
@@ -1850,6 +1883,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void EndMagicTap2Contact(string reason)
     {
+        ObservePendingContact(1, false);
         if (!handInBall) return;
 
         bool canceledBeforeTrigger = !magicTap2Motion.IsSelected && !string.IsNullOrEmpty(reason);
@@ -1913,6 +1947,7 @@ public partial class S2AccMode : MonoBehaviour
         }
         else if (inside && !DynamicMotionInside)
         {
+            ObservePendingContact(1, true);
             handInBall = handInBall2 = inBall = true;
             canceled = false;
             RegisterNoTriggerSource();
@@ -1962,6 +1997,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void EndDynamicStopContact(string reason)
     {
+        ObservePendingContact(1, false);
         if (!handInBall)
         {
             return;
@@ -2400,6 +2436,7 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
+                RecordPendingStateEntry();
                 logWriter3.reactFrequency++;
                 fastTapReactTimestamp = Time.time;
                 logWriter3.reactTime = fastTapEntryTimestamp >= 0f
@@ -2622,6 +2659,7 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
+                RecordPendingStateEntry();
                 logWriter3.reactFrequency++;
                 fastTapReactTimestamp = Time.time;
                 logWriter3.reactTime = fastTapEntryTimestamp >= 0f
@@ -2814,6 +2852,7 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
+                RecordPendingStateEntry();
                 logWriter3.reactFrequency++;
                 fastTapReactTimestamp = Time.time;
                 logWriter3.reactTime = fastTapEntryTimestamp >= 0f
@@ -3258,6 +3297,7 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
+                RecordPendingStateEntry();
                 logWriter3.reactFrequency++;
                 logWriter3.reactTime = reactTap.UpdateT + 0.02f;
 
@@ -3489,6 +3529,7 @@ public partial class S2AccMode : MonoBehaviour
                     Debug.Log("initial angle:" + reactTap.initialAngle);
                     ballSpawner.isReact = true;
                     logWriter3.isReact = true;
+                    RecordPendingStateEntry();
                     logWriter3.reactFrequency++;
                     Player.TurnShallowYellowMineBall();
                     logWriter3.reactTime = reactTap.UpdateT + 0.02f;
@@ -3504,6 +3545,7 @@ public partial class S2AccMode : MonoBehaviour
                     Debug.Log("initial angle:" + reactTap.initialAngle);
                     ballSpawner.isReact = true;
                     logWriter3.isReact = true;
+                    RecordPendingStateEntry();
                     logWriter3.reactFrequency++;
                     Player.TurnShallowGreenMineBall();
                     logWriter3.reactTime = reactTap.UpdateT + 0.02f;
@@ -6160,6 +6202,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void ShowModeReadyRing()
     {
+        RecordPendingStateEntry();
         if (ballSpawner == null || !ballSpawner.showModeReadyRing)
         {
             HideModeReadyRing();
@@ -7612,6 +7655,7 @@ public partial class S2AccMode : MonoBehaviour
 
     private void OnDisable()
     {
+        pendingStateTimer.Reset();
         Study3HandPoseSource.JointSampleEvaluated -= OnMotionSampleEvaluated;
         if (Acce != null) Acce.MotionInterrupted -= OnLegacyMotionInterrupted;
         Study3HandPoseSource.JointSampleProcessed -= OnSharedMotionJointSample;

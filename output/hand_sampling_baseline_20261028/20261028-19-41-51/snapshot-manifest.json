@@ -1,0 +1,42 @@
+{
+  "session": "20261028-19-41-51",
+  "sourceLoggingStatus": "closed",
+  "files": [
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-hand-updates.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-hand-updates.csv",
+      "bytes": 132825474,
+      "sha256": "091896a5a3f0dd3aecc6fe0995a65f5c574f5012ef0be6289558f0054da7874c"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-hand-reads.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-hand-reads.csv",
+      "bytes": 12624914,
+      "sha256": "c6f9976179305335b60727130daf3388bebbf24eadf19da2828173ca78244487"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-common-motion.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-common-motion.csv",
+      "bytes": 714437,
+      "sha256": "6f71108ee284db9ed39fc1fd4807572db777e30e8342e4b778e357f93b60f6ae"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-session-settings.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-session-settings.csv",
+      "bytes": 1137,
+      "sha256": "e74158f0d4ba39d125c199908df601f3e9efe9d4f6c562e3e99b6618f04e5a78"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-attribution-manifest.json",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-attribution-manifest.json",
+      "bytes": 632,
+      "sha256": "f291a32222484f8b95aa86ecc5e8796b539ce2ea0570537cfb7b6565d23b8bcf"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-41-51\\20261028-19-41-51-trial-lifecycle.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-41-51\\20261028-19-41-51-trial-lifecycle.csv",
+      "bytes": 2723,
+      "sha256": "c954aaf3312eadace456101f9103dcc3085fdab696f6e90e5a82eba43ff0a612"
+    }
+  ]
+}

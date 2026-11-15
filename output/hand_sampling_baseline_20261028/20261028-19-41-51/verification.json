@@ -1,0 +1,42 @@
+{
+  "independently_verified_with": "v24.22.1",
+  "parser": "Independent CSV reader and JSON.parse in Node.js",
+  "full_session_counts_reproduced": true,
+  "formal_counts_rates_and_stage_ages_reproduced": true,
+  "all_six_source_and_snapshot_hashes_match": true,
+  "raw_inputs_unchanged": true,
+  "hardware_first_capture_proven": false,
+  "counts": {
+    "observedSdkReadCount": 220242,
+    "providerUpdateCount": 4929,
+    "poseReadCount": 72300
+  },
+  "formal_rows": 1429,
+  "repeated_reads": 39,
+  "files": [
+    {
+      "name": "20261028-19-41-51-hand-updates.csv",
+      "snapshot_and_source_sha256_match": true
+    },
+    {
+      "name": "20261028-19-41-51-hand-reads.csv",
+      "snapshot_and_source_sha256_match": true
+    },
+    {
+      "name": "20261028-19-41-51-common-motion.csv",
+      "snapshot_and_source_sha256_match": true
+    },
+    {
+      "name": "20261028-19-41-51-session-settings.csv",
+      "snapshot_and_source_sha256_match": true
+    },
+    {
+      "name": "20261028-19-41-51-attribution-manifest.json",
+      "snapshot_and_source_sha256_match": true
+    },
+    {
+      "name": "20261028-19-41-51-trial-lifecycle.csv",
+      "snapshot_and_source_sha256_match": true
+    }
+  ]
+}

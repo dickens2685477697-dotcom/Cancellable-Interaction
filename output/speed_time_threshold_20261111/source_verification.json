@@ -1,0 +1,7 @@
+{
+  "raw_continuous_and_event_hashes_matched": 30,
+  "reconstructed_rows_matched": 76324,
+  "trials": 300,
+  "participants": 15,
+  "checks": "raw coordinates and application reception times independently reproduce all prepared speeds and trial-relative timestamps"
+}

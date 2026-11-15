@@ -78,6 +78,31 @@ class AttributionOutputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             strict_rows(path)
 
+    def test_pending_column_and_historical_missing_values(self):
+        path = self.folder / "session-trial-results-v2.csv"
+        fields = PREFIX.copy()
+        fields.insert(fields.index("triggerTime"), "pending state time")
+        fields += TRIGGER + ["sessionId", "trialSequence", "targetPositionsJson", "schemaVersion"]
+        values = ["NA"] * len(fields)
+        values[fields.index("schemaVersion")] = "3"
+        values[fields.index("pending state time")] = "0.125"
+        values[fields.index("triggerTime")] = "0.5"
+        save_csv(path, fields, [values])
+        row = read_trial_file(path)[0]
+        self.assertEqual(row["pending state time"], "0.125")
+        self.assertEqual(row["triggerTime"], "0.5")
+        self.assertEqual(read_trial_file(self.legacy(), prefer_v2=False)[0]["pending state time"], "NA")
+        values[fields.index("schemaVersion")] = "2"
+        pending_index = fields.index("pending state time")
+        fields.pop(pending_index)
+        values.pop(pending_index)
+        save_csv(path, fields, [values])
+        self.assertEqual(read_trial_file(path)[0]["pending state time"], "NA")
+        values[fields.index("schemaVersion")] = "3"
+        save_csv(path, fields, [values])
+        with self.assertRaises(ValueError):
+            read_trial_file(path)
+
     def test_quality_keeps_abort_unknown_and_unclosed_separate(self):
         fields = ["sessionId", "entrySequence", "event", "outcome", "experimentStarted", "entryStartObserved", "trackingLossObserved", "taskResult", "mode", "source", "expectedAction"]
         rows = [

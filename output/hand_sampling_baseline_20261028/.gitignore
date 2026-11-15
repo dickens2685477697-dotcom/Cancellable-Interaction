@@ -1,0 +1,6 @@
+# Large, private experiment snapshots remain on disk; reports and tools stay reviewable.
+**/*-hand-updates.csv
+**/*-hand-reads.csv
+**/*-common-motion.csv
+**/*-trajectory.csv
+**/__pycache__/

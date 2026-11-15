@@ -28,7 +28,7 @@ public static class AttributionRecorderFileChecks
         legacy[21] = "cancel, \"quoted\""; legacy.AddRange(new object[] { 0, 1.1, .537 });
         for (int i = 0; i < 16; i++) legacy.AddRange(new object[] { i * .01, 1.1, .537 });
         legacy.AddRange(new object[] { "NA", "NA", "NA", "NA" });
-        recorder.WriteNormalized(Study3LogEncoding.Row(legacy.ToArray()));
+        recorder.WriteNormalized(Study3LogEncoding.Row(legacy.ToArray()), .075);
         host.currentCaseNumber = 2; recorder.BeginTrial("target_ready");
         sample = sample.Copy(); sample.Case = 2; sample.MotionSequence = 2; sample.Realtime = .3;
         recorder.Observe(sample, "contact");
@@ -36,6 +36,8 @@ public static class AttributionRecorderFileChecks
         var resultLines = File.ReadAllLines(Path.Combine(directory, "file-test-trial-results-v2.csv"));
         var header = Study3LogEncoding.ParseCsv(resultLines[0]); var result = Study3LogEncoding.ParseCsv(resultLines[1]);
         require(resultLines.Length == 2 && header.Count == result.Count && header.Distinct().Count() == header.Count, "Normalized result width/uniqueness wrong");
+        require(header.IndexOf("pending state time") + 1 == header.IndexOf("triggerTime")
+            && result[header.IndexOf("pending state time")] == "0.075" && result[header.IndexOf("schemaVersion")] == "3", "Pending latency column/order/version incorrect");
         require(result[header.IndexOf("triggerSpeed")] == "NA", "Target coordinate became a trigger value");
         require(result[header.IndexOf("participantId")] == "p2" && result[header.IndexOf("taskResult")] == "success", "Trial metadata/result missing");
         var entries = File.ReadAllLines(Path.Combine(directory, "file-test-attribution-entry-summary.csv"));

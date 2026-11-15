@@ -9,6 +9,7 @@ from pathlib import Path
 
 PREFIX = "Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,no trigger reason,cancelTimes,directionAngleFrame,directionSpeedMin".split(",")
 TRIGGER = ["triggerSpeed", "previousSpeed", "speedThreshold", "triggerAcceleration"]
+PENDING_STATE_TIME = "pending state time"
 
 
 def strict_rows(path: Path) -> list[dict[str, str]]:
@@ -35,8 +36,11 @@ def read_trial_file(path: str | Path, prefer_v2: bool = True) -> list[dict[str, 
         result = strict_rows(path)
         required = set(PREFIX + TRIGGER + ["sessionId", "trialSequence", "targetPositionsJson", "schemaVersion"])
         for row in result:
-            if not required.issubset(row) or row["schemaVersion"] != "2":
+            if not required.issubset(row) or row["schemaVersion"] not in {"2", "3"}:
                 raise ValueError(f"{path}: unsupported normalized trial schema")
+            if row["schemaVersion"] == "3" and PENDING_STATE_TIME not in row:
+                raise ValueError(f"{path}: pending state time missing from schema 3")
+            row.setdefault(PENDING_STATE_TIME, "NA")
         return result
     with path.open(encoding="utf-8-sig", newline="") as stream:
         reader = csv.reader(stream)
@@ -57,6 +61,7 @@ def read_trial_file(path: str | Path, prefer_v2: bool = True) -> list[dict[str, 
                     raise ValueError(f"{path}:{line}: nonfinite target coordinate")
                 coordinates.append(point)
             row = dict(zip(PREFIX, values[:26]))
+            row[PENDING_STATE_TIME] = "NA"
             row.update(zip(["centerX", "centerY", "centerZ"], map(str, coordinates[0])))
             row["targetPositionsJson"] = json.dumps(coordinates[1:], separators=(",", ":"))
             row.update(zip(TRIGGER, values[-4:] if has_trigger else ["NA"] * 4))

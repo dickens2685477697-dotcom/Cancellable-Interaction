@@ -1,0 +1,101 @@
+{
+  "session": "20261028-18-40-51",
+  "scope": "Partial-chain snapshot: experimentStarted and trackingValid rows only; no SDK or complete MRTK publication sidecars exist.",
+  "hardware_rate_measured": false,
+  "full_chain_baseline_complete": false,
+  "modes": [
+    "ixdlDynamic"
+  ],
+  "snapshot_may_have_been_taken_while_playing": false,
+  "common_motion_total_complete_rows": 38139,
+  "experiment_tracking_valid_rows": 1736,
+  "sources": [
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-18-40-51\\20261028-18-40-51-common-motion.csv",
+      "snapshot": "output\\hand_sampling_baseline_20261028\\20261028-18-40-51\\20261028-18-40-51-common-motion.csv",
+      "bytes": 9900238,
+      "sha256": "6a5365e457da360ee1588a9331ff8b519cc97c1980b5fb861ac5d6377c7541f1"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-18-40-51\\20261028-18-40-51-trajectory.csv",
+      "snapshot": "output\\hand_sampling_baseline_20261028\\20261028-18-40-51\\20261028-18-40-51-trajectory.csv",
+      "bytes": 13270155,
+      "sha256": "46f55b18dac839f586472c8ada58643f4bb3db68c149340a7c6e220ad34ae7e2"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-18-40-51\\20261028-18-40-51-session-settings.csv",
+      "snapshot": "output\\hand_sampling_baseline_20261028\\20261028-18-40-51\\20261028-18-40-51-session-settings.csv",
+      "bytes": 1137,
+      "sha256": "16c6a4ff914172a366332e4aa9378c4c13d1c9dd040a5e85c3802ee5642054ef"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-18-40-51\\20261028-18-40-51-attribution-manifest.json",
+      "snapshot": "output\\hand_sampling_baseline_20261028\\20261028-18-40-51\\20261028-18-40-51-attribution-manifest.json",
+      "bytes": 632,
+      "sha256": "2bdb8d99388474293b97935988f3faa3975308d183d91a0b0886f75ab922ede3"
+    }
+  ],
+  "groups": [
+    {
+      "consumerInstanceId": "-4770",
+      "sourceId": "2126864224",
+      "trackingEpoch": "1",
+      "rows": 1736,
+      "elapsed_between_first_and_last_valid_seconds": 34.7106642,
+      "consumer_callback_hz_over_valid_span": 49.98463843858108,
+      "estimated_application_fps_over_valid_span": 71.1308774091393,
+      "statusCounts": {
+        "baseline": 1,
+        "velocity_warmup": 1,
+        "accepted": 1678,
+        "duplicate_or_out_of_order": 56
+      },
+      "same_mrtk_update_skipped_rows": 56,
+      "same_mrtk_update_skipped_fraction": 0.03225806451612903,
+      "distinct_mrtk_samples_seen_by_consumer": 1680,
+      "consumer_intervals_ms_for_consecutive_fixed_steps": {
+        "count": 1735,
+        "min": 0.2148000000090633,
+        "p50": 14.065399999992678,
+        "p95": 28.05855000000861,
+        "p99": 41.541149999994786,
+        "max": 42.07569999999805
+      },
+      "same_frame_fixed_step_intervals_ms": {
+        "count": 56,
+        "min": 0.2148000000090633,
+        "p50": 0.26755000000378004,
+        "p95": 0.36292500000456585,
+        "p99": 2.01830500000285,
+        "max": 3.914100000002918
+      },
+      "mrtk_receive_to_consumer_age_ms": {
+        "count": 1736,
+        "min": 10.872200000022758,
+        "p50": 13.83209999998769,
+        "p95": 14.424050000016564,
+        "p99": 27.7857749999896,
+        "max": 28.634400000015603
+      },
+      "accepted_motion_dt_ms": {
+        "count": 1679,
+        "min": 11.094899999999999,
+        "p50": 14.4271,
+        "p95": 27.93145,
+        "p99": 41.718250000000005,
+        "max": 42.016600000000004
+      },
+      "first_realtime": 54.663762199999994,
+      "last_realtime": 89.37442639999999
+    }
+  ],
+  "limits": [
+    "MRTK sampleSequence is an application event counter, not hardware capture ID.",
+    "Only MRTK updates visible to the FixedUpdate consumers are present; cannot infer the full provider publication rate.",
+    "Hand-updates and hand-reads sidecars are missing; SDK sample frequency and timestamp duplicates cannot be computed.",
+    "No exact boundaries of the three instructed movement phases were recorded; do not assign per-phase results."
+  ],
+  "legacy_logging_status": "closed",
+  "valid_tracking_rows_unchanged_after_close": true,
+  "accepted_source_snapshot_sha256": "b39ae46c3fc3478ca04641d6cf77f20d0d7485d61d15eedd284a58ed0507eeb3"
+}

@@ -23,6 +23,7 @@ public class S1ButtonBehavior2 : MonoBehaviour
         acce = GetComponent<AcceStimulate>();
         logWriter = GetComponent<LogWriter>();
         startBallBehavior = GetComponentInChildren<StartBallBehavior>();
+        acce.MotionTrackingInterrupted += OnTrackingInterrupted;
         // Use Lambda fucntion
         acce.InEvent.AddListener(() =>
         {
@@ -92,6 +93,22 @@ public class S1ButtonBehavior2 : MonoBehaviour
     {
         gameObject.GetComponent<MeshRenderer>().material = oriBall;
     }
+    private void OnTrackingInterrupted()
+    {
+        if (!acce.UsesMrtkJointUpdates) return;
+        Completed = false;
+        s1clock.StopAllCoroutines();
+        s1clock.CountdownTime = s1clock.CT;
+        s1clock.ResetStates();
+        TurnShallowBack();
+        if (startBallBehavior != null) startBallBehavior.TureUnstarted();
+    }
+
+    private void OnDestroy()
+    {
+        if (acce != null) acce.MotionTrackingInterrupted -= OnTrackingInterrupted;
+    }
+
     void DataAnalyze()
     {
 

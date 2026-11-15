@@ -1,0 +1,2162 @@
+{
+  "has_more": false,
+  "items": [
+    {
+      "block_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "block_type": 1,
+      "children": [
+        "doxcnhTswTPm0hj51U6Xcpjbaxg",
+        "GMdcd4cn2oHgZYxwgY3c94XNn1c",
+        "ZQvfdV2N7o6yF7x2vljcI6QxnZ5",
+        "doxcnUj0vqyoyc6tazGgOGj598f",
+        "doxcnomt9ayQmNwLEtyhISa2E6c",
+        "doxcn5USuim9VOF6Nm4AmwkNkth",
+        "doxcnKR6zFWmzPe5vIxs8yPLcSo",
+        "doxcnoqxWeC5aHwSYnv2Hfotb9b",
+        "doxcnggYVh8X0zzhPp5sQuscpvd",
+        "doxcnvaq7c0d9PZyiq9Gr3WqqSg",
+        "doxcnuBRtZakOsnpfWtBg1qXiec",
+        "doxcni1AdULHL1AIHFlHrj56X2d",
+        "doxcne2UEtaIm7WDcGFQPsgf31g",
+        "doxcnIEekQyrFVTCGRg0Jwp65iL",
+        "doxcnl7QsnO6xnYDAeo8dCSsPJh",
+        "doxcnvSxUCOKckOYXhAcZLksEof",
+        "doxcnkR4p1TfMQ5yvv1R1yFl3db",
+        "doxcnwhaoPs3yDPuutwp6izhmOd",
+        "doxcnRJZgehQ6WatMK7ZtjBwqNd",
+        "doxcncsM6d2TDYiu1OXoqB5p6GG",
+        "doxcn9jkNVEIMLZCXyI6Z1zfdje",
+        "doxcnfEtY6vNAM3JUdcudWHDlyb",
+        "doxcnTOilxqpBKoAr4o3Gjuup4g",
+        "doxcnji9TeB1RcJOS84n2BeMsNg",
+        "doxcnzAMVCECvyNgNjM4JDdgdyf",
+        "doxcnSCB3AyDFZVfScOmqKERhue",
+        "doxcny72tQRL1ekHZbdo6l8ncWh",
+        "doxcnqc98jbW5iaholANrkFzUed",
+        "doxcnkPx9Vf5YKwFNITQtG7e68c",
+        "doxcnlG1WRnXkTEwXm9QyRNyX3d",
+        "doxcna6SzPtwu1O42NFOOsX2VYe",
+        "doxcnYLVNH6UzUjK71KwBKOojrb",
+        "doxcncZYaOskjxAbHE1SecYPCuA",
+        "doxcnG66xsQcXGEzUbwafaJukzh"
+      ],
+      "page": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "重复手部采样问题：旧调用逻辑与 Pilot 证据",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1
+        }
+      },
+      "parent_id": ""
+    },
+    {
+      "block_id": "doxcnhTswTPm0hj51U6Xcpjbaxg",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "本问题是在我做动态阈值与 Magic Tap 2.0 比较实验时发现的。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "GMdcd4cn2oHgZYxwgY3c94XNn1c",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "结论：旧代码可能把重复读取的 MRTK 缓存计算成零速度或突然减速，影响选择准备；新增实机测试捕获到39/1,429次（2.73%）FixedUpdate重复消费读取，当前动态阈值已全部跳过。",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "ZQvfdV2N7o6yF7x2vljcI6QxnZ5",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Pilot 已观察到旧判定路径受到影响；原版 Magic Tap 也有同类代码路径。以下先解释名称，再展示完整链路，并分别列出 Pilot 证据与本次实机测试。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnUj0vqyoyc6tazGgOGj598f",
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "0. 先说明代码名称与术语",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnomt9ayQmNwLEtyhISa2E6c",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Update() / FixedUpdate()：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "Unity 的应用帧回调 / 固定步回调。本文“FixedUpdate 消费读取”专指选择逻辑在固定步读取 MRTK 最新样本；逻辑步长 20 ms 不代表真实时间上整齐间隔 20 ms。下文“帧”均指 Unity 应用帧（Time.frameCount）。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcn5USuim9VOF6Nm4AmwkNkth",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "OVRPlugin.GetHandState / OVRHand / OVRSkeleton：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "分别是 Oculus SDK 的姿态读取接口、保存 SDK 状态的 Unity 组件、将状态应用到骨架 Transform/Bones 的组件。它们不是传感器；GetHandState 返回预测姿态，重复调用不保证得到新的相机帧。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnKR6zFWmzPe5vIxs8yPLcSo",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "MRTK / OculusXRSDKDeviceManager / OculusHand.jointPoses：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "分别是输入框架、接入 Oculus 数据的输入 Provider、MRTK 保存关节位姿的字典。Provider 读取 Bones 后通过 RaiseHandJointsUpdated 发布事件。当前只有一个 MRTK 主组件，但同一个 Oculus Provider 配置了两次，产生同一只右手的两个 SourceId。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnoqxWeC5aHwSYnv2Hfotb9b",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "HandJointUtils.TryGetJointPose(IndexTip)：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "读取 MRTK 缓存中的食指指尖位置；这次调用不会要求摄像头重新采样。IndexTip 是食指指尖关节名。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnggYVh8X0zzhPp5sQuscpvd",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "AcceStudy3.FixedUpdate() / MotionSampleSequence：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "旧运动计算入口 / 该组件的固定步计数。旧代码按 fixedDeltaTime 计算速度 v 和带正负号的标量加速度 a；固定步计数增加，不代表 MRTK 发布了新样本。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnvaq7c0d9PZyiq9Gr3WqqSg",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "S2AccMode / S2Obstacles / InEvent / HesEvent：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "目标球 / 障碍球的选择判定组件；InEvent 为旧运动组件在球内触发的回调，HesEvent 为满足确认条件后的事件。Speed 的 CheckSpeedReleaseIndexTrigger() 可建立 armed（低速准备）；原版 Magic Tap 的 JudgeAcce() 可建立 Prepared，再经 HesEvent、SetHesMode() 等完成选择。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnuBRtZakOsnpfWtBg1qXiec",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Study3HandPoseSource / Study3MotionTracker.TrySample()：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "当前共享样本缓存 / 运动预处理。前者在 MRTK 事件到达时保存 SourceId、Sequence 和接收时间，读取时保持同一有效来源；后者跳过同来源、同追踪期的重复或过时序号，用实际接收时间差计算运动。Sequence 是应用事件序号，不是硬件帧 ID。MagicTap2MotionTracker 与 IxDLDynamicMotionTracker 共用此规则。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcni1AdULHL1AIHFlHrj56X2d",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Study3HandSamplingDiagnostics / Study3HandSamplingSession：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "新增的三层观察与 CSV 写入代码。hand-updates 记录 SDK 读取和 MRTK 事件，hand-reads 记录消费读取，common-motion 记录当前模式是否接受样本及是否触发。“接受的运动样本”指通过新样本检查并推进运动历史的记录。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcne2UEtaIm7WDcGFQPsgf31g",
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "1. 旧代码调用逻辑与问题",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnIEekQyrFVTCGRg0Jwp65iL",
+      "block_type": 27,
+      "image": {
+        "align": 2,
+        "height": 1100,
+        "scale": 1,
+        "token": "Je0Yb3rcZoBMgjxCRymcaEFgnRa",
+        "width": 1400
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnl7QsnO6xnYDAeo8dCSsPJh",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "固定步配置50 Hz（逻辑步长20 ms）不等于每秒收到50份新数据。传感器输入经 Meta 运行时、Quest Link、SDK 状态、骨架和 MRTK 缓存后才供 FixedUpdate 消费读取；骨架在固定步更新不会自动刷新 MRTK 字典。旧代码未核验 MRTK 更新身份，同一缓存位置再次参与差分时 v=0，前次速度非零时还会得到 a<0。图中硬件与封闭运行时内部频率未测，软件频率来自此次测试。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnvSxUCOKckOYXhAcZLksEof",
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "2. Pilot 与旧比较实验中的证据",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnkR4p1TfMQ5yvv1R1yFl3db",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "发现背景：2026-10-25 旧实现对比实验。",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "动态模式正常选择有16/48次、球内持续画圈有44/48次在零速记录上触发；这60次均呈现同一 Unity 应用帧、连续固定步位置重复。当时 Magic Tap 2.0 会跳过不足1 mm位移（跳过本次运动计算和触发判断），两者预处理不同，旧结果不能单独归因于动态阈值策略。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnwhaoPs3yDPuutwp6izhmOd",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Pilot：2号，2026-10-27，三种技术各48次成功选择。",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "依次列出“同帧重复位置零速 / 在该记录上进入准备 / 随后本次进入触发”：",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnRJZgehQ6WatMK7ZtjBwqNd",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "8 Speed：20次 / 12次 / 11次。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcncsM6d2TDYiu1OXoqB5p6GG",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "9 Speed-Dwell：14次 / 5次 / 5次。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcn9jkNVEIMLZCXyI6Z1zfdje",
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "10 Speed-Release：23次 / 10次 / 9次。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnfEtY6vNAM3JUdcudWHDlyb",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "合计 57/3,963 个球内运动测量（1.44%）呈现上述重复零速；",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "27/167 次低速准备（16.2%）在这些记录上建立，25/144 次成功选择（17.4%）随后由该次进入触发。",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnTOilxqpBKoAr4o3Gjuup4g",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "17.4% 不是误触率。",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "日志确认的是判定路径，不能推断过滤后这25次会失败或反应时间会改变多少。这批旧日志缺少硬件采样时间戳与硬件帧身份，不能逐条证明传感器内部状态；新增诊断也不能补回历史记录中未采集的信息。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnji9TeB1RcJOS84n2BeMsNg",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "较早的1、2、3、5号共2,256个 Trigger 试次中，1,259个（55.8%）出现相邻位置相同；这些日志缺少更新身份信息，也可能包含真实静止，不能直接当作旧采样读取率。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnzAMVCECvyNgNjM4JDdgdyf",
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "3. 新增实机测试（2026-10-28）",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcnSCB3AyDFZVfScOmqKERhue",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "测试方法：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "电脑 Unity Editor + Quest Pro / Quest Link，Study3 的 ixdlDynamic 模式，保持 FixedUpdate 50 Hz、timeScale=1。点击起始球后按静止约10秒、移动约10秒、停手约10秒的流程采集并停止 Play；有效追踪窗口28.56秒，无精确动作分段，报告合并区间。同步记录 SDK、MRTK、FixedUpdate 三层日志，结束计数及六份原日志哈希一致，关键统计经独立解析复核。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcny72tQRL1ekHZbdo6l8ncWh",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "数据结果（有效追踪窗口 28.56 秒）：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "block_type": 31,
+      "children": [
+        "doxcnEk1Qzk49tdv1uH5aQJfKRh",
+        "doxcn40p4zwlJ3GDvjTeCBac8qd",
+        "doxcnjvqdiPz17w3QxRy0id9gLe",
+        "doxcnR6fxVmDhRKDgeKv2yB4Vve",
+        "doxcnNWf4oFku1VZCWeZFwCqXFd",
+        "doxcnxcDhaiujk5q6qpP4lRAjwf",
+        "doxcnWENGsLWph2pAplmvI19jQt",
+        "doxcnym1enuYl0fsiMDsmCzTd5Q",
+        "doxcnTR8p3HwNybjrNB5WkQoTph",
+        "doxcnAVncUzrHTsdwcXRS3GwXHd",
+        "doxcn9maG7PUT4aHmCv8zi2KHNh",
+        "doxcnrMvNtxGmOKZaEBJT5tJleB",
+        "doxcnAGOapQM5VIwb2pOykB6qTb",
+        "doxcnvCEcZWxbDWoaeOAsAf0jGn",
+        "doxcnb8ZsyXGAvNNALPbKOuQt9r",
+        "doxcnfse2wfdPT6EwdIyHWM5fMd",
+        "doxcnrHowqdF7mvcid4uO2Y4Mme",
+        "doxcnMRq7JiHZN6mN1bCCDS3oFf",
+        "doxcnUPXyEPkWcJbBcVZeQESWnh",
+        "doxcnqulISucmD0sC3EBsdJVTGd",
+        "doxcnCcqmcIhmbzZYBwMgExtLyf",
+        "doxcnmIpfSxPnUwpVJLSN8EFI9d",
+        "doxcn9gg8sFArzxHRkPNPX9831d",
+        "doxcno5PfAmrHhgpRIXuFwUiyId"
+      ],
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "table": {
+        "cells": [
+          "doxcnEk1Qzk49tdv1uH5aQJfKRh",
+          "doxcn40p4zwlJ3GDvjTeCBac8qd",
+          "doxcnjvqdiPz17w3QxRy0id9gLe",
+          "doxcnR6fxVmDhRKDgeKv2yB4Vve",
+          "doxcnNWf4oFku1VZCWeZFwCqXFd",
+          "doxcnxcDhaiujk5q6qpP4lRAjwf",
+          "doxcnWENGsLWph2pAplmvI19jQt",
+          "doxcnym1enuYl0fsiMDsmCzTd5Q",
+          "doxcnTR8p3HwNybjrNB5WkQoTph",
+          "doxcnAVncUzrHTsdwcXRS3GwXHd",
+          "doxcn9maG7PUT4aHmCv8zi2KHNh",
+          "doxcnrMvNtxGmOKZaEBJT5tJleB",
+          "doxcnAGOapQM5VIwb2pOykB6qTb",
+          "doxcnvCEcZWxbDWoaeOAsAf0jGn",
+          "doxcnb8ZsyXGAvNNALPbKOuQt9r",
+          "doxcnfse2wfdPT6EwdIyHWM5fMd",
+          "doxcnrHowqdF7mvcid4uO2Y4Mme",
+          "doxcnMRq7JiHZN6mN1bCCDS3oFf",
+          "doxcnUPXyEPkWcJbBcVZeQESWnh",
+          "doxcnqulISucmD0sC3EBsdJVTGd",
+          "doxcnCcqmcIhmbzZYBwMgExtLyf",
+          "doxcnmIpfSxPnUwpVJLSN8EFI9d",
+          "doxcn9gg8sFArzxHRkPNPX9831d",
+          "doxcno5PfAmrHhgpRIXuFwUiyId"
+        ],
+        "property": {
+          "column_size": 3,
+          "column_width": [
+            190,
+            250,
+            320
+          ],
+          "merge_info": [
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            },
+            {
+              "col_span": 1,
+              "row_span": 1
+            }
+          ],
+          "row_size": 8
+        }
+      }
+    },
+    {
+      "block_id": "doxcnEk1Qzk49tdv1uH5aQJfKRh",
+      "block_type": 32,
+      "children": [
+        "doxcnNPJ85ETusEaIarKw3Oen2g"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnNPJ85ETusEaIarKw3Oen2g",
+      "block_type": 2,
+      "parent_id": "doxcnEk1Qzk49tdv1uH5aQJfKRh",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "观察指标",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcn40p4zwlJ3GDvjTeCBac8qd",
+      "block_type": 32,
+      "children": [
+        "doxcnqQVk7Ln10yGU3w4M2Hcfph"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnqQVk7Ln10yGU3w4M2Hcfph",
+      "block_type": 2,
+      "parent_id": "doxcn40p4zwlJ3GDvjTeCBac8qd",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "数据结果",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnjvqdiPz17w3QxRy0id9gLe",
+      "block_type": 32,
+      "children": [
+        "doxcnIMdt8LGUpdvWcQaCjTS6fg"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnIMdt8LGUpdvWcQaCjTS6fg",
+      "block_type": 2,
+      "parent_id": "doxcnjvqdiPz17w3QxRy0id9gLe",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "说明",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnR6fxVmDhRKDgeKv2yB4Vve",
+      "block_type": 32,
+      "children": [
+        "doxcnJxLF5qu63TRPKxLvVzQ7lb"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnJxLF5qu63TRPKxLvVzQ7lb",
+      "block_type": 2,
+      "parent_id": "doxcnR6fxVmDhRKDgeKv2yB4Vve",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "右手 SDK 读取频率",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnNWf4oFku1VZCWeZFwCqXFd",
+      "block_type": 32,
+      "children": [
+        "doxcncV1rMtuHPIbmsRzUA5Svxe"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcncV1rMtuHPIbmsRzUA5Svxe",
+      "block_type": 2,
+      "parent_id": "doxcnNWf4oFku1VZCWeZFwCqXFd",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "约 71.02 Hz",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnxcDhaiujk5q6qpP4lRAjwf",
+      "block_type": 32,
+      "children": [
+        "doxcn4ZeAL0xaGOqd1ea6bCdYVd"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcn4ZeAL0xaGOqd1ea6bCdYVd",
+      "block_type": 2,
+      "parent_id": "doxcnxcDhaiujk5q6qpP4lRAjwf",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "软件读取频率，不能视为相机采样率。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnWENGsLWph2pAplmvI19jQt",
+      "block_type": 32,
+      "children": [
+        "doxcncLKPNYFFVX9ZX2DOvEufee"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcncLKPNYFFVX9ZX2DOvEufee",
+      "block_type": 2,
+      "parent_id": "doxcnWENGsLWph2pAplmvI19jQt",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "MRTK 事件发布频率",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnym1enuYl0fsiMDsmCzTd5Q",
+      "block_type": 32,
+      "children": [
+        "doxcnmYYIYipHy3dtoqe6GmlGTS"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnmYYIYipHy3dtoqe6GmlGTS",
+      "block_type": 2,
+      "parent_id": "doxcnym1enuYl0fsiMDsmCzTd5Q",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "两个来源各约 71.02 Hz",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnTR8p3HwNybjrNB5WkQoTph",
+      "block_type": 32,
+      "children": [
+        "doxcn2XlcwJm50o2MbZs9AUFH2g"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcn2XlcwJm50o2MbZs9AUFH2g",
+      "block_type": 2,
+      "parent_id": "doxcnTR8p3HwNybjrNB5WkQoTph",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "同一份 SDK 状态由两个 SourceId 各发布一次。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnAVncUzrHTsdwcXRS3GwXHd",
+      "block_type": 32,
+      "children": [
+        "doxcnQAKnwPLiW5HpU0Y2xWum3b"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnQAKnwPLiW5HpU0Y2xWum3b",
+      "block_type": 2,
+      "parent_id": "doxcnAVncUzrHTsdwcXRS3GwXHd",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "FixedUpdate 消费读取",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcn9maG7PUT4aHmCv8zi2KHNh",
+      "block_type": 32,
+      "children": [
+        "doxcnYAHIywdWL7RGmviXyQMLCg"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnYAHIywdWL7RGmviXyQMLCg",
+      "block_type": 2,
+      "parent_id": "doxcn9maG7PUT4aHmCv8zi2KHNh",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "1,429 次；约 50.01 Hz",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnrMvNtxGmOKZaEBJT5tJleB",
+      "block_type": 32,
+      "children": [
+        "doxcna2sDrMu9VVuM5D6DIt1DRf"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcna2sDrMu9VVuM5D6DIt1DRf",
+      "block_type": 2,
+      "parent_id": "doxcnrMvNtxGmOKZaEBJT5tJleB",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "统计窗口为有效追踪的 28.56 秒。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnAGOapQM5VIwb2pOykB6qTb",
+      "block_type": 32,
+      "children": [
+        "doxcn4YvGVlUFy2pGCLMVqD3k4e"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcn4YvGVlUFy2pGCLMVqD3k4e",
+      "block_type": 2,
+      "parent_id": "doxcnAGOapQM5VIwb2pOykB6qTb",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "FixedUpdate 重复消费读取",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnvCEcZWxbDWoaeOAsAf0jGn",
+      "block_type": 32,
+      "children": [
+        "doxcnF0jnGcBhPOXyr2AYYuh5Ce"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnF0jnGcBhPOXyr2AYYuh5Ce",
+      "block_type": 2,
+      "parent_id": "doxcnvCEcZWxbDWoaeOAsAf0jGn",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "39 / 1,429 次（2.73%）",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnb8ZsyXGAvNNALPbKOuQt9r",
+      "block_type": 32,
+      "children": [
+        "doxcnqZYp1ndudcgv92kJbpI2Tf"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnqZYp1ndudcgv92kJbpI2Tf",
+      "block_type": 2,
+      "parent_id": "doxcnb8ZsyXGAvNNALPbKOuQt9r",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "重复记录处于同一 Unity 应用帧，且 MRTK 样本序号相同。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnfse2wfdPT6EwdIyHWM5fMd",
+      "block_type": 32,
+      "children": [
+        "doxcnXzqzbaaMJKpSjPdb6WWRlR"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnXzqzbaaMJKpSjPdb6WWRlR",
+      "block_type": 2,
+      "parent_id": "doxcnfse2wfdPT6EwdIyHWM5fMd",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "重复样本处理结果",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnrHowqdF7mvcid4uO2Y4Mme",
+      "block_type": 32,
+      "children": [
+        "doxcnfB37laYwCL0UfFz2D349Ge"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnfB37laYwCL0UfFz2D349Ge",
+      "block_type": 2,
+      "parent_id": "doxcnrHowqdF7mvcid4uO2Y4Mme",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "39 次全部跳过；这些记录上选择触发为 0 次",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnMRq7JiHZN6mN1bCCDS3oFf",
+      "block_type": 32,
+      "children": [
+        "doxcnDI8oKBD1WDvvwCb5gofLth"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnDI8oKBD1WDvvwCb5gofLth",
+      "block_type": 2,
+      "parent_id": "doxcnMRq7JiHZN6mN1bCCDS3oFf",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "防重复逻辑有效；这不是整体误触率。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnUPXyEPkWcJbBcVZeQESWnh",
+      "block_type": 32,
+      "children": [
+        "doxcnmqpXqFyTYjgD00DYO1ftAd"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnmqpXqFyTYjgD00DYO1ftAd",
+      "block_type": 2,
+      "parent_id": "doxcnUPXyEPkWcJbBcVZeQESWnh",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "补跑两次读取的间隔",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnqulISucmD0sC3EBsdJVTGd",
+      "block_type": 32,
+      "children": [
+        "doxcnvp7oXcXVYkVWqOGwtx66ge"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnvp7oXcXVYkVWqOGwtx66ge",
+      "block_type": 2,
+      "parent_id": "doxcnqulISucmD0sC3EBsdJVTGd",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "实际记录间隔中位数 0.422 ms；逻辑时间增加 20 ms",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnCcqmcIhmbzZYBwMgExtLyf",
+      "block_type": 32,
+      "children": [
+        "doxcnXTbNZmAhdqq1yG0s9mWSkc"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnXTbNZmAhdqq1yG0s9mWSkc",
+      "block_type": 2,
+      "parent_id": "doxcnCcqmcIhmbzZYBwMgExtLyf",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "实际时间间隔与 FixedUpdate 逻辑步长不同。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnmIpfSxPnUwpVJLSN8EFI9d",
+      "block_type": 32,
+      "children": [
+        "doxcniPG9pCOKzuEAcdmhREFm3X"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcniPG9pCOKzuEAcdmhREFm3X",
+      "block_type": 2,
+      "parent_id": "doxcnmIpfSxPnUwpVJLSN8EFI9d",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "候选软件链路时间差",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcn9gg8sFArzxHRkPNPX9831d",
+      "block_type": 32,
+      "children": [
+        "doxcnSrr5BFyVmSK0wTHt79gV4b"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcnSrr5BFyVmSK0wTHt79gV4b",
+      "block_type": 2,
+      "parent_id": "doxcn9gg8sFArzxHRkPNPX9831d",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "中位数 27.36 ms；P99 为 41.20 ms",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcno5PfAmrHhgpRIXuFwUiyId",
+      "block_type": 32,
+      "children": [
+        "doxcntuObYtXfeQbgBePY0Q5JGH"
+      ],
+      "parent_id": "doxcnqc98jbW5iaholANrkFzUed",
+      "table_cell": {}
+    },
+    {
+      "block_id": "doxcntuObYtXfeQbgBePY0Q5JGH",
+      "block_type": 2,
+      "parent_id": "doxcno5PfAmrHhgpRIXuFwUiyId",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "SDK 返回 → FixedUpdate 消费读取；不包含传感器到 SDK 的延迟。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnkPx9Vf5YKwFNITQtG7e68c",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "结论：",
+              "text_element_style": {
+                "bold": true,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "实测确认补跑会再次读到旧 MRTK 样本，当前动态阈值的序号去重有效；Provider 重复注册是另外一个独立问题，尚未修改。此次未分别实测 Magic Tap 2.0 或全部15种机制。2.73%与 Pilot 的1.44%、17.4%分母不同，不能直接比较改善幅度。SDK时间戳不是已验证的原始相机帧身份，因此不能据此判断硬件重复率或保证硬件第一时间输出；上述时间差也不包含传感器到 SDK 的延迟。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnlG1WRnXkTEwXm9QyRNyX3d",
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "4. 影响范围与处理现状",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      },
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I"
+    },
+    {
+      "block_id": "doxcna6SzPtwu1O42NFOOsX2VYe",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "优先处理 8–11 Speed 系列及原版 Magic Tap。3、7、14 的 Direction 机制需复核方向窗口与取消时机；尚无依据把15种机制全部判为同等受影响。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnYLVNH6UzUjK71KwBKOojrb",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "当前 Magic Tap 2.0 与 IxDL Dynamic 共用 MRTK 应用事件序号去重、稳定来源和实际接收时间差；本次实测验证了动态阈值分支，其他正式技术尚未全部统一。下一步先单独消除 Oculus Provider 重复注册并复测，再比较 FixedUpdate 与 MRTK 发布新样本后的消费方式，保留各技术的触发、取消和计时条件。本次未改更新方式或 Provider 配置。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcncZYaOskjxAbHE1SecYPCuA",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "依据：",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "旧实现比较报告",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "link": {
+                  "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu"
+                },
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "共同运动规则修订",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "link": {
+                  "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+                },
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；Pilot：20261027-11-14-50、11-41-48、11-47-05。新增实机会话：20261028-19-41-51；原始日志快照、逐条关联和校验记录保存在项目 output/hand_sampling_baseline_20261028/20261028-19-41-51。更新：2026-10-28。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    },
+    {
+      "block_id": "doxcnG66xsQcXGEzUbwafaJukzh",
+      "block_type": 2,
+      "parent_id": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "平台说明：",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "Meta 手追踪与 Link",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "link": {
+                  "url": "https://developers.meta.com/vr/documentation/unity/unity-handtracking-overview/"
+                },
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "预测姿态与原始时间戳接口的区别",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "link": {
+                  "url": "https://developers.meta.com/vr/documentation/unity/unity-handtracking-unextrapolated-poses/"
+                },
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "Unity 2020.3 回调执行顺序",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "link": {
+                  "url": "https://docs.unity3d.com/2020.3/Documentation/Manual/ExecutionOrder.html"
+                },
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "。当前 SDK wrapper 为1.76.0；较新的原始姿态接口另有版本与后端要求，当前未接入。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    }
+  ]
+}

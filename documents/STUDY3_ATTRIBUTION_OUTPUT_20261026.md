@@ -18,7 +18,7 @@ SDK 元数据随 `SkeletonPoseData` 传到实际应用的骨骼姿态。仅当�
 
 ## 1. 新数据应如何读取
 
-优先读取新增的 `*-trial-results-v2.csv`。它保留原 `time.csv` 前 26 个汇总字段，随后以圆心、`targetPositionsJson` 和四个真实触发字段保存数据，并追加会话、试次、参数版本和任务标记。其 46 个列名唯一，列数与数据一致。
+优先读取新增的 `*-trial-results-v2.csv`。它保留原 `time.csv` 的汇总字段，并在 `triggerTime` 前增加 `pending state time`，随后以圆心、`targetPositionsJson` 和四个真实触发字段保存数据，并追加会话、试次、参数版本和任务标记。当前共 47 列，列名唯一，列数与数据一致。
 
 旧 `time.csv` 仍按原样输出，包括已发现的 75 列表头与 81 列数据问题。这是为保留现有格式而作的兼容选择；不要继续把旧表头位置映射出的 `triggerSpeed` 当成真实触发速度。真实末尾四个触发值从旧格式化行的尾部复制，不能从错位的表头位置取得。
 
@@ -34,9 +34,11 @@ PowerShell 示例：
 
 ### trial-results-v2.csv：列结构正确的完成试次结果
 
-前 26 列继续使用旧字段名。新几何列为 `centerX/centerY/centerZ/targetPositionsJson`；其后是 `triggerSpeed/previousSpeed/speedThreshold/triggerAcceleration`。其他模式未记录这些触发值时仍为 NA。
+原 26 个汇总字段继续使用旧字段名，在 `triggerTime` 前插入 `pending state time`（第 18 列）。新几何列为 `centerX/centerY/centerZ/targetPositionsJson`；其后是 `triggerSpeed/previousSpeed/speedThreshold/triggerAcceleration`。其他模式未记录这些触发值时仍为 NA。
 
-追加列为 `sessionId/trialSequence/settingsRevision/expectedAction/actualAction/taskResult/participantId/protocolVersion/blockLabel/taskCondition/declaredIntent/schemaVersion`。这里 `schemaVersion=2`；文件只对应旧流程已经完成的试次，不能拿它作为所有进入尝试的分母。
+追加列为 `sessionId/trialSequence/settingsRevision/expectedAction/actualAction/taskResult/participantId/protocolVersion/blockLabel/taskCondition/declaredIntent/schemaVersion`。2026-11-11 增加 Pending 耗时后 `schemaVersion=3`，文件名仍保留 `trial-results-v2.csv`，读取器同时支持旧 schema 2 和新 schema 3。文件只对应旧流程已经完成的试次，不能拿它作为所有进入尝试的分母。
+
+`pending state time` 单位为秒，记录完成该试次的最后一次连续接触中，从首次有效指尖接触目标到首次进入业务准备阶段的时间差。Pinch 双指接触模式取食指/拇指的最早接触，期间另一指加入或退出不会重置；两指均退出后重入重新计时。Speed 系列在低速准备条件首次满足时记录，Pinch 准备模式在有效捏合进入 armed/tracking 时记录，React 阶段在业务设置 isReact 时记录。已有准备圆环在接触时立即启动的 Dwell/010/Dynamic Stop/IxDL 模式记为 0；关闭圆环显示不影响计时。同次接触后续准备检查不会覆盖首次耗时。没有独立准备阶段、未达到 Pending、未观察到接触起点或失追后重置的记录为 NA，不能当作 0 秒。使用 Unity 游戏时间，与 `triggerTime` 的时间域一致；记录的是程序观察到接触的时刻，不是硬件采集时刻。历史文件不回填，读取器对历史缺失字段返回 NA。
 
 ### full-settings.csv：完整有效配置
 

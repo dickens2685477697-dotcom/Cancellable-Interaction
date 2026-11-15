@@ -1,0 +1,30 @@
+{
+  "session": "20261028-19-23-25",
+  "sourceLoggingStatus": "closed",
+  "files": [
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-23-25\\20261028-19-23-25-hand-updates.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-hand-updates.csv",
+      "bytes": 236280359,
+      "sha256": "59c7b302bcccb2017cefb04519759fdf89683d7620b78559011acece00b74a1e"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-23-25\\20261028-19-23-25-hand-reads.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-hand-reads.csv",
+      "bytes": 6259392,
+      "sha256": "4d2ea3622f22152aecd7819ffc538c0e19309c6b36b79d6443809c0651bed2ef"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-23-25\\20261028-19-23-25-session-settings.csv",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-session-settings.csv",
+      "bytes": 861,
+      "sha256": "aa9a0024e0d57e2180ce6788fc9b793df91e9f1272099ff22149f8ae19414f0f"
+    },
+    {
+      "source": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261028-19-23-25\\20261028-19-23-25-attribution-manifest.json",
+      "snapshot": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-attribution-manifest.json",
+      "bytes": 632,
+      "sha256": "62f7a1c7a4039b95504d83b2bea0ef3e451ccfb75aa7c5449aa0bba847ff36e9"
+    }
+  ]
+}

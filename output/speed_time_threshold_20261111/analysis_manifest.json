@@ -1,0 +1,23 @@
+{
+  "participants": 15,
+  "trials": 300,
+  "rows": 76324,
+  "source": "D:\\2026.7.18PilotStudy\\Collect_kinematic_data\\MagicTap_15被试完整分析_20261108\\run\\data.csv",
+  "mapping": "D:\\2026.7.18PilotStudy\\Collect_kinematic_data\\MagicTap_15被试完整分析_20261108\\试次与原始数据映射.csv",
+  "source_sha256": "08b1ec736a154714935bdf1f25723abcdf579bfa76b0e5a637061eefae3181e0",
+  "mapping_sha256": "e0982cf43c87306011762ff23acfb897300fb5276ebfd4e6312cf65636f94c09",
+  "sample_interval_median_ms": 13.91760000949982,
+  "max_interval_ms": 43.7291999697,
+  "time_zero": "target enter event; application reception time",
+  "velocity": "3D norm; existing unfiltered pre-IQR reconstructed samples",
+  "ready": "all observed samples in current continuous below-threshold streak; elapsed duration at least D; causal current/past samples only",
+  "coverage": "per-trial; equivalent to participant-equal because 20 trials per participant",
+  "deadline_choice": "100/150/200 ms engineering targets, not psychophysical stability thresholds",
+  "duration_choice": "0/30/50/100 ms sensitivity; 50 ms engineering debounce, not established perceptual constant",
+  "validation": "all 15600 candidate/trial combinations cross-checked with independent streak implementation",
+  "limits": [
+    "successful entry-hold-withdraw trials only; no subjective ready judgments",
+    "no display/capture end-to-end latency measured",
+    "P10-P15 session identities pending research records"
+  ]
+}

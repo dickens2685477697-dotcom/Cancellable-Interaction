@@ -6,9 +6,13 @@ using System.Globalization;
 public static class Study3LegacyTrialCsv
 {
     public const string PrefixHeader = "Case,ID,inTargetTimes,enable_preview,enableMineBall,enabledOb,errorTimes,errorInTimes,usedTime,triggerCondition,start,direction(0 for ),modeSelected,ballIndex,reactTime,react_frequency,obstacle_react_frequency,triggerTime,cancelTime,isMineBall(need cancel),successfully_Canceled,cancelReason,no trigger reason,cancelTimes,directionAngleFrame,directionSpeedMin";
-    public const string Header = PrefixHeader + ",centerX,centerY,centerZ,targetPositionsJson,triggerSpeed,previousSpeed,speedThreshold,triggerAcceleration,sessionId,trialSequence,settingsRevision,expectedAction,actualAction,taskResult,participantId,protocolVersion,blockLabel,taskCondition,declaredIntent,schemaVersion";
+    public const int ResultSchemaVersion = 3;
+    public static readonly string Header = PrefixHeader.Replace(",triggerTime,", ",pending state time,triggerTime,") + ",centerX,centerY,centerZ,targetPositionsJson,triggerSpeed,previousSpeed,speedThreshold,triggerAcceleration,sessionId,trialSequence,settingsRevision,expectedAction,actualAction,taskResult,participantId,protocolVersion,blockLabel,taskCondition,declaredIntent,schemaVersion";
 
     public static string Normalize(string legacyRow, int targetCount, params object[] metadata)
+        => NormalizeWithPendingState(legacyRow, targetCount, null, metadata);
+
+    public static string NormalizeWithPendingState(string legacyRow, int targetCount, double? pendingStateSeconds, params object[] metadata)
     {
         List<string> raw = Study3LogEncoding.ParseCsv(legacyRow);
         if (targetCount < 0 || raw.Count != 26 + 3 * (targetCount + 1) + 4)
@@ -16,6 +20,8 @@ public static class Study3LegacyTrialCsv
         if (metadata.Length != 12) throw new ArgumentException("Normalized result metadata must have twelve fields.");
         var fields = new List<object>();
         for (int i = 0; i < 29; i++) fields.Add(raw[i]);
+        fields.Insert(17, pendingStateSeconds.HasValue && pendingStateSeconds.Value >= 0
+            && !double.IsInfinity(pendingStateSeconds.Value) ? (object)pendingStateSeconds.Value : null);
         var targets = new object[targetCount];
         for (int i = 0; i < targetCount; i++)
         {

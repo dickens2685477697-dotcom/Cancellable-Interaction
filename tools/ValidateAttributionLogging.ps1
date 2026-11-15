@@ -4,6 +4,7 @@ $sourceRoot = Join-Path $projectRoot 'Assets\Scripts\Study3'
 Add-Type -Path @(
     (Join-Path $sourceRoot 'Study3LogEncoding.cs'),
     (Join-Path $sourceRoot 'Study3LegacyTrialCsv.cs'),
+    (Join-Path $sourceRoot 'Study3PendingStateTimer.cs'),
     (Join-Path $sourceRoot 'Study3AttributionLedger.cs'),
     (Join-Path $PSScriptRoot 'tests\AttributionLoggingChecks.cs')
 )

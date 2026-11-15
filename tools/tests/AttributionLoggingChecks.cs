@@ -34,6 +34,22 @@ public static class AttributionLoggingChecks
     public static int Run()
     {
         count = 0;
+        var timer = new Study3PendingStateTimer();
+        timer.EnterPending(1);
+        Require(!timer.ElapsedSeconds.HasValue, "Pending without contact invented a duration");
+        timer.Contact(1, true, 10); timer.Contact(1, true, 10.1); timer.Contact(2, true, 10.2);
+        timer.EnterPending(10.25); timer.EnterPending(10.5);
+        Require(timer.ElapsedSeconds == .25, "Repeated contacts or pending checks overwrote first latency");
+        timer.Contact(1, false, 10.6); timer.Contact(2, false, 10.7);
+        Require(timer.ElapsedSeconds == .25, "Exit-to-confirm lost its pending latency");
+        timer.Contact(2, true, 11);
+        Require(!timer.ElapsedSeconds.HasValue, "Reentry retained the previous pending latency");
+        timer.EnterPending(11);
+        Require(timer.ElapsedSeconds == 0, "Immediate pending must record zero seconds");
+        timer.Reset();
+        Require(!timer.ElapsedSeconds.HasValue, "Tracking loss/disable reset retained a duration");
+        timer.Contact(1, true, 12); timer.EnterPending(11); timer.EnterPending(double.NaN);
+        Require(!timer.ElapsedSeconds.HasValue, "Invalid pending timestamp was accepted");
         var sink = new Sink(); var first = S(1); sink.Ledger.Observe(first, "contact");
         first.Case = 99; first.Id = 99; first.ExpectedAction = "cancel";
         var done = S(2); sink.Ledger.Finish(done, "trigger", "actual_branch");
@@ -107,13 +123,16 @@ public static class AttributionLoggingChecks
         legacy.AddRange(new object[] { .02, .04, .03, .1 });
         string oldRow = Study3LogEncoding.Row(legacy.ToArray());
         Require(Study3LogEncoding.ParseCsv(oldRow).Count == 81, "Historical row fixture differs");
-        var metadata = new object[] { "session", 1, 2, "select", "trigger", "success", "p2", "protocol", "block", "normal", "unspecified", 2 };
-        string normalized = Study3LegacyTrialCsv.Normalize(oldRow, 16, metadata);
+        var metadata = new object[] { "session", 1, 2, "select", "trigger", "success", "p2", "protocol", "block", "normal", "unspecified", Study3LegacyTrialCsv.ResultSchemaVersion };
+        string normalized = Study3LegacyTrialCsv.NormalizeWithPendingState(oldRow, 16, .125, metadata);
         var columns = Study3LegacyTrialCsv.Header.Split(','); var normalizedValues = Study3LogEncoding.ParseCsv(normalized);
         Require(columns.Distinct().Count() == columns.Length && normalizedValues.Count == columns.Length, "Normalized schema width/uniqueness wrong");
+        Require(columns.Length == 47 && columns[17] == "pending state time" && columns[18] == "triggerTime", "Pending column must immediately precede triggerTime");
+        Require(normalizedValues[17] == "0.125", "Pending latency was not written in seconds");
         Require(normalizedValues[Array.IndexOf(columns, "triggerSpeed")] == "0.02", "Coordinate was misread as triggerSpeed");
         Require(normalizedValues[Array.IndexOf(columns, "triggerAcceleration")] == "0.1", "Trigger tail was not preserved");
-        Require(normalizedValues[21] == "cancel, \"quote\"" && normalizedValues[29].StartsWith("[[0,"), "Reason or geometry damaged");
+        Require(normalizedValues[Array.IndexOf(columns, "cancelReason")] == "cancel, \"quote\"" && normalizedValues[Array.IndexOf(columns, "targetPositionsJson")].StartsWith("[[0,"), "Reason or geometry damaged");
+        Require(Study3LogEncoding.ParseCsv(Study3LegacyTrialCsv.Normalize(oldRow, 16, metadata))[17] == "NA", "Unobserved pending became zero");
         bool rejected = false; try { Study3LegacyTrialCsv.Normalize(oldRow, 15, metadata); } catch (FormatException) { rejected = true; }
         Require(rejected, "Mismatched row was silently accepted");
         rejected = false; try { Study3LogEncoding.ParseCsv("\"unfinished"); } catch (FormatException) { rejected = true; }

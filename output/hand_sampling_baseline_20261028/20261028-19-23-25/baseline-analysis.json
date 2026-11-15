@@ -1,0 +1,830 @@
+{
+  "scope": "Only the instrumented logging window; event rates are not hardware capture rates.",
+  "rate_definition": "(timed rows - 1) / (last timestamp - first timestamp), per hand/step or per consumer; inactive gaps remain in the span.",
+  "hardware_first_result_or_lossless_capture_proven": false,
+  "sdk_to_mrtk_link_semantics": "Unique active skeleton pose match is a candidate attribution, not a hardware frame identity.",
+  "read_time_semantics": "hand-reads realtime is sampled during logging after the original query; not sensor capture time or exact query entry time.",
+  "sources": [
+    {
+      "path": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-hand-updates.csv",
+      "sha256": "59c7b302bcccb2017cefb04519759fdf89683d7620b78559011acece00b74a1e"
+    },
+    {
+      "path": "D:\\HLStudy4_22\\output\\hand_sampling_baseline_20261028\\20261028-19-23-25\\20261028-19-23-25-hand-reads.csv",
+      "sha256": "4d2ea3622f22152aecd7819ffc538c0e19309c6b36b79d6443809c0651bed2ef"
+    }
+  ],
+  "session_metadata": [
+    {
+      "applicationBuildGuid": "",
+      "context": {
+        "case": 1,
+        "experimentStarted": false,
+        "id": 2,
+        "mode": "ixdlDynamic",
+        "participantId": "",
+        "protocolVersion": "",
+        "session": "20261028-19-23-25"
+      },
+      "deviceModel": "OMEN by HP 45L Gaming Desktop GT22-2xxx (HP)",
+      "providerMatchMeaning": "unique active Oculus skeleton with matching joint positions; not a hardware frame ID",
+      "runtimeXrApi": "OpenXR",
+      "sdkTimestampClock": "OVRPlugin SDK clock; not Unity realtime",
+      "sdkTimestampMeaning": "GetHandState timestamps; predicted pose, camera capture time not verified",
+      "sdkWrapperVersion": "1.76.0",
+      "unityVersion": "2020.3.37f1c1",
+      "version": "hand-sampling-v1"
+    }
+  ],
+  "lifecycle": {
+    "session_start": 1,
+    "sdk_read": 406268,
+    "source_detected": 7,
+    "provider_update": 2095,
+    "source_lost": 6,
+    "session_end": 1
+  },
+  "observed_counts": {
+    "observedSdkReadCount": 406268,
+    "providerUpdateCount": 2095,
+    "poseReadCount": 39414
+  },
+  "session_end_reported_counts": {
+    "observedSdkReadCount": 406268,
+    "providerUpdateCount": 2095,
+    "poseReadCount": 39414
+  },
+  "instrumented_window_counts_reconciled": true,
+  "sdk_to_provider_match_counts": {
+    "unique_oculus_skeleton_pose_match": 2094,
+    "provider_not_oculus_hand": 1
+  },
+  "provider_events_not_linked_to_any_logged_read": 1727,
+  "unconsumed_event_note": "May include the unselected hand, inactive detectors, or deliberately overwritten latest samples; not a hardware loss rate.",
+  "estimated_application_fps": 778.2993313963785,
+  "instrumented_fixed_ticks": 12760,
+  "same_frame_consecutive_fixed_intervals": {
+    "count": 50,
+    "min_ms": 0.08969999998953426,
+    "p50_ms": 0.13345000024855835,
+    "p95_ms": 0.2586349999546655,
+    "p99_ms": 0.4349639999782079,
+    "max_ms": 0.57040000001507
+  },
+  "fixed_tick_note": "Deduplicated frame/fixedTime from instrumented callbacks only; missing callbacks outside logging cannot be recovered.",
+  "sdk_reads": [
+    {
+      "handInstanceId": "-6678",
+      "handedness": "Left",
+      "step": "Render",
+      "counts": {
+        "rows": 203134,
+        "read_failed": 202597,
+        "not_tracked": 202597,
+        "read_succeeded": 537,
+        "tracked": 537,
+        "tracked_valid_sdk_timestamp_rows": 537,
+        "comparable_sdk_timestamp_pairs": 536,
+        "advanced_sdk_timestamp_pairs": 536
+      },
+      "observed_span_seconds": 260.9439789000003,
+      "observed_record_rate_hz": 778.4544439626454,
+      "consecutive_record_intervals": {
+        "count": 203133,
+        "min_ms": 0.982199999725708,
+        "p50_ms": 1.132699999743636,
+        "p95_ms": 1.4636999999311229,
+        "p99_ms": 4.042308000189219,
+        "max_ms": 5172.591799999736
+      },
+      "distinct_sdk_timestamp_values": 537,
+      "same_sdk_timestamp_pair_fraction": 0.0,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "handInstanceId": "-6996",
+      "handedness": "Right",
+      "step": "Render",
+      "counts": {
+        "rows": 203134,
+        "read_failed": 202597,
+        "not_tracked": 202623,
+        "read_succeeded": 537,
+        "tracked": 511,
+        "tracked_valid_sdk_timestamp_rows": 511,
+        "comparable_sdk_timestamp_pairs": 510,
+        "advanced_sdk_timestamp_pairs": 510
+      },
+      "observed_span_seconds": 260.94326969999975,
+      "observed_record_rate_hz": 778.4565596711391,
+      "consecutive_record_intervals": {
+        "count": 203133,
+        "min_ms": 0.9834999996201077,
+        "p50_ms": 1.1365000000296277,
+        "p95_ms": 1.4648000001216133,
+        "p99_ms": 3.9575560000230205,
+        "max_ms": 5172.585400000116
+      },
+      "distinct_sdk_timestamp_values": 511,
+      "same_sdk_timestamp_pair_fraction": 0.0,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    }
+  ],
+  "mrtk_provider_updates": [
+    {
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 536,
+        "unique_oculus_skeleton_pose_match": 536,
+        "linked_to_observed_sdk_read_candidate": 536
+      },
+      "observed_span_seconds": 7.534473299999718,
+      "observed_record_rate_hz": 71.00695412909884,
+      "consecutive_record_intervals": {
+        "count": 535,
+        "min_ms": 8.58299999981682,
+        "p50_ms": 13.92470000018875,
+        "p95_ms": 14.73878999995577,
+        "p99_ms": 22.446067999862688,
+        "max_ms": 28.432900000098016
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 536,
+        "min_ms": 6.246199999623059,
+        "p50_ms": 13.607250000177373,
+        "p95_ms": 14.378950000036639,
+        "p99_ms": 23.86097999979028,
+        "max_ms": 30.09070000007341
+      }
+    },
+    {
+      "sourceId": "1471353358",
+      "handedness": "Right",
+      "counts": {
+        "rows": 511,
+        "unique_oculus_skeleton_pose_match": 511,
+        "linked_to_observed_sdk_read_candidate": 511
+      },
+      "observed_span_seconds": 7.185724799999662,
+      "observed_record_rate_hz": 70.97405121888664,
+      "consecutive_record_intervals": {
+        "count": 510,
+        "min_ms": 9.226399999988644,
+        "p50_ms": 13.947849999794926,
+        "p95_ms": 15.039839999985807,
+        "p99_ms": 23.677965000096965,
+        "max_ms": 28.41839999973672
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 511,
+        "min_ms": 6.265500000154134,
+        "p50_ms": 13.66870000038034,
+        "p95_ms": 14.822249999951964,
+        "p99_ms": 23.940189999848364,
+        "max_ms": 30.26110000018889
+      }
+    },
+    {
+      "sourceId": "2113437224",
+      "handedness": "None",
+      "counts": {
+        "rows": 1,
+        "provider_not_oculus_hand": 1
+      },
+      "observed_span_seconds": 0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 511,
+        "unique_oculus_skeleton_pose_match": 511,
+        "linked_to_observed_sdk_read_candidate": 511
+      },
+      "observed_span_seconds": 7.190119599999889,
+      "observed_record_rate_hz": 70.93066991542226,
+      "consecutive_record_intervals": {
+        "count": 510,
+        "min_ms": 9.804199999962293,
+        "p50_ms": 13.921799999934592,
+        "p95_ms": 14.511015000198313,
+        "p99_ms": 26.380700999975172,
+        "max_ms": 28.443400000014663
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 511,
+        "min_ms": 6.064600000172504,
+        "p50_ms": 13.406099999883736,
+        "p95_ms": 13.979750000089552,
+        "p99_ms": 23.71232000000418,
+        "max_ms": 27.910700000120414
+      }
+    },
+    {
+      "sourceId": "453383386",
+      "handedness": "Left",
+      "counts": {
+        "rows": 536,
+        "unique_oculus_skeleton_pose_match": 536,
+        "linked_to_observed_sdk_read_candidate": 536
+      },
+      "observed_span_seconds": 7.533471900000222,
+      "observed_record_rate_hz": 71.0163928533382,
+      "consecutive_record_intervals": {
+        "count": 535,
+        "min_ms": 8.490599999731785,
+        "p50_ms": 13.939400000253954,
+        "p95_ms": 15.807499999937132,
+        "p99_ms": 22.45969199987468,
+        "max_ms": 28.411700000106066
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 536,
+        "min_ms": 6.422599999950762,
+        "p50_ms": 13.792099999818674,
+        "p95_ms": 15.80059999992045,
+        "p99_ms": 24.037404999830866,
+        "max_ms": 31.236899999839807
+      }
+    }
+  ],
+  "consumer_reads": [
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "0",
+      "handedness": "Any",
+      "counts": {
+        "rows": 12382,
+        "pose_unavailable": 24764,
+        "reads_without_observed_provider_link": 12382
+      },
+      "observed_span_seconds": 260.98053779999964,
+      "observed_record_rate_hz": 47.44031913018771,
+      "consecutive_record_intervals": {
+        "count": 12381,
+        "min_ms": 0.08969999998953426,
+        "p50_ms": 20.007199999781733,
+        "p95_ms": 20.961200000328972,
+        "p99_ms": 23.069520000171906,
+        "max_ms": 7622.026300000016
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.2914181000001008,
+      "observed_record_rate_hz": 51.47243771061169,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.564900000346825,
+        "p50_ms": 13.900299999932031,
+        "p95_ms": 28.385569999909418,
+        "p99_ms": 29.332473999957074,
+        "max_ms": 29.569199999968987
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.239700000212906,
+        "p50_ms": 13.594049999937852,
+        "p95_ms": 14.280774999861023,
+        "p99_ms": 15.282954999929641,
+        "max_ms": 15.533499999946798
+      }
+    },
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.191088100000343,
+      "observed_record_rate_hz": 50.201025905938046,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.19800000018221908,
+        "p50_ms": 14.103900000009162,
+        "p95_ms": 28.1449000003704,
+        "p99_ms": 41.3007799999832,
+        "max_ms": 41.84140000006664
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.559300000091753,
+        "p50_ms": 13.81055000001652,
+        "p95_ms": 14.445874999842088,
+        "p99_ms": 27.10862099982023,
+        "max_ms": 28.18780000006882
+      }
+    },
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "ThumbTip",
+      "sourceId": "0",
+      "handedness": "Any",
+      "counts": {
+        "rows": 12382,
+        "pose_unavailable": 24764,
+        "reads_without_observed_provider_link": 12382
+      },
+      "observed_span_seconds": 260.980411,
+      "observed_record_rate_hz": 47.44034217955155,
+      "consecutive_record_intervals": {
+        "count": 12381,
+        "min_ms": 0.09000000000014552,
+        "p50_ms": 20.00789999965491,
+        "p95_ms": 20.963599999959115,
+        "p99_ms": 23.080079999908776,
+        "max_ms": 7622.029299999667
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "ThumbTip",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.29143800000019837,
+      "observed_record_rate_hz": 51.46892306421877,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.5642000000189,
+        "p50_ms": 13.895900000079564,
+        "p95_ms": 28.3869599999889,
+        "p99_ms": 29.33907199971145,
+        "max_ms": 29.577099999642087
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.265300000057323,
+        "p50_ms": 13.619849999940925,
+        "p95_ms": 14.30694999987736,
+        "p99_ms": 15.313869999749839,
+        "max_ms": 15.56559999971796
+      }
+    },
+    {
+      "ownerInstanceId": "31450",
+      "ownerType": "BallSpawner",
+      "method": "FixedUpdate",
+      "joint": "ThumbTip",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.191076800000246,
+      "observed_record_rate_hz": 50.201104791425344,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.18690000024434994,
+        "p50_ms": 14.111599999978353,
+        "p95_ms": 28.148999999757507,
+        "p99_ms": 41.31143999993582,
+        "max_ms": 41.836300000341
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.582199999840668,
+        "p50_ms": 13.841249999813954,
+        "p95_ms": 14.48740500011354,
+        "p99_ms": 27.13588600006005,
+        "max_ms": 28.208400000039546
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexDistalJoint",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.2914381000000503,
+      "observed_record_rate_hz": 51.46890540391737,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.563199999680364,
+        "p50_ms": 13.894199999867851,
+        "p95_ms": 28.39117000016813,
+        "p99_ms": 29.337514000026204,
+        "max_ms": 29.57409999999072
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.28719999992245,
+        "p50_ms": 13.642300000128671,
+        "p95_ms": 14.335399999936271,
+        "p99_ms": 15.340520000017932,
+        "max_ms": 15.591800000038347
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexDistalJoint",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.190970000000107,
+      "observed_record_rate_hz": 50.20185037623501,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.18420000014884863,
+        "p50_ms": 14.114099999915197,
+        "p95_ms": 28.154499999800464,
+        "p99_ms": 41.3164599999618,
+        "max_ms": 41.832399999748304
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.60609999992812,
+        "p50_ms": 13.866649999954461,
+        "p95_ms": 14.553359999922577,
+        "p99_ms": 27.1702409999034,
+        "max_ms": 28.229999999894062
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexKnuckle",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.29143759999988106,
+      "observed_record_rate_hz": 51.468993705706204,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.565500000368047,
+        "p50_ms": 13.896099999783473,
+        "p95_ms": 28.380959999913102,
+        "p99_ms": 29.33475199994973,
+        "max_ms": 29.573199999958888
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.320500000190805,
+        "p50_ms": 13.668299999835654,
+        "p95_ms": 14.354274999845984,
+        "p99_ms": 15.358854999908543,
+        "max_ms": 15.609999999924185
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexKnuckle",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.190964000000349,
+      "observed_record_rate_hz": 50.20189226367737,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.18350000027567148,
+        "p50_ms": 14.111899999988964,
+        "p95_ms": 28.152300000328978,
+        "p99_ms": 41.31800000004659,
+        "max_ms": 41.83199999988574
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.624300000268704,
+        "p50_ms": 13.887099999919883,
+        "p95_ms": 14.571615000249949,
+        "p99_ms": 27.190233999886,
+        "max_ms": 28.258999999707157
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "0",
+      "handedness": "Any",
+      "counts": {
+        "rows": 12382,
+        "pose_unavailable": 24764,
+        "reads_without_observed_provider_link": 12382
+      },
+      "observed_span_seconds": 260.9796587999999,
+      "observed_record_rate_hz": 47.4404789129106,
+      "consecutive_record_intervals": {
+        "count": 12381,
+        "min_ms": 0.08989999969344353,
+        "p50_ms": 20.0062999997499,
+        "p95_ms": 20.974200000182464,
+        "p99_ms": 23.11460000018997,
+        "max_ms": 7622.028699999646
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.29143900000008216,
+      "observed_record_rate_hz": 51.46874646150917,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.562800000272546,
+        "p50_ms": 13.893699999698583,
+        "p95_ms": 28.391249999958745,
+        "p99_ms": 29.335129999899436,
+        "max_ms": 29.57109999988461
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.27690000016446,
+        "p50_ms": 13.632499999857828,
+        "p95_ms": 14.325749999898107,
+        "p99_ms": 15.3290699999161,
+        "max_ms": 15.579899999920599
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "IndexTip",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.191073700000288,
+      "observed_record_rate_hz": 50.20112643261959,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.1843999998527579,
+        "p50_ms": 14.110600000094564,
+        "p95_ms": 28.155099999821687,
+        "p99_ms": 41.31622000022616,
+        "max_ms": 41.83310000007623
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.595900000022084,
+        "p50_ms": 13.854649999984758,
+        "p95_ms": 14.544200000182173,
+        "p99_ms": 27.158221000117916,
+        "max_ms": 28.22119999973438
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "Wrist",
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "counts": {
+        "rows": 16,
+        "pose_valid": 16,
+        "matches_source_event_pose": 16,
+        "reads_linked_to_observed_provider": 16
+      },
+      "observed_span_seconds": 0.29143759999988106,
+      "observed_record_rate_hz": 51.468993705706204,
+      "consecutive_record_intervals": {
+        "count": 15,
+        "min_ms": 13.551000000006752,
+        "p50_ms": 13.895300000058342,
+        "p95_ms": 28.391030000011597,
+        "p99_ms": 29.336365999834015,
+        "max_ms": 29.57269999978962
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 16,
+        "min_ms": 13.296699999955308,
+        "p50_ms": 13.658249999934924,
+        "p95_ms": 14.34494999978142,
+        "p99_ms": 15.34922999974242,
+        "max_ms": 15.60029999973267
+      }
+    },
+    {
+      "ownerInstanceId": "31488",
+      "ownerType": "ReactTap",
+      "method": "FixedUpdate",
+      "joint": "Wrist",
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "counts": {
+        "rows": 362,
+        "pose_valid": 362,
+        "matches_source_event_pose": 362,
+        "reads_linked_to_observed_provider": 362,
+        "same_provider_flag_on_linked_reads": 10
+      },
+      "observed_span_seconds": 7.1909654999999475,
+      "observed_record_rate_hz": 50.2018817918126,
+      "consecutive_record_intervals": {
+        "count": 361,
+        "min_ms": 0.18330000011701486,
+        "p50_ms": 14.111899999988964,
+        "p95_ms": 28.153500000371423,
+        "p99_ms": 41.31680000009509,
+        "max_ms": 41.832500000055006
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.027624309392265192,
+      "linked_application_stage_age": {
+        "count": 362,
+        "min_ms": 9.615800000119634,
+        "p50_ms": 13.876750000008542,
+        "p95_ms": 14.562864999948033,
+        "p99_ms": 27.180333999990577,
+        "max_ms": 28.24659999987489
+      }
+    }
+  ]
+}

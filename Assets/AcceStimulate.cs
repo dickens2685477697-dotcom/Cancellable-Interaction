@@ -70,6 +70,19 @@ using UnityEngine.Rendering;
 /// <param name="InMate">Material when the finger is in the button</param>
 public class AcceStimulate : MonoBehaviour
 {
+    // Study1 uses application-received MRTK joint updates; other scenes keep legacy timing.
+    public bool useMrtkJointUpdates;
+    public bool UsesMrtkJointUpdates { get; private set; }
+    public Study3JointSample CurrentJointSample { get; private set; }
+    public uint MotionSourceId { get; private set; }
+    public long MotionTrackingEpoch { get; private set; }
+    public double MotionSampleTimestamp { get; private set; }
+    public bool MotionVelocityValid { get; private set; }
+    public bool MotionAccelerationValid { get; private set; }
+    public event System.Action MotionTrackingInterrupted;
+    private bool initialized, subscribed, hasEventPosition, hasEventVelocity;
+    private double previousEventTime;
+
     public long MotionSampleSequence { get; private set; }
     public double MotionSampleFixedTime { get; private set; }
     public float MotionSampleDeltaTime { get; private set; }
@@ -95,6 +108,11 @@ public class AcceStimulate : MonoBehaviour
     // Set Condition C's bound to Acceleration instead of Velocity.
     public bool useAcce = false;
     public float AccelerationBoundForConditionC;
+
+    private void Awake()
+    {
+        UsesMrtkJointUpdates = useMrtkJointUpdates || gameObject.scene.path == "Assets/Scenes/Study1.unity";
+    }
 
     void Start()
     {
@@ -124,7 +142,8 @@ public class AcceStimulate : MonoBehaviour
         HesEvent ??= new UnityEvent();
         OutEvent ??= new UnityEvent();
         AfterOutEvent ??= new UnityEvent();
-
+        initialized = true;
+        SubscribeJointUpdates();
     }
 
     void Update()
@@ -140,6 +159,12 @@ public class AcceStimulate : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (UsesMrtkJointUpdates)
+        {
+            if (hasEventPosition && Time.realtimeSinceStartupAsDouble - previousEventTime > Study3MotionTracker.MaximumAgeSeconds)
+                ResetEventMotion(true);
+            return;
+        }
         MotionSampleSequence++;
         MotionSampleFixedTime = Time.fixedTimeAsDouble;
         MotionSampleDeltaTime = Time.fixedDeltaTime;
@@ -176,13 +201,28 @@ public class AcceStimulate : MonoBehaviour
 
             #endregion
 
-              #region 010 Behavior
+              ProcessContact(Time.deltaTime);
+        }
+    }
+
+    private void ProcessContact(float sampleDeltaTime)
+    {
+            #region 010 Behavior
             // Try get the position of Distal and Middle Joint
-            IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
-            HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
+            if (UsesMrtkJointUpdates)
+            {
+                IndexDistalPoseValid = CurrentJointSample.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, out IndexDistalPose);
+                CurrentJointSample.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, out IndexMiddlePose);
+            }
+            else
+            {
+                IndexDistalPoseValid = HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexDistalJoint, Handedness.Any, out IndexDistalPose);
+                HandJointUtils.TryGetJointPose(TrackedHandJoint.IndexMiddleJoint, Handedness.Any, out IndexMiddlePose);
+            }
             // Judge if the fingertip is inside
             if (Bounds.Contains(IndexTipPose2.Position))
             {
+                bool wasEntered = Entered;
                 //UnityEngine.Debug.LogFormat("Inside {0}", name);
                 // print("校验");
                 // print(Bounds.center.x);
@@ -202,10 +242,13 @@ public class AcceStimulate : MonoBehaviour
                 // Change Outlook ,���ﲻ��Ҫ�ı�outlook��ֻ��Ҫ�����¼�����
                 //if (!CloseSti && !HighLighted)
                 //    meshRenderer.material = InMate;
-                UpdateT += Time.deltaTime;
+                UpdateT += UsesMrtkJointUpdates && !wasEntered ? 0f : sampleDeltaTime;
 
                 // If already enter hesitate state, do not act more
                 if (Hesitated)
+                    return;
+                // A baseline sample is useful to logs and contact state but has no velocity.
+                if (UsesMrtkJointUpdates && !MotionVelocityValid && !(Delay || Fast || FastForKeyboard))
                     return;
                 // else, act as the set mode (Delay-Long Tap, Fast-Short Tap, Acce, or Velo)
                 if (Delay || Fast || FastForKeyboard)
@@ -225,7 +268,7 @@ public class AcceStimulate : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -253,7 +296,7 @@ public class AcceStimulate : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime > HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -281,7 +324,7 @@ public class AcceStimulate : MonoBehaviour
                 {
                     if (Prepared)
                     {
-                        PrepTime += Time.deltaTime;
+                        PrepTime += sampleDeltaTime;
                         if (PrepTime >= HesTime)
                         {
                             //Invoke the HesEvent if prepared status exceeds the HesTime
@@ -355,7 +398,114 @@ public class AcceStimulate : MonoBehaviour
                 condition = ' ';
             }
             #endregion
+    }
+
+    private void OnEnable()
+    {
+        if (initialized) SubscribeJointUpdates();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeJointUpdates();
+        if (UsesMrtkJointUpdates) ResetEventMotion(false);
+    }
+
+    private void SubscribeJointUpdates()
+    {
+        if (!UsesMrtkJointUpdates || subscribed || !isActiveAndEnabled) return;
+        Study3HandPoseSource.EnsureAvailable();
+        Study3HandPoseSource.JointSampleUpdated += OnJointSample;
+        Study3HandPoseSource.SelectedSourceLost += OnSelectedSourceLost;
+        subscribed = true;
+    }
+
+    private void UnsubscribeJointUpdates()
+    {
+        if (!subscribed) return;
+        Study3HandPoseSource.JointSampleUpdated -= OnJointSample;
+        Study3HandPoseSource.SelectedSourceLost -= OnSelectedSourceLost;
+        subscribed = false;
+    }
+
+    private void OnSelectedSourceLost(uint sourceId)
+    {
+        if (hasEventPosition && sourceId == MotionSourceId) ResetEventMotion(true);
+    }
+
+    private void ResetEventMotion(bool interrupted)
+    {
+        if (interrupted) MotionTrackingInterrupted?.Invoke();
+        hasEventPosition = hasEventVelocity = false;
+        MotionVelocityValid = MotionAccelerationValid = IndexTipPoseValid = IndexDistalPoseValid = false;
+        Init = true;
+        v = a = vpre = apre = float.MaxValue;
+        UpdateT = PrepTime = 0f;
+        Entered = Prepared = Hesitated = CloseSti = false;
+        condition = ' ';
+    }
+
+    /// <summary>Discard the current motion baseline after an XR reference-space change.</summary>
+    public void ResetForReferenceSpaceChange()
+    {
+        if (UsesMrtkJointUpdates) ResetEventMotion(false);
+    }
+
+    private void OnJointSample(Study3JointSample sample)
+    {
+        if (!isActiveAndEnabled || !sample.TryGetJointPose(TrackedHandJoint.IndexTip, out MixedRealityPose pose)) return;
+        double now = Time.realtimeSinceStartupAsDouble;
+        if (double.IsNaN(sample.Timestamp) || double.IsInfinity(sample.Timestamp) || sample.Timestamp > now ||
+            now - sample.Timestamp > Study3MotionTracker.MaximumAgeSeconds ||
+            float.IsNaN(pose.Position.x) || float.IsNaN(pose.Position.y) || float.IsNaN(pose.Position.z) ||
+            float.IsInfinity(pose.Position.x) || float.IsInfinity(pose.Position.y) || float.IsInfinity(pose.Position.z))
+        { ResetEventMotion(true); return; }
+        if (hasEventPosition && (sample.SourceId != MotionSourceId || sample.TrackingEpoch != MotionTrackingEpoch ||
+            sample.Timestamp - previousEventTime > Study3MotionTracker.MaximumAgeSeconds)) ResetEventMotion(true);
+        if (hasEventPosition && (sample.Sequence <= MotionSampleSequence || sample.Timestamp <= previousEventTime)) return;
+
+        CurrentJointSample = sample;
+        MotionSourceId = sample.SourceId;
+        MotionTrackingEpoch = sample.TrackingEpoch;
+        MotionSampleSequence = sample.Sequence;
+        MotionSampleTimestamp = sample.Timestamp;
+        MotionSampleFixedTime = Time.fixedTimeAsDouble;
+        MotionSampleDeltaTime = hasEventPosition ? (float)(sample.Timestamp - previousEventTime) : 0f;
+        if (hasEventPosition && (MotionSampleDeltaTime <= 0f || float.IsInfinity(MotionSampleDeltaTime)))
+        { ResetEventMotion(true); return; }
+        IndexTipPoseValid = true;
+        IndexTipPose2 = pose;
+        MotionAccelerationValid = false;
+        if (hasEventPosition)
+        {
+            Distance = (pose.Position - IndexTipPose1.Position).magnitude;
+            float previousSpeed = v;
+            v = Distance / MotionSampleDeltaTime;
+            MotionVelocityValid = true;
+            if (hasEventVelocity)
+            {
+                a = (v - previousSpeed) / MotionSampleDeltaTime;
+                MotionAccelerationValid = true;
+            }
+            else a = float.MaxValue;
+            if (float.IsNaN(v) || float.IsInfinity(v) ||
+                (MotionAccelerationValid && (float.IsNaN(a) || float.IsInfinity(a))))
+            { ResetEventMotion(true); return; }
+            vpre = v;
+            apre = a;
+            hasEventVelocity = true;
         }
+        else
+        {
+            v = a = vpre = apre = float.MaxValue;
+            MotionVelocityValid = false;
+        }
+        IndexTipPose1 = pose;
+        previousEventTime = sample.Timestamp;
+        hasEventPosition = true;
+        Init = false;
+        Bounds = GetComponent<Collider>().bounds;
+        ProcessContact(MotionSampleDeltaTime * Time.timeScale);
     }
 
     public void showDebugger()
@@ -435,6 +585,7 @@ public class AcceStimulate : MonoBehaviour
     {
         if (useAcce)
         {
+            if (UsesMrtkJointUpdates && !MotionAccelerationValid) return false;
             print("Using Acceleration for condition C");
             if (a > AccelerationBoundForConditionC)
             {
@@ -467,6 +618,7 @@ public class AcceStimulate : MonoBehaviour
     /// <returns></returns>
     public bool JudgeAcceOnly()
     {
+        if (UsesMrtkJointUpdates && !MotionAccelerationValid) return false;
         if (vpre != float.MaxValue && apre != float.MaxValue)
         {
             if ((v < Vupper && a < Ab))
@@ -501,7 +653,7 @@ public class AcceStimulate : MonoBehaviour
     /// <returns></returns>
     public bool JudgeV()
     {
-        if (vpre != float.MaxValue && apre != float.MaxValue)
+        if (UsesMrtkJointUpdates ? MotionVelocityValid : vpre != float.MaxValue && apre != float.MaxValue)
         {
             if (v < Vb)
             {

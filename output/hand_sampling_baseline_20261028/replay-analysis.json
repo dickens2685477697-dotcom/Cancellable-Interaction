@@ -1,0 +1,284 @@
+{
+  "scope": "Only the instrumented logging window; event rates are not hardware capture rates.",
+  "rate_definition": "(timed rows - 1) / (last timestamp - first timestamp), per hand/step or per consumer; inactive gaps remain in the span.",
+  "hardware_first_result_or_lossless_capture_proven": false,
+  "sdk_to_mrtk_link_semantics": "Unique active skeleton pose match is a candidate attribution, not a hardware frame identity.",
+  "read_time_semantics": "hand-reads realtime is sampled during logging after the original query; not sensor capture time or exact query entry time.",
+  "sources": [
+    {
+      "path": "D:\\HLStudy4_22\\Temp\\HandSamplingReplay-457e0376ca9944398d4a64be189c8dd3\\test-hand-updates.csv",
+      "sha256": "588e79fefadbf656fc3ca910ea1575c43a92c25da31b9223ab61e2a1c9432c3c"
+    },
+    {
+      "path": "D:\\HLStudy4_22\\Temp\\HandSamplingReplay-457e0376ca9944398d4a64be189c8dd3\\test-hand-reads.csv",
+      "sha256": "e7e51aa30c50c01af52338342b5f7c303c3f52b8d3579b01c3b97e274ca12a70"
+    }
+  ],
+  "session_metadata": [
+    {
+      "applicationBuildGuid": "test-build",
+      "context": {
+        "label": "中文,trace",
+        "mode": "speed"
+      },
+      "deviceModel": "test-device",
+      "providerMatchMeaning": "unique active Oculus skeleton with matching joint positions; not a hardware frame ID",
+      "runtimeXrApi": "test-api",
+      "sdkTimestampClock": "OVRPlugin SDK clock; not Unity realtime",
+      "sdkTimestampMeaning": "GetHandState timestamps; predicted pose, camera capture time not verified",
+      "sdkWrapperVersion": "1.76.0",
+      "unityVersion": "test",
+      "version": "hand-sampling-v1"
+    }
+  ],
+  "lifecycle": {
+    "session_start": 1,
+    "sdk_read": 6,
+    "provider_update": 4,
+    "source_lost": 1,
+    "session_end": 1
+  },
+  "observed_counts": {
+    "observedSdkReadCount": 6,
+    "providerUpdateCount": 4,
+    "poseReadCount": 9
+  },
+  "session_end_reported_counts": {
+    "observedSdkReadCount": 6,
+    "providerUpdateCount": 4,
+    "poseReadCount": 9
+  },
+  "instrumented_window_counts_reconciled": true,
+  "sdk_to_provider_match_counts": {
+    "unique_oculus_skeleton_pose_match": 3,
+    "ambiguous_skeleton_match": 1
+  },
+  "provider_events_not_linked_to_any_logged_read": 1,
+  "unconsumed_event_note": "May include the unselected hand, inactive detectors, or deliberately overwritten latest samples; not a hardware loss rate.",
+  "estimated_application_fps": null,
+  "instrumented_fixed_ticks": 0,
+  "same_frame_consecutive_fixed_intervals": {
+    "count": 0,
+    "min_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null
+  },
+  "fixed_tick_note": "Deduplicated frame/fixedTime from instrumented callbacks only; missing callbacks outside logging cannot be recovered.",
+  "sdk_reads": [
+    {
+      "handInstanceId": "7",
+      "handedness": "Right",
+      "step": "Physics",
+      "counts": {
+        "rows": 1,
+        "read_succeeded": 1,
+        "tracked": 1,
+        "tracked_valid_sdk_timestamp_rows": 1
+      },
+      "observed_span_seconds": 0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      },
+      "distinct_sdk_timestamp_values": 1,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "handInstanceId": "7",
+      "handedness": "Right",
+      "step": "Render",
+      "counts": {
+        "rows": 4,
+        "read_succeeded": 3,
+        "tracked": 4,
+        "tracked_valid_sdk_timestamp_rows": 3,
+        "comparable_sdk_timestamp_pairs": 2,
+        "same_sdk_timestamp_pairs": 1,
+        "advanced_sdk_timestamp_pairs": 1,
+        "read_failed": 1
+      },
+      "observed_span_seconds": 0.0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 3,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0
+      },
+      "distinct_sdk_timestamp_values": 2,
+      "same_sdk_timestamp_pair_fraction": 0.5,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    },
+    {
+      "handInstanceId": "8",
+      "handedness": "Right",
+      "step": "Render",
+      "counts": {
+        "rows": 1,
+        "read_succeeded": 1,
+        "tracked": 1,
+        "tracked_valid_sdk_timestamp_rows": 1
+      },
+      "observed_span_seconds": 0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      },
+      "distinct_sdk_timestamp_values": 1,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 0,
+        "min_ms": null,
+        "p50_ms": null,
+        "p95_ms": null,
+        "p99_ms": null,
+        "max_ms": null
+      }
+    }
+  ],
+  "mrtk_provider_updates": [
+    {
+      "sourceId": "42",
+      "handedness": "Right",
+      "counts": {
+        "rows": 4,
+        "unique_oculus_skeleton_pose_match": 3,
+        "linked_to_observed_sdk_read_candidate": 3,
+        "consecutive_events_reusing_same_applied_sdk_read": 2,
+        "ambiguous_skeleton_match": 1
+      },
+      "observed_span_seconds": 2.0,
+      "observed_record_rate_hz": 1.5,
+      "consecutive_record_intervals": {
+        "count": 3,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 1799.9999999999998,
+        "p99_ms": 1960.0,
+        "max_ms": 2000.0
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": null,
+      "linked_application_stage_age": {
+        "count": 3,
+        "min_ms": 100000.0,
+        "p50_ms": 100000.0,
+        "p95_ms": 100000.0,
+        "p99_ms": 100000.0,
+        "max_ms": 100000.0
+      }
+    }
+  ],
+  "consumer_reads": [
+    {
+      "ownerInstanceId": "2",
+      "ownerType": "Component",
+      "method": "consume",
+      "joint": "IndexTip",
+      "sourceId": "42",
+      "handedness": "Right",
+      "counts": {
+        "rows": 7,
+        "pose_valid": 6,
+        "matches_source_event_pose": 4,
+        "reads_linked_to_observed_provider": 4,
+        "same_provider_flag_on_linked_reads": 1,
+        "controller_position_unavailable": 4,
+        "no_matching_source_event": 2,
+        "reads_without_observed_provider_link": 3,
+        "pose_unavailable": 2
+      },
+      "observed_span_seconds": 0.0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 6,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.25,
+      "linked_application_stage_age": {
+        "count": 4,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0
+      }
+    },
+    {
+      "ownerInstanceId": "2",
+      "ownerType": "Component",
+      "method": "shared",
+      "joint": "IndexTip",
+      "sourceId": "42",
+      "handedness": "Right",
+      "counts": {
+        "rows": 2,
+        "pose_valid": 2,
+        "exact_shared_sample_sequence": 1,
+        "reads_linked_to_observed_provider": 1,
+        "shared_sequence_not_observed": 1,
+        "reads_without_observed_provider_link": 1
+      },
+      "observed_span_seconds": 0.0,
+      "observed_record_rate_hz": null,
+      "consecutive_record_intervals": {
+        "count": 1,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0
+      },
+      "distinct_sdk_timestamp_values": 0,
+      "same_sdk_timestamp_pair_fraction": null,
+      "same_provider_read_fraction": 0.0,
+      "linked_application_stage_age": {
+        "count": 1,
+        "min_ms": 0.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "max_ms": 0.0
+      }
+    }
+  ]
+}

@@ -454,6 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -523,7 +524,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -562,6 +562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &6094519
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -799,6 +800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -868,7 +870,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -907,6 +908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &14966944
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2369,6 +2371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -2438,7 +2441,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -2477,6 +2479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &29140187
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2732,13 +2735,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &36682678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2751,6 +2758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -2820,7 +2828,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -3046,6 +3053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -3115,7 +3123,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -3154,6 +3161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &41507836
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3401,6 +3409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -3470,7 +3479,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -3550,13 +3558,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &51601658
 GameObject:
   m_ObjectHideFlags: 0
@@ -3609,13 +3621,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &51601661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3653,6 +3669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -3722,7 +3739,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -4131,6 +4147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -4200,7 +4217,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -4239,6 +4255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &61335089
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4350,13 +4367,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &65517701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4369,6 +4390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -4438,7 +4460,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -4945,6 +4966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -5017,7 +5039,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -5039,6 +5060,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &82830729
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5113,6 +5135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &101740081
 GameObject:
   m_ObjectHideFlags: 0
@@ -5281,6 +5304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -5350,7 +5374,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -5372,6 +5395,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &125205530
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5482,6 +5506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -5551,7 +5576,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -5590,6 +5614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &125325620
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5835,6 +5860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -5904,7 +5930,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -5926,6 +5951,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &130457739
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6288,6 +6314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!114 &138150078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6306,6 +6333,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!1 &138547984
 GameObject:
   m_ObjectHideFlags: 0
@@ -6355,6 +6383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -6424,7 +6453,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -6446,6 +6474,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &138547988
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6589,6 +6618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -6658,7 +6688,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -6680,6 +6709,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &141237106
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6791,6 +6821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -6860,7 +6891,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -6882,6 +6912,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &148108209
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6993,6 +7024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -7062,7 +7094,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -7084,6 +7115,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &149651774
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7297,6 +7329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -7366,7 +7399,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -7388,6 +7420,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &153774739
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7843,6 +7876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -7912,7 +7946,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -7934,6 +7967,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &160215968
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -8044,6 +8078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -8113,7 +8148,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -8193,13 +8227,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &160620415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8373,6 +8411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -8442,7 +8481,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -9073,6 +9111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -9142,7 +9181,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -9222,13 +9260,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &173198888
 GameObject:
   m_ObjectHideFlags: 0
@@ -9939,6 +9981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -10008,7 +10051,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -10030,6 +10072,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &198890465
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10327,13 +10370,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &215688355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10371,6 +10418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -10440,7 +10488,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -11075,6 +11122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -11144,7 +11192,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -11166,6 +11213,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &224822272
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11388,6 +11436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -11457,7 +11506,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -11537,13 +11585,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &230394134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12441,6 +12493,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &251304242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12453,6 +12506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -12522,7 +12576,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -12991,6 +13044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -13060,7 +13114,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -13099,6 +13152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &263132768
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13210,6 +13264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -13279,7 +13334,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -13301,6 +13355,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &263533548
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13778,6 +13833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -13847,7 +13903,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -13869,6 +13924,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &272615259
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -14078,6 +14134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -14147,7 +14204,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -14169,6 +14225,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &275709971
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -14280,6 +14337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -14349,7 +14407,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -14371,6 +14428,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &279432509
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -14668,13 +14726,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &284369404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14712,6 +14774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -14781,7 +14844,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -14896,13 +14958,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &291038020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14915,6 +14981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -14984,7 +15051,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -15123,6 +15189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -15192,7 +15259,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -15272,13 +15338,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &303409941
 GameObject:
   m_ObjectHideFlags: 0
@@ -15782,13 +15852,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &315922934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15826,6 +15900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -15895,7 +15970,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -16034,6 +16108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -16103,7 +16178,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -16183,13 +16257,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &319428075
 GameObject:
   m_ObjectHideFlags: 0
@@ -16610,6 +16688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -16679,7 +16758,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -16718,6 +16796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &326205052
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -17596,6 +17675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -17665,7 +17745,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -17704,6 +17783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &343987536
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -17815,6 +17895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -17884,7 +17965,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -17906,6 +17986,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &347493762
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -18023,6 +18104,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &347834939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18035,6 +18117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -18104,7 +18187,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -19698,6 +19780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -19767,7 +19850,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -19789,6 +19871,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &401468377
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19900,6 +19983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -19969,7 +20053,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -19991,6 +20074,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &406688131
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20208,6 +20292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -20277,7 +20362,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -20299,6 +20383,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &412152011
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20593,13 +20678,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &425923725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20612,6 +20701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -20681,7 +20771,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -21664,6 +21753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -21733,7 +21823,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -21813,13 +21902,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &449093342
 GameObject:
   m_ObjectHideFlags: 0
@@ -21872,6 +21965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -21941,7 +22035,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -21963,6 +22056,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &449093346
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22341,6 +22435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -22410,7 +22505,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -22432,6 +22526,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &457696335
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22567,6 +22662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -22636,7 +22732,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -22716,13 +22811,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &463577952
 GameObject:
   m_ObjectHideFlags: 0
@@ -23453,6 +23552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -23522,7 +23622,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -23544,6 +23643,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &475888105
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -24682,13 +24782,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &499039516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24701,6 +24805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -24770,7 +24875,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -25111,13 +25215,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &502675725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25155,6 +25263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -25224,7 +25333,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -25929,6 +26037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -25998,7 +26107,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -26037,6 +26145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &528646126
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -26148,6 +26257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -26217,7 +26327,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -26239,6 +26348,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &540422664
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -26965,6 +27075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -27034,7 +27145,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -27056,6 +27166,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &552783491
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -27167,6 +27278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -27236,7 +27348,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -27258,6 +27369,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &552789648
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -27936,7 +28048,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570250456}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3}
+  m_LocalPosition: {x: 0, y: 0, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 843864033}
@@ -27954,6 +28066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -28023,7 +28136,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -28359,6 +28471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -28428,7 +28541,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -28508,13 +28620,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &574614198
 GameObject:
   m_ObjectHideFlags: 0
@@ -29032,6 +29148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -29101,7 +29218,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -29140,6 +29256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &581679216
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -29251,6 +29368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -29320,7 +29438,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -29342,6 +29459,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &585909757
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -29769,6 +29887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -29838,7 +29957,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -29918,13 +30036,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &593215680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30100,13 +30222,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &599046495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30119,6 +30245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -30188,7 +30315,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -30302,6 +30428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -30371,7 +30498,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -30451,13 +30577,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &599742117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30532,6 +30662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -30601,7 +30732,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -30623,6 +30753,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &601551614
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -31295,6 +31426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -31364,7 +31496,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -31444,13 +31575,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &621524050
 GameObject:
   m_ObjectHideFlags: 0
@@ -32027,7 +32162,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32046,13 +32180,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &622664570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32090,6 +32228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -32159,7 +32298,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32315,7 +32453,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32393,13 +32530,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &628239915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32412,6 +32553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -32481,7 +32623,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32660,6 +32801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -32729,7 +32871,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32751,6 +32892,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &637179863
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -32861,6 +33003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -32930,7 +33073,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -32969,6 +33111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &638837413
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -33083,13 +33226,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &642487193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33127,6 +33274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -33196,7 +33344,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -33518,6 +33665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -33587,7 +33735,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -33667,13 +33814,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &645631982
 GameObject:
   m_ObjectHideFlags: 0
@@ -33867,6 +34018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -33936,7 +34088,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -33958,6 +34109,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &650474733
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -34252,6 +34404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -34321,7 +34474,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -34343,6 +34495,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &656739214
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -35115,6 +35268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -35184,7 +35338,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -35206,6 +35359,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &669298225
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -35489,6 +35643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -35558,7 +35713,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -35597,6 +35751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &682342938
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -36738,13 +36893,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &701102501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36782,6 +36941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -36851,7 +37011,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -36972,6 +37131,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &703422214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36984,6 +37144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -37053,7 +37214,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -37168,13 +37328,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &706050129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37187,6 +37351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -37256,7 +37421,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -37700,6 +37864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -37769,7 +37934,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -38889,13 +39053,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &765152754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38933,6 +39101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -39002,7 +39171,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -39873,6 +40041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -39942,7 +40111,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -39964,6 +40132,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &793367427
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -40771,6 +40940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -40840,7 +41010,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -40920,13 +41089,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &820257826
 GameObject:
   m_ObjectHideFlags: 0
@@ -41385,13 +41558,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &825859141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41429,6 +41606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -41498,7 +41676,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -42291,6 +42468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -42360,7 +42538,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -42382,6 +42559,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &840961053
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -42632,7 +42810,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 0
-  MaxCount: 10
+  MaxCount: 20
+  HoldDuration: 3
+  EndCaptureDelay: 1
   TaskNum: 1
   coolDown: 1
   acce: {fileID: 0}
@@ -42654,6 +42834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -42723,7 +42904,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -42762,6 +42942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &843864038
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -43101,6 +43282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -43170,7 +43352,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -43192,6 +43373,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &851948147
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -43869,6 +44051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -43938,7 +44121,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -43960,6 +44142,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &877621577
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -44071,6 +44254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -44140,7 +44324,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -44162,6 +44345,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &877670976
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -44456,6 +44640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -44525,7 +44710,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -44547,6 +44731,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &885841880
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -45136,13 +45321,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &894311424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45155,6 +45344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -45224,7 +45414,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -47049,6 +47238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -47118,7 +47308,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -47140,6 +47329,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &936004715
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -47578,6 +47768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -47647,7 +47838,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -47669,6 +47859,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &946692747
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -48413,13 +48604,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &964805779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48432,6 +48627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -48501,7 +48697,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -48616,6 +48811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -48685,7 +48881,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -48707,6 +48902,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &965857146
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -49135,13 +49331,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &972524197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49154,6 +49354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -49223,7 +49424,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -49450,6 +49650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -49519,7 +49720,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -49541,6 +49741,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &989907572
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -50236,6 +50437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -50305,7 +50507,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -50327,6 +50528,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1003711097
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -50625,6 +50827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -50694,7 +50897,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -50716,6 +50918,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1006362340
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -50790,6 +50993,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1010455303
 GameObject:
   m_ObjectHideFlags: 0
@@ -51010,6 +51214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -51079,7 +51284,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -51101,6 +51305,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1011564693
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -51398,13 +51603,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1017542930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51442,6 +51651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -51511,7 +51721,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -51638,6 +51847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -51707,7 +51917,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -52276,13 +52485,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1040745154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52320,6 +52533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -52389,7 +52603,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -52503,6 +52716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -52572,7 +52786,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -52611,6 +52824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1041888922
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -52721,6 +52935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -52790,7 +53005,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -52870,13 +53084,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1042956451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53865,6 +54083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -53934,7 +54153,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -54014,13 +54232,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1049308238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54277,6 +54499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -54346,7 +54569,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -54385,6 +54607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1055314308
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -54501,6 +54724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -54573,7 +54797,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -54595,6 +54818,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1055849334
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -54669,6 +54893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1062316356
 GameObject:
   m_ObjectHideFlags: 0
@@ -54855,13 +55080,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1065717256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54899,6 +55128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -54968,7 +55198,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -55741,6 +55970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -55810,7 +56040,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -55832,6 +56061,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1082610900
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -55906,6 +56136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1091595056
 GameObject:
   m_ObjectHideFlags: 0
@@ -55955,13 +56186,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1091595059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55974,6 +56209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -56043,7 +56279,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -56158,6 +56393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -56227,7 +56463,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -56249,6 +56484,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1093100931
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -56726,6 +56962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -56795,7 +57032,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -56817,6 +57053,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1100592028
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -57993,6 +58230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -58062,7 +58300,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -58101,6 +58338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1128891632
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -58215,13 +58453,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1129023719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58259,6 +58501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -58328,7 +58571,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -58443,6 +58685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -58512,7 +58755,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -58534,6 +58776,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1130693660
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -58716,6 +58959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -58785,7 +59029,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -58824,6 +59067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1136748679
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -59550,6 +59794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -59619,7 +59864,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -59641,6 +59885,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1149433500
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -60071,6 +60316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -60140,7 +60386,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -60220,13 +60465,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1167293810
 GameObject:
   m_ObjectHideFlags: 0
@@ -60554,6 +60803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -60623,7 +60873,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -60645,6 +60894,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1168221351
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -61234,6 +61484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -61303,7 +61554,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -61325,6 +61575,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1172005671
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -61619,13 +61870,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1174614641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61638,6 +61893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -61707,7 +61963,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -61822,6 +62077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -61891,7 +62147,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -61913,6 +62168,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1178754249
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -62024,6 +62280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -62093,7 +62350,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -62115,6 +62371,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1179760427
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -62231,6 +62488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -62303,7 +62561,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -62325,6 +62582,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1181538695
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -62399,6 +62657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1182180439
 GameObject:
   m_ObjectHideFlags: 0
@@ -62487,13 +62746,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1185231490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62531,6 +62794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -62600,7 +62864,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -63010,6 +63273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -63079,7 +63343,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -63101,6 +63364,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1193784017
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -63324,6 +63588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -63393,7 +63658,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -63415,6 +63679,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1194783388
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -63526,13 +63791,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1197056193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63545,6 +63814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -63614,7 +63884,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -64207,13 +64476,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1211296551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64226,6 +64499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -64295,7 +64569,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -64984,6 +65257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -65056,7 +65330,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -65078,6 +65351,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1225016714
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -65152,6 +65426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1225247979
 GameObject:
   m_ObjectHideFlags: 0
@@ -65303,6 +65578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -65372,7 +65648,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -65411,6 +65686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1226376203
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -65820,13 +66096,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1233916281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65864,6 +66144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -65933,7 +66214,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -66159,6 +66439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -66228,7 +66509,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -66267,6 +66547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1250253606
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -66856,6 +67137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -66925,7 +67207,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -66947,6 +67228,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1262647869
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -67606,7 +67888,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -67625,13 +67906,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1280238631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67669,6 +67954,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -67738,7 +68024,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -68439,6 +68724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -68508,7 +68794,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -68547,6 +68832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1284529528
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -68682,6 +68968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -68751,7 +69038,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -68831,13 +69117,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1290565686
 GameObject:
   m_ObjectHideFlags: 0
@@ -68887,6 +69177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -68956,7 +69247,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -68978,6 +69268,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1290565690
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -69484,6 +69775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -69553,7 +69845,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -69575,6 +69866,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1297979273
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -69686,6 +69978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -69755,7 +70048,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -69777,6 +70069,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1298925564
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -69888,6 +70181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -69957,7 +70251,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -69979,6 +70272,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1300849387
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -70480,13 +70774,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1311093083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70499,6 +70797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -70568,7 +70867,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -70683,6 +70981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -70752,7 +71051,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -70791,6 +71089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1311181772
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -70902,6 +71201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -70971,7 +71271,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -70993,6 +71292,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1312972257
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -71610,6 +71910,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &1326884030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71622,6 +71923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -71691,7 +71993,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -71806,6 +72107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -71875,7 +72177,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -71897,6 +72198,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1331659842
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -72120,6 +72422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -72189,7 +72492,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -72211,6 +72513,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1336440219
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -73017,13 +73320,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1350086394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73061,6 +73368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -73130,7 +73438,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -73245,6 +73552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -73314,7 +73622,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -73336,6 +73643,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1353702682
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -73620,13 +73928,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1360698015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73664,6 +73976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -73733,7 +74046,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -73967,6 +74279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -74036,7 +74349,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -74116,13 +74428,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1371083433
 GameObject:
   m_ObjectHideFlags: 0
@@ -74769,6 +75085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -74838,7 +75155,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -74918,13 +75234,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1387055148
 GameObject:
   m_ObjectHideFlags: 0
@@ -75118,13 +75438,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1396727160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75137,6 +75461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -75206,7 +75531,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -75321,6 +75645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -75390,7 +75715,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -75412,6 +75736,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1398699048
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -75547,6 +75872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -75616,7 +75942,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -75696,13 +76021,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1400980142
 GameObject:
   m_ObjectHideFlags: 0
@@ -75752,6 +76081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -75821,7 +76151,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -75843,6 +76172,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1400980146
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -76646,6 +76976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -76715,7 +77046,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -76737,6 +77067,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1417657659
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -76848,13 +77179,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1418154783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76867,6 +77202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -76936,7 +77272,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -78434,6 +78769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -78503,7 +78839,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -78583,13 +78918,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1435811080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79480,6 +79819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -79549,7 +79889,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80031,6 +80370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -80100,7 +80440,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80122,6 +80461,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1480475486
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -80232,6 +80572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -80301,7 +80642,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80340,6 +80680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1495457194
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -80437,6 +80778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -80506,7 +80848,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80601,6 +80942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!114 &1497939321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80694,6 +81036,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -80763,7 +81106,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80785,6 +81127,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1498124081
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -80896,6 +81239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -80965,7 +81309,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -80987,6 +81330,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1504864661
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -81607,6 +81951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -81676,7 +82021,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -81698,6 +82042,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1513224879
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -81992,6 +82337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -82061,7 +82407,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -82083,6 +82428,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1523432331
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -82962,6 +83308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -83034,7 +83381,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -83056,6 +83402,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1547188174
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -83130,6 +83477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1551413151
 GameObject:
   m_ObjectHideFlags: 0
@@ -83179,13 +83527,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1551413154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83198,6 +83550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -83267,7 +83620,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -83677,6 +84029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -83746,7 +84099,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -83768,6 +84120,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1570438925
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -84377,13 +84730,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1596915208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84396,6 +84753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -84465,7 +84823,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -84580,6 +84937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -84649,7 +85007,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -84671,6 +85028,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1616718475
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -84782,6 +85140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -84851,7 +85210,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -84890,6 +85248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1638989252
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -85192,6 +85551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -85261,7 +85621,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -85277,6 +85636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1658924576
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -85400,6 +85760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -85469,7 +85830,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -85597,6 +85957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -85666,7 +86027,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -85705,6 +86065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1662811877
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -85816,6 +86177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -85885,7 +86247,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -85907,6 +86268,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1665884973
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -86152,6 +86514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -86221,7 +86584,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -86243,6 +86605,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1675118964
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -86755,6 +87118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -86824,7 +87188,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -86846,6 +87209,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1688265371
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -87140,6 +87504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -87209,7 +87574,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -87231,6 +87595,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1695096252
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -87696,6 +88061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -87765,7 +88131,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -87787,6 +88152,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1700530759
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -88172,6 +88538,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &1710418356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88184,6 +88551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -88253,7 +88621,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -88367,6 +88734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -88436,7 +88804,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -88516,13 +88883,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1712545895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88600,6 +88971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -88669,7 +89041,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -88691,6 +89062,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1715953278
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -88914,6 +89286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -88983,7 +89356,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -89005,6 +89377,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1721316279
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -89120,6 +89493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -89189,7 +89563,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -89229,7 +89602,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 0
-  MaxCount: 10
+  MaxCount: 20
+  HoldDuration: 3
+  EndCaptureDelay: 1
   TaskNum: 1
   coolDown: 1
   acce: {fileID: 0}
@@ -89251,6 +89626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1721900997
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -89444,7 +89820,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -89463,13 +89838,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1727749315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89507,6 +89886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -89576,7 +89956,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -89727,6 +90106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -89796,7 +90176,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -89818,6 +90197,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1728970467
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -89929,6 +90309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -89998,7 +90379,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -90020,6 +90400,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1730600898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -90498,6 +90879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -90567,7 +90949,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -90647,13 +91028,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1740284687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91023,6 +91408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -91092,7 +91478,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -91114,6 +91499,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1748123880
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -91548,13 +91934,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1767265092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91567,6 +91957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -91636,7 +92027,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -92043,13 +92433,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1782550818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92062,6 +92456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -92131,7 +92526,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -92432,6 +92826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -92501,7 +92896,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -92523,6 +92917,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1786779704
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -92634,6 +93029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -92703,7 +93099,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -92725,6 +93120,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1791185836
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -92950,13 +93346,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1793968245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92994,6 +93394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -93063,7 +93464,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -93280,6 +93680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -93349,7 +93750,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -93371,6 +93771,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1796421154
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -94312,13 +94713,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1813670856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94356,6 +94761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -94425,7 +94831,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -94545,6 +94950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -94617,7 +95023,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -94639,6 +95044,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1815471559
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -94713,6 +95119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!1 &1815719717
 GameObject:
   m_ObjectHideFlags: 0
@@ -94765,6 +95172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -94834,7 +95242,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -94856,6 +95263,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1815719721
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -94967,6 +95375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -95036,7 +95445,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -95058,6 +95466,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1820285881
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -96072,6 +96481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -96141,7 +96551,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -96163,6 +96572,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1858868061
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -96527,6 +96937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -96596,7 +97007,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -96618,6 +97028,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1868780560
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -96912,6 +97323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -96981,7 +97393,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -97003,6 +97414,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1870297426
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -97729,6 +98141,7 @@ GameObject:
   - component: {fileID: 1885794242}
   - component: {fileID: 1885794241}
   - component: {fileID: 1885794240}
+  - component: {fileID: 1885794243}
   m_Layer: 0
   m_Name: BackTrace
   m_TagString: Untagged
@@ -97743,7 +98156,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1885794239}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14c3d8a4208d4b649529822e217623d4, type: 3}
   m_Name: 
@@ -97767,7 +98180,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1885794239}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b55691ad5b034fe6966763a6e23818d2, type: 3}
   m_Name: 
@@ -97787,7 +98200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1885794239}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.15, z: 0.3}
+  m_LocalPosition: {x: 0, y: 1.1, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 938574366}
@@ -97798,6 +98211,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1885794243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885794239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94c7be1a22cc473388969ed166553c54, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  ballCenterDistanceMeters: 0.36
+  targetBall: {fileID: 843864038}
+  startBall: {fileID: 570250460}
 --- !u!1 &1888181428
 GameObject:
   m_ObjectHideFlags: 0
@@ -98036,6 +98464,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &1891140830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98048,6 +98477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -98117,7 +98547,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -98344,6 +98773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -98413,7 +98843,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -98435,6 +98864,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1892870681
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -98753,6 +99183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -98822,7 +99253,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -98902,13 +99332,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1904202622
 GameObject:
   m_ObjectHideFlags: 0
@@ -98982,6 +99416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -99051,7 +99486,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -99131,13 +99565,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &1906366406
 GameObject:
   m_ObjectHideFlags: 0
@@ -99247,6 +99685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -99316,7 +99755,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -99833,13 +100271,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1957284268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99852,6 +100294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -99921,7 +100364,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -100520,6 +100962,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!114 &1963228319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100532,6 +100975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -100601,7 +101045,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -101165,13 +101608,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1971321891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101209,6 +101656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -101278,7 +101726,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -101393,6 +101840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -101462,7 +101910,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -101484,6 +101931,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1973227094
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -101598,13 +102046,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1973594748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101642,6 +102094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -101711,7 +102164,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -102121,6 +102573,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -102190,7 +102643,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -102212,6 +102664,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &1986694530
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -102322,6 +102775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -102391,7 +102845,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -102430,6 +102883,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &1987369841
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -102935,13 +103389,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &1998651802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102979,6 +103437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -103048,7 +103507,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -103178,13 +103636,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &2000883012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103197,6 +103659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -103266,7 +103729,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -103747,6 +104209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -103816,7 +104279,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -103838,6 +104300,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2018280042
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -103949,6 +104412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -104018,7 +104482,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -104040,6 +104503,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2021682622
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -104452,7 +104916,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -104471,13 +104934,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &2030558445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104515,6 +104982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -104584,7 +105052,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -105474,13 +105941,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &2057477224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105518,6 +105989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -105587,7 +106059,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -105702,6 +106173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -105771,7 +106243,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -105793,6 +106264,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2061420324
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -105904,6 +106376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -105973,7 +106446,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -105995,6 +106467,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2063330826
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -107208,6 +107681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -107277,7 +107751,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -107317,7 +107790,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 0
-  MaxCount: 10
+  MaxCount: 20
+  HoldDuration: 3
+  EndCaptureDelay: 1
   TaskNum: 1
   coolDown: 1
   acce: {fileID: 0}
@@ -107339,6 +107814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df43803ef63b08048ab6dc6708a512be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  times: {fileID: 0}
 --- !u!135 &2087120654
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -107474,6 +107950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -107543,7 +108020,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -107623,13 +108099,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 0}
   redBall: {fileID: 0}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 0}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!1 &2092537275
 GameObject:
   m_ObjectHideFlags: 0
@@ -107974,13 +108454,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &2093904762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107993,6 +108477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -108062,7 +108547,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -108177,6 +108661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -108246,7 +108731,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -108268,6 +108752,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2095343974
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -108668,6 +109153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -108737,7 +109223,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -108759,6 +109244,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2105804445
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -109271,6 +109757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -109340,7 +109827,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -109362,6 +109848,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2115654576
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -109768,6 +110255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -109837,7 +110325,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0
@@ -109859,6 +110346,7 @@ MonoBehaviour:
   isHinted: 0
   oldTime: 0
   Got: {fileID: 0}
+  handInBall: 0
 --- !u!135 &2129647258
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -110068,13 +110556,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acce: {fileID: 0}
   yellowBall: {fileID: 2100000, guid: 488f4462aaffc6145933d8e6f1ed2dab, type: 2}
+  shallowYellowBall: {fileID: 0}
   blueBall: {fileID: 2100000, guid: 66f5fa51f82b66c429db671d9eda301e, type: 2}
   shallowBlueBall: {fileID: 2100000, guid: af474dea815391b4a9ed471edabeb1ea, type: 2}
   ordinaryBall: {fileID: 2100000, guid: 7bd3cd8b1af1c0b4cb8d2bb05cce33a1, type: 2}
   redBall: {fileID: 2100000, guid: 489142aaf9a404d4c92350e58d6c7988, type: 2}
   pinkBall: {fileID: 0}
   greenBall: {fileID: 2100000, guid: bea0f8a060ea46b4a95c0e6b716566bc, type: 2}
+  shallowGreenBall: {fileID: 0}
+  circle: {fileID: 0}
   Acced: 0
+  reactedBall: {fileID: 0}
 --- !u!114 &2134141129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110087,6 +110579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -110156,7 +110649,6 @@ MonoBehaviour:
   InMate: {fileID: 0}
   HLMate: {fileID: 0}
   meshRenderer: {fileID: 0}
-  ParentSSV: {fileID: 0}
   Distance: 0
   useAcce: 0
   AccelerationBoundForConditionC: 0

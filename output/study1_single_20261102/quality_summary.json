@@ -1,0 +1,175 @@
+{
+  "continuous_rows": 7523,
+  "inside_rows": 5095,
+  "inner_rows": 5095,
+  "events": {
+    "early_exit": 2,
+    "enter": 22,
+    "hold_complete": 20,
+    "success": 20
+  },
+  "event_trials": 20,
+  "success_trials": 20,
+  "duplicate_source_epoch_sequence": 0,
+  "time_nonpositive": 0,
+  "gap_over_50ms": 0,
+  "gap_over_250ms": 0,
+  "dt_median_seconds": 0.01390289999972083,
+  "dt_p95_seconds": 0.014244100000679083,
+  "dt_max_seconds": 0.029904399999395537,
+  "same_xyz_consecutive": 0,
+  "same_xyz_denominator": 7522,
+  "zero_speed_samples": 0,
+  "valid_speed_samples": 7522,
+  "source_count": 1,
+  "epoch_count": 1,
+  "joint_validity": {
+    "Wrist": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "Palm": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "ThumbMetacarpalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "ThumbProximalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "ThumbDistalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "ThumbTip": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "IndexMetacarpal": {
+      "valid": 0,
+      "total": 7523,
+      "pct": 0.0
+    },
+    "IndexKnuckle": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "IndexMiddleJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "IndexDistalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "IndexTip": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "MiddleMetacarpal": {
+      "valid": 0,
+      "total": 7523,
+      "pct": 0.0
+    },
+    "MiddleKnuckle": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "MiddleMiddleJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "MiddleDistalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "MiddleTip": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "RingMetacarpal": {
+      "valid": 0,
+      "total": 7523,
+      "pct": 0.0
+    },
+    "RingKnuckle": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "RingMiddleJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "RingDistalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "RingTip": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "PinkyMetacarpal": {
+      "valid": 0,
+      "total": 7523,
+      "pct": 0.0
+    },
+    "PinkyKnuckle": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "PinkyMiddleJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "PinkyDistalJoint": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    },
+    "PinkyTip": {
+      "valid": 7523,
+      "total": 7523,
+      "pct": 100.0
+    }
+  },
+  "hold_seconds_mean": 3.007093869999792,
+  "hold_seconds_range": [
+    3.006402199999698,
+    3.0078516999992573
+  ],
+  "additional_wait_mean": 0.4992785950000732,
+  "additional_wait_range": [
+    0.139373599999999,
+    0.7661694999997053
+  ],
+  "entry_min_accel_median": -18.828749656677246,
+  "hold_speed_mean_of_trial_means": 0.007839447004038552,
+  "post_exit_speed_mean_of_trial_means": 0.6691150905830519,
+  "post_exit_samples_range": [
+    20,
+    21
+  ]
+}

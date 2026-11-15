@@ -27,6 +27,7 @@ public partial class LogWriter3 : MonoBehaviour
     public GameObject temp;
     private AcceStimulate acceStimulate;
     public float triggerTime = 0f;
+    public double? pendingStateTimeSeconds;
     public float reactTime = 0f;
     public int reactFrequency = 0;
     public int obstacleReactFrequency = 0;
@@ -657,6 +658,7 @@ public partial class LogWriter3 : MonoBehaviour
     private void ClearTriggerTiming()
     {
         triggerTime = 0f;
+        pendingStateTimeSeconds = null;
         lastBallEntryTimestamp = -1f;
         _handInBall = false;
     }

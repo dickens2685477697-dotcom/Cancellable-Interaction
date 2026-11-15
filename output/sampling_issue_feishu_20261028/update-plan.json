@@ -1,0 +1,501 @@
+{
+  "documentId": "WNCJdIhNaoVqg6xA6Q8c1oBrn2I",
+  "imageBlockId": "doxcnIEekQyrFVTCGRg0Jwp65iL",
+  "imageWidth": 1400,
+  "imageHeight": 1100,
+  "glossaryInsertIndex": 3,
+  "glossary": [
+    {
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "0. 先说明代码名称与术语",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Update() / FixedUpdate()：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "Unity 的应用帧回调 / 固定步回调。本文“FixedUpdate 消费读取”专指选择逻辑在固定步读取 MRTK 最新样本；逻辑步长 20 ms 不代表真实时间上整齐间隔 20 ms。下文“帧”均指 Unity 应用帧（Time.frameCount）。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "OVRPlugin.GetHandState / OVRHand / OVRSkeleton：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "分别是 Oculus SDK 的姿态读取接口、保存 SDK 状态的 Unity 组件、将状态应用到骨架 Transform/Bones 的组件。它们不是传感器；GetHandState 返回预测姿态，重复调用不保证得到新的相机帧。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "MRTK / OculusXRSDKDeviceManager / OculusHand.jointPoses：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "分别是输入框架、接入 Oculus 数据的输入 Provider、MRTK 保存关节位姿的字典。Provider 读取 Bones 后通过 RaiseHandJointsUpdated 发布事件。当前只有一个 MRTK 主组件，但同一个 Oculus Provider 配置了两次，产生同一只右手的两个 SourceId。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "HandJointUtils.TryGetJointPose(IndexTip)：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "读取 MRTK 缓存中的食指指尖位置；这次调用不会要求摄像头重新采样。IndexTip 是食指指尖关节名。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "AcceStudy3.FixedUpdate() / MotionSampleSequence：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "旧运动计算入口 / 该组件的固定步计数。旧代码按 fixedDeltaTime 计算速度 v 和带正负号的标量加速度 a；固定步计数增加，不代表 MRTK 发布了新样本。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "S2AccMode / S2Obstacles / InEvent / HesEvent：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "目标球 / 障碍球的选择判定组件；InEvent 为旧运动组件在球内触发的回调，HesEvent 为满足确认条件后的事件。Speed 的 CheckSpeedReleaseIndexTrigger() 可建立 armed（低速准备）；原版 Magic Tap 的 JudgeAcce() 可建立 Prepared，再经 HesEvent、SetHesMode() 等完成选择。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Study3HandPoseSource / Study3MotionTracker.TrySample()：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "当前共享样本缓存 / 运动预处理。前者在 MRTK 事件到达时保存 SourceId、Sequence 和接收时间，读取时保持同一有效来源；后者跳过同来源、同追踪期的重复或过时序号，用实际接收时间差计算运动。Sequence 是应用事件序号，不是硬件帧 ID。MagicTap2MotionTracker 与 IxDLDynamicMotionTracker 共用此规则。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 12,
+      "bullet": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Study3HandSamplingDiagnostics / Study3HandSamplingSession：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "新增的三层观察与 CSV 写入代码。hand-updates 记录 SDK 读取和 MRTK 事件，hand-reads 记录消费读取，common-motion 记录当前模式是否接受样本及是否触发。“接受的运动样本”指通过新样本检查并推进运动历史的记录。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "testInsertBefore": "doxcnlG1WRnXkTEwXm9QyRNyX3d",
+  "test": [
+    {
+      "block_type": 4,
+      "heading2": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "3. 新增实机测试（2026-10-28）",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 2,
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "测试方法：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "电脑 Unity Editor + Quest Pro / Quest Link，Study3 的 ixdlDynamic 模式，保持 FixedUpdate 50 Hz、timeScale=1。点击起始球后按静止约10秒、移动约10秒、停手约10秒的流程采集并停止 Play；有效追踪窗口28.56秒，无精确动作分段，报告合并区间。同步记录 SDK、MRTK、FixedUpdate 三层日志，结束计数及六份原日志哈希一致，关键统计经独立解析复核。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 2,
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "数据结果：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "右手 SDK 读取约71.02 Hz；MRTK 两个来源各约71.02 Hz，同一 SDK 状态被各发布一次。FixedUpdate 消费读取约50.01 Hz：1,429次中39次（2.73%）为同应用帧、同样本序号的重复；这39次全部跳过，没有据此触发选择。补跑两次读取实际相隔中位数0.422 ms，逻辑时间仍增20 ms。候选软件链路“SDK返回→FixedUpdate消费读取”时间差中位数27.36 ms，P99为41.20 ms。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_type": 2,
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "结论：",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "实测确认补跑会再次读到旧 MRTK 样本，当前动态阈值的序号去重有效；Provider 重复注册是另外一个独立问题，尚未修改。此次未分别实测 Magic Tap 2.0 或全部15种机制。2.73%与 Pilot 的1.44%、17.4%分母不同，不能直接比较改善幅度。SDK时间戳不是已验证的原始相机帧身份，因此不能据此判断硬件重复率或保证硬件第一时间输出；上述时间差也不包含传感器到 SDK 的延迟。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "updates": [
+    {
+      "block_id": "GMdcd4cn2oHgZYxwgY3c94XNn1c",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "结论：旧代码可能把重复读取的 MRTK 缓存计算成零速度或突然减速，影响选择准备；新增实机测试捕获到39/1,429次（2.73%）FixedUpdate重复消费读取，当前动态阈值已全部跳过。",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "ZQvfdV2N7o6yF7x2vljcI6QxnZ5",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "Pilot 已观察到旧判定路径受到影响；原版 Magic Tap 也有同类代码路径。以下先解释名称，再展示完整链路，并分别列出 Pilot 证据与本次实机测试。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnl7QsnO6xnYDAeo8dCSsPJh",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "固定步配置50 Hz（逻辑步长20 ms）不等于每秒收到50份新数据。传感器输入经 Meta 运行时、Quest Link、SDK 状态、骨架和 MRTK 缓存后才供 FixedUpdate 消费读取；骨架在固定步更新不会自动刷新 MRTK 字典。旧代码未核验 MRTK 更新身份，同一缓存位置再次参与差分时 v=0，前次速度非零时还会得到 a<0。图中硬件与封闭运行时内部频率未测，软件频率来自此次测试。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnvSxUCOKckOYXhAcZLksEof",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "2. Pilot 与旧比较实验中的证据",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnkR4p1TfMQ5yvv1R1yFl3db",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "发现背景：2026-10-25 旧实现对比实验。",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "动态模式正常选择有16/48次、球内持续画圈有44/48次在零速记录上触发；这60次均呈现同一 Unity 应用帧、连续固定步位置重复。当时 Magic Tap 2.0 会跳过不足1 mm位移（跳过本次运动计算和触发判断），两者预处理不同，旧结果不能单独归因于动态阈值策略。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnTOilxqpBKoAr4o3Gjuup4g",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "17.4% 不是误触率。",
+              "text_element_style": {
+                "bold": true
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "日志确认的是判定路径，不能推断过滤后这25次会失败或反应时间会改变多少。这批旧日志缺少硬件采样时间戳与硬件帧身份，不能逐条证明传感器内部状态；新增诊断也不能补回历史记录中未采集的信息。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnlG1WRnXkTEwXm9QyRNyX3d",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "4. 影响范围与处理现状",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcnYLVNH6UzUjK71KwBKOojrb",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "当前 Magic Tap 2.0 与 IxDL Dynamic 共用 MRTK 应用事件序号去重、稳定来源和实际接收时间差；本次实测验证了动态阈值分支，其他正式技术尚未全部统一。下一步先单独消除 Oculus Provider 重复注册并复测，再比较 FixedUpdate 与 MRTK 发布新样本后的消费方式，保留各技术的触发、取消和计时条件。本次未改更新方式或 Provider 配置。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "block_id": "doxcncZYaOskjxAbHE1SecYPCuA",
+      "update_text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "依据：",
+              "text_element_style": {}
+            }
+          },
+          {
+            "text_run": {
+              "content": "旧实现比较报告",
+              "text_element_style": {
+                "link": {
+                  "url": "https://kvxm3gyd38.feishu.cn/docx/BHzTdceBNoTTF3xrMz8ci5oknxu"
+                }
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {}
+            }
+          },
+          {
+            "text_run": {
+              "content": "共同运动规则修订",
+              "text_element_style": {
+                "link": {
+                  "url": "https://kvxm3gyd38.feishu.cn/docx/Krvid94LAoLCVjxupfDc5TYkn8f"
+                }
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；Pilot：20261027-11-14-50、11-41-48、11-47-05。新增实机会话：20261028-19-41-51；原始日志快照、逐条关联和校验记录保存在项目 output/hand_sampling_baseline_20261028/20261028-19-41-51。更新：2026-10-28。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "block_type": 2,
+      "text": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "平台说明：",
+              "text_element_style": {}
+            }
+          },
+          {
+            "text_run": {
+              "content": "Meta 手追踪与 Link",
+              "text_element_style": {
+                "link": {
+                  "url": "https://developers.meta.com/vr/documentation/unity/unity-handtracking-overview/"
+                }
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {}
+            }
+          },
+          {
+            "text_run": {
+              "content": "预测姿态与原始时间戳接口的区别",
+              "text_element_style": {
+                "link": {
+                  "url": "https://developers.meta.com/vr/documentation/unity/unity-handtracking-unextrapolated-poses/"
+                }
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "；",
+              "text_element_style": {}
+            }
+          },
+          {
+            "text_run": {
+              "content": "Unity 2020.3 回调执行顺序",
+              "text_element_style": {
+                "link": {
+                  "url": "https://docs.unity3d.com/2020.3/Documentation/Manual/ExecutionOrder.html"
+                }
+              }
+            }
+          },
+          {
+            "text_run": {
+              "content": "。当前 SDK wrapper 为1.76.0；较新的原始姿态接口另有版本与后端要求，当前未接入。",
+              "text_element_style": {}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

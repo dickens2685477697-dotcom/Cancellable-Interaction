@@ -14,6 +14,7 @@ public class StartBallBehavior : MonoBehaviour
     {
         acce = GetComponent<AcceStimulate>();
         s1clock = GameObject.Find("Clock").GetComponent<S1Clock>();
+        acce.MotionTrackingInterrupted += OnTrackingInterrupted;
         acce.InEvent.AddListener(() =>
         {
             s1clock.TapBlueBall();
@@ -43,5 +44,22 @@ public class StartBallBehavior : MonoBehaviour
         startCorrectly = false;
         gameObject.GetComponent<MeshRenderer>().material = oriBall;
         gameObject.SetActive(true);
+    }
+
+    private void OnTrackingInterrupted()
+    {
+        if (!acce.UsesMrtkJointUpdates) return;
+        TureUnstarted();
+        if (s1clock != null)
+        {
+            s1clock.StopAllCoroutines();
+            s1clock.CountdownTime = s1clock.CT;
+            s1clock.ResetStates();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (acce != null) acce.MotionTrackingInterrupted -= OnTrackingInterrupted;
     }
 }

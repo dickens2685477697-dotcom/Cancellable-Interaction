@@ -1,0 +1,171 @@
+{
+  "session": "20261028-19-41-51",
+  "analysis_start_realtime": 125.99723799999992,
+  "analysis_stop_realtime": 154.55327569999963,
+  "scope": "Formal, tracking-valid common-motion span; SDK/provider rates restricted to this same time window.",
+  "instrumented_window_counts_reconciled": true,
+  "whole_session_observed_counts": {
+    "observedSdkReadCount": 220242,
+    "providerUpdateCount": 4929,
+    "poseReadCount": 72300
+  },
+  "hardware_capture_rate_measured": false,
+  "raw_hardware_first_sample_or_lossless_capture_proven": false,
+  "latency_scope": "All stage ages use Unity realtime. SDK-to-MRTK uses pose-match candidate lineage. No SDK clock is subtracted from Unity clock.",
+  "phase_scope": "The instructed static/move/stop phases have no exact logged boundaries; report only their combined interval.",
+  "sdk_streams": [
+    {
+      "instanceId": "-9484",
+      "handedness": "Right",
+      "step": "Render",
+      "tracked_reads": 2028,
+      "observed_read_hz": 71.01852267129092,
+      "observed_read_intervals": {
+        "count": 2027,
+        "min_ms": 8.859199999733391,
+        "p50_ms": 13.921399999617279,
+        "p95_ms": 15.150509999875784,
+        "p99_ms": 24.29395799991653,
+        "max_ms": 28.82550000003903
+      },
+      "valid_sample_timestamps": 2028,
+      "timestamp_comparable_pairs": 2027,
+      "equal_timestamp_pairs": 0,
+      "requested_equals_sample_rows": 2028,
+      "timestamp_intervals": {
+        "count": 2027,
+        "min_ms": 9.89530235528946e-07,
+        "p50_ms": 13.922398997237906,
+        "p95_ms": 13.956011011032388,
+        "p99_ms": 27.84384625207167,
+        "max_ms": 27.878511988092214
+      },
+      "note": "SDK timestamp changes do not prove unique raw camera captures; GetHandState is predicted-pose API."
+    }
+  ],
+  "mrtk_source_streams": [
+    {
+      "sourceId": "1450146322",
+      "handedness": "Right",
+      "events": 2028,
+      "observed_hz": 71.01846544217794,
+      "observed_event_intervals": {
+        "count": 2027,
+        "min_ms": 9.563900000102876,
+        "p50_ms": 13.91730000023017,
+        "p95_ms": 14.789370000244158,
+        "p99_ms": 26.47044600008487,
+        "max_ms": 29.963799999677576
+      }
+    },
+    {
+      "sourceId": "122466498",
+      "handedness": "Right",
+      "events": 2028,
+      "observed_hz": 71.01850226785643,
+      "observed_event_intervals": {
+        "count": 2027,
+        "min_ms": 9.167499999875872,
+        "p50_ms": 13.922099999945203,
+        "p95_ms": 14.840260000028136,
+        "p99_ms": 24.817640000064788,
+        "max_ms": 28.852099999767233
+      }
+    }
+  ],
+  "mrtk_hand_events_in_window": 4056,
+  "sdk_pose_match_events_in_window": 4056,
+  "distinct_applied_sdk_states_referenced": 2028,
+  "mrtk_events_per_referenced_sdk_state": {
+    "2": 2028
+  },
+  "all_states_referenced_by_two_sources_same_hand_same_frame": true,
+  "consumer_groups": [
+    {
+      "ownerInstanceId": "-11750",
+      "sourceId": "1450146322",
+      "trackingEpoch": "3",
+      "mode": "ixdlDynamic",
+      "rows": 1429,
+      "span_seconds": 28.556037699999706,
+      "callback_hz": 50.00693776223775,
+      "callback_record_intervals": {
+        "count": 1428,
+        "min_ms": 0.36460000001170556,
+        "p50_ms": 14.077199999974255,
+        "p95_ms": 28.112169999667458,
+        "p99_ms": 41.39226200023131,
+        "max_ms": 54.76510000016788
+      },
+      "estimated_application_fps": 71.0182561497326,
+      "statuses": {
+        "baseline": 1,
+        "velocity_warmup": 1,
+        "accepted": 1388,
+        "duplicate_or_out_of_order": 39
+      },
+      "repeated_or_out_of_order_reads": 39,
+      "repeated_fraction": 0.02729181245626312,
+      "accepted_samples_including_warmup": 1390,
+      "accepted_observation_rate_hz": 48.64120206705058,
+      "accepted_sample_interval_ms": {
+        "count": 1389,
+        "min_ms": 10.0915,
+        "p50_ms": 14.645399999999999,
+        "p95_ms": 27.93976,
+        "p99_ms": 41.682348,
+        "max_ms": 43.464299999999994
+      },
+      "mrtk_read_links": 1429,
+      "sdk_pose_match_candidate_links": 1429,
+      "sdk_read_return_to_mrtk_receive": {
+        "count": 1429,
+        "min_ms": 8.7997999999061,
+        "p50_ms": 13.444000000163214,
+        "p95_ms": 14.32228000003306,
+        "p99_ms": 24.19021199988493,
+        "max_ms": 28.46850000014456
+      },
+      "mrtk_receive_to_consumer_observation": {
+        "count": 1429,
+        "min_ms": 9.434200000214332,
+        "p50_ms": 13.764999999693828,
+        "p95_ms": 14.583740000125545,
+        "p99_ms": 27.495720000297297,
+        "max_ms": 28.557699999964825
+      },
+      "sdk_read_return_to_consumer_observation": {
+        "count": 1429,
+        "min_ms": 22.97199999975419,
+        "p50_ms": 27.357999999821914,
+        "p95_ms": 29.285700000036734,
+        "p99_ms": 41.19939999978669,
+        "max_ms": 41.83259999990696
+      },
+      "sdk_to_mrtk_frame_differences": {
+        "1": 1429
+      },
+      "mrtk_to_read_frame_differences": {
+        "1": 1429
+      },
+      "sdk_to_read_frame_differences": {
+        "2": 1429
+      },
+      "selected_source_events_published_within_analysis_window": 2028,
+      "of_those_events_accepted_by_this_consumer": 1389,
+      "published_events_not_accepted_within_window": 639,
+      "unaccepted_note": "Latest-value polling may overwrite intermediate events; inactive detector/edge effects also matter. Not sensor or transport loss."
+    }
+  ],
+  "duplicate_evidence_rows": 39,
+  "all_duplicate_rows_same_frame_and_sequence": true,
+  "all_duplicate_rows_skipped_without_selection": true,
+  "repeat_record_intervals": {
+    "count": 39,
+    "min_ms": 0.36460000001170556,
+    "p50_ms": 0.42170000006080954,
+    "p95_ms": 0.49524999981258594,
+    "p99_ms": 2.4588080000375987,
+    "max_ms": 3.643800000190822
+  }
+}

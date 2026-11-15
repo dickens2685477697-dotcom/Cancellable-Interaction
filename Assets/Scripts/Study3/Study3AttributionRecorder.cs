@@ -11,7 +11,7 @@ public sealed class Study3AttributionRecorder : IDisposable
     public const string SettingsHeader = "sessionId,settingsRevision,event,frame,time,realtime,case,id,mode,parametersJson,schemaVersion";
     public const string TrialHeader = "sessionId,trialSequence,event,frame,time,fixedTime,realtime,case,id,mode,expectedAction,actualAction,outcome,reason,settingsRevision,participantId,protocolVersion,blockLabel,taskCondition,declaredIntent,targetLayoutJson,schemaVersion";
     public const string PrefixHeader = Study3LegacyTrialCsv.PrefixHeader;
-    public const string ResultHeader = Study3LegacyTrialCsv.Header;
+    public static readonly string ResultHeader = Study3LegacyTrialCsv.Header;
     private readonly BallSpawner host;
     private readonly string session;
     private readonly string manifestPath;
@@ -176,17 +176,17 @@ public sealed class Study3AttributionRecorder : IDisposable
         return result;
     }
 
-    public void WriteNormalized(string legacyRow)
+    public void WriteNormalized(string legacyRow, double? pendingStateSeconds = null)
     {
         if (closed) return;
         List<string> raw = Study3LogEncoding.ParseCsv(legacyRow);
         if (raw.Count < 26) throw new FormatException("Legacy result is shorter than the trial prefix.");
         bool mine = raw[19].Equals("True", StringComparison.OrdinalIgnoreCase);
         string expected = Expected(mine);
-        results.WriteLine(Study3LegacyTrialCsv.Normalize(legacyRow, host.tatgetPos.Count,
+        results.WriteLine(Study3LegacyTrialCsv.NormalizeWithPendingState(legacyRow, host.tatgetPos.Count, pendingStateSeconds,
             session, TrialSequence, SettingsRevision, expected, lastAction,
             Study3AttributionLedger.TaskResult(expected, lastAction, lastAction == "unknown" ? "aborted" : "completed"),
-            host.studyParticipantId, host.studyProtocolVersion, host.studyBlockLabel, host.studyTaskCondition, host.studyDeclaredIntent, 2));
+            host.studyParticipantId, host.studyProtocolVersion, host.studyBlockLabel, host.studyTaskCondition, host.studyDeclaredIntent, Study3LegacyTrialCsv.ResultSchemaVersion));
     }
 
     public void CaptureSettings(string stage)

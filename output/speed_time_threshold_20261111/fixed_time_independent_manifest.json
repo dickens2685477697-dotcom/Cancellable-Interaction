@@ -1,0 +1,14 @@
+{
+  "source": "D:\\2026.7.18PilotStudy\\Collect_kinematic_data\\MagicTap_15被试完整分析_20261108\\run\\data.csv",
+  "sha256": "08b1ec736a154714935bdf1f25723abcdf579bfa76b0e5a637061eefae3181e0",
+  "participants": 15,
+  "trials": 300,
+  "previous_speed_threshold_used_as_input": false,
+  "time_zero": "target enter event; actual application reception time",
+  "instantaneous_speed": "last observed speed at or before deadline, no interpolation",
+  "prior_continuous50ms_max_speed": "maximum of all consecutive samples in at least 50 ms immediately preceding the selected endpoint",
+  "selection": "ceil(coverage*N)-th ordered observed speed or window maximum; no old numerical speed threshold",
+  "coverage": "trial coverage, also participant-equally weighted because 20 trials each",
+  "max_sample_age_ms": 17.260999995099993,
+  "limits": "timing and coverage rules are engineering choices; no subjective stability labels; sample-level persistence is not proof of subjective stability"
+}

@@ -1,0 +1,96 @@
+{
+  "session": "20261028-19-23-25",
+  "purpose": "preflight only; no start target or formal movement-phase markers",
+  "sdk_tracked_reads": {
+    "Left": {
+      "count": 537,
+      "span_seconds": 7.564855999999963,
+      "observation_hz_over_tracked_span": 70.85395941442938,
+      "sdk_sample_timestamp_intervals_ms": {
+        "count": 536,
+        "min": 13.790500990580767,
+        "p50": 13.922401500167325,
+        "p95": 13.955936236015987,
+        "p99": 27.832150197355077,
+        "max": 27.845800999784842
+      },
+      "sdk_sample_timestamp_same_pairs": 0,
+      "application_frame_rate_over_tracked_span": 70.85395941442938
+    },
+    "Right": {
+      "count": 511,
+      "span_seconds": 7.202152400000159,
+      "observation_hz_over_tracked_span": 70.81216443017628,
+      "sdk_sample_timestamp_intervals_ms": {
+        "count": 510,
+        "min": 13.790500990580767,
+        "p50": 13.922401994932443,
+        "p95": 13.95586490543792,
+        "p99": 27.84013428608887,
+        "max": 27.845800999784842
+      },
+      "sdk_sample_timestamp_same_pairs": 0,
+      "application_frame_rate_over_tracked_span": 70.81216443017628
+    }
+  },
+  "mrtk_source_streams": [
+    {
+      "sourceId": "428488934",
+      "handedness": "Right",
+      "count": 511,
+      "span_seconds": 7.190119599999889,
+      "observed_hz": 70.93066991542226
+    },
+    {
+      "sourceId": "1383148243",
+      "handedness": "Left",
+      "count": 536,
+      "span_seconds": 7.534473299999718,
+      "observed_hz": 71.00695412909884
+    },
+    {
+      "sourceId": "1471353358",
+      "handedness": "Right",
+      "count": 511,
+      "span_seconds": 7.185724799999662,
+      "observed_hz": 70.97405121888664
+    },
+    {
+      "sourceId": "453383386",
+      "handedness": "Left",
+      "count": 536,
+      "span_seconds": 7.533471900000222,
+      "observed_hz": 71.0163928533382
+    }
+  ],
+  "sdk_states_referenced_by_mrtk": 1047,
+  "mrtk_hand_events": 2094,
+  "mrtk_events_per_applied_sdk_state": {
+    "2": 1047
+  },
+  "every_state_referenced_by_two_distinct_sources_same_hand_same_frame": true,
+  "native_sdk_call_duration_ms": {
+    "count": 1048,
+    "min": 0.00019999970390927047,
+    "p50": 0.000999999883788405,
+    "p95": 0.0017000002117129043,
+    "p99": 0.0018000000636675395,
+    "max": 0.02170000016121776
+  },
+  "requested_minus_sample_timestamp_ms": {
+    "count": 1048,
+    "min": 0.0,
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0,
+    "max": 0.0
+  },
+  "hardware_capture_rate_measured": false,
+  "sdk_pose_capture_time_semantics_verified": false,
+  "configuration": {
+    "scene": "Assets/Scenes/Study3/study3.unity",
+    "toolkitProfile": "Assets/MixedRealityToolkit.Generated/CustomProfiles/Study3MixedRealityToolkitConfigurationProfile.asset",
+    "inputProfile": "Assets/MixedRealityToolkit.Generated/CustomProfiles/20221023OculusMixedRealityInputSystemProfile.asset",
+    "oculusDeviceManagerEntries": 2
+  }
+}

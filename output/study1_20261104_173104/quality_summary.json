@@ -1,0 +1,166 @@
+{
+  "continuous_file": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261104-17-31-04\\20261104-17-31-04-FastTapIn-continuous.csv",
+  "events_file": "C:\\Users\\tangx\\AppData\\LocalLow\\Angelo Morty And Cindy Co\\show4_0\\Logs\\20261104-17-31-04\\20261104-17-31-04-FastTapIn-events.csv",
+  "continuous_rows": 7465,
+  "inside_rows": 5132,
+  "inner_rows": 5132,
+  "events": {
+    "enter": 21,
+    "hold_complete": 20,
+    "success": 20,
+    "early_exit": 1
+  },
+  "matched_successes": 20,
+  "issues": [],
+  "duplicate_source_epoch_sequence": 0,
+  "nonpositive_time_intervals": 0,
+  "event_nonpositive_time_intervals": 0,
+  "gap_over_50ms": 0,
+  "gap_over_250ms": 0,
+  "dt_median_seconds": 0.013912549999076873,
+  "dt_p95_seconds": 0.014187799999495886,
+  "dt_max_seconds": 0.01659230000223033,
+  "source_count": 1,
+  "tracking_epoch_count": 1,
+  "joint_validity": {
+    "IndexDistalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "IndexKnuckle": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "IndexMetacarpal": {
+      "valid": 0,
+      "total": 7465
+    },
+    "IndexMiddleJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "IndexTip": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "MiddleDistalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "MiddleKnuckle": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "MiddleMetacarpal": {
+      "valid": 0,
+      "total": 7465
+    },
+    "MiddleMiddleJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "MiddleTip": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "Palm": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "PinkyDistalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "PinkyKnuckle": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "PinkyMetacarpal": {
+      "valid": 0,
+      "total": 7465
+    },
+    "PinkyMiddleJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "PinkyTip": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "RingDistalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "RingKnuckle": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "RingMetacarpal": {
+      "valid": 0,
+      "total": 7465
+    },
+    "RingMiddleJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "RingTip": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "ThumbDistalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "ThumbMetacarpalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "ThumbProximalJoint": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "ThumbTip": {
+      "valid": 7465,
+      "total": 7465
+    },
+    "Wrist": {
+      "valid": 7465,
+      "total": 7465
+    }
+  },
+  "hold_seconds": {
+    "n": 20,
+    "mean": 3.007038784999166,
+    "median": 3.0070556999999027,
+    "min": 3.006012700003339,
+    "max": 3.007622099976288
+  },
+  "extra_wait_seconds": {
+    "n": 20,
+    "mean": 0.5289916400026418,
+    "median": 0.5149345999961952,
+    "min": 0.43144229997415096,
+    "max": 0.6680999000091106
+  },
+  "entry_0p2s_min_accel": {
+    "n": 20,
+    "mean": -30.336887645721436,
+    "median": -28.29380989074707,
+    "min": -60.4276123046875,
+    "max": -13.371545791625977
+  },
+  "hold_mean_speed": {
+    "n": 20,
+    "mean": 0.009603115679785949,
+    "median": 0.009605247673850145,
+    "min": 0.007014222658472087,
+    "max": 0.013925949299138823
+  },
+  "post_exit_0p3s_mean_speed": {
+    "n": 20,
+    "mean": 1.2258680021220987,
+    "median": 1.196725609627637,
+    "min": 0.6682862598787654,
+    "max": 1.7342406768690457
+  }
+}
