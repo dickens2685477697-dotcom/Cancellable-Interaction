@@ -75,4 +75,15 @@ Magic使用其配置的固定速度门限；IxDL按前一个接受更新的速�
 
 本次结论是共同处理规则已在代码中落实，且通过离线编译与回归检查。阈值独立输入，加速度阈值不再使用被误合并的共同字段。旧结果用于解释为什么需要修订；新规则是否降低短时画圈触发、改变长等待尾部或影响正常选择效率，需要新的设备实验回答。
 
+## 7. 2026-11-15：原版 Magic Tap 日志修正
+
+本节说明当前原版 `magicTap`（枚举值 2）的日志，不改变前文 10/26 的历史实验结论。
+
+- 原版已通过 `AcceStudy3` 接收 MRTK 关节更新、按序号跳过重复样本，并使用实际接收时间差计算运动。新采集的 `session-settings.csv` 将其 `motionRulesVersion` 标为 `magictap-provider-v1`，`motionTimestampKind` 标为 `mrtk_update_received_realtime`，不再误标为 `legacy_fixed_step`。这是应用接收时间，不是硬件采集时间；`requestedSamplingHz`、`fixedDeltaTime` 等列仍描述 Unity 固定步长配置，不能用来替代实际手部采样间隔。
+- 原版仍使用带符号速率变化率、包围盒/指尖或远端关节接触及准备确认逻辑，因此不将它标为 IxDL / MagicTap 2.0 的 `shared-provider-v3`。两者的现有规则标识保持不变。
+- 原版选择回调在 `CompleteSelection()` 同步写入试次日志之前设置 `triggerCondition`。A/B 条件属于当前试次；完成并重置后，不再把旧条件写回下一试次。正常目标和雷球触发走同一修正。
+- 保留现有 CSV 列、文件名和 schemaVersion；历史日志不回填。原版加速度字段的符号含义、参数、确认时间、接触范围和反馈均未改变。这次更新不代表三技术的实验环境已全部统一。
+
+运行 `tools/ValidateMagicTapLogging.ps1` 可检查实际选择回调的同步写入边界、A/B 条件、跨试次清理、雷球触发/取消以及三种模式的采样标识。该检查使用隔离桩模拟试次结束，不替代 Unity 或头显实测。
+
 下载附件包含本次源码修改、差异补丁、验证脚本与本说明，不包含新采集的实验数据。

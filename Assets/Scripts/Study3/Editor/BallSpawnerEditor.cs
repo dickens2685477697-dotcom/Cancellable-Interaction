@@ -9,7 +9,6 @@ public sealed class BallSpawnerEditor : Editor
     {
         "m_Script",
         "SelectionSettings",
-        "samplingRateHz",
         "rainbowArcPlacement",
         "showContact010TriggerRegion",
         "showModeReadyRing",
@@ -18,6 +17,7 @@ public sealed class BallSpawnerEditor : Editor
         "directionCancelConeLength",
         "useEntryDirectionAxisForDirectionCancel",
         "entryDirectionConeHalfAngle",
+        "directionCancelMinSpeed",
         "direction010CDAngleThreshold",
         "direction010SmoothingAlpha",
         "direction010MinSpeedThreshold",
@@ -66,13 +66,6 @@ public sealed class BallSpawnerEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("samplingRateHz"));
-        EditorGUILayout.HelpBox(
-            "控制 Study3Experiment 的全局 FixedUpdate 和 trajectory 日志频率（默认50 Hz）。"
-            + "MRTK 样本驱动的运动与触发使用关节更新的接收时间；固定步频率不等于手部数据更新频率。停用Spawner后恢复原时间步。Dynamic Stop仍受Sample Interval限制。",
-            MessageType.Info);
-        EditorGUILayout.Space();
-
         SerializedProperty settingsProperty = serializedObject.FindProperty("SelectionSettings");
         EditorGUILayout.LabelField("Shared Selection Technique Settings", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(settingsProperty);
@@ -94,7 +87,7 @@ public sealed class BallSpawnerEditor : Editor
         serializedObject.Update();
         string[] excludedFields = settings != null
             ? SharedFieldNames
-            : new[] { "m_Script", "SelectionSettings", "samplingRateHz" };
+            : new[] { "m_Script", "SelectionSettings" };
         SerializedProperty property = serializedObject.GetIterator();
         bool enterChildren = true;
         while (property.NextVisible(enterChildren))

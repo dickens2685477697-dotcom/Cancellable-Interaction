@@ -77,6 +77,11 @@ public static class Study3AttributionCapture
             v["releaseSampleTime"] = release.AttributionSampleTime;
             v["releasePoseValid"] = release.AttributionPoseValid;
             v["releaseDistanceDelta"] = release.AttributionDistanceDelta;
+            bool foldedRelease = release.AttributionObservation == "folded_fingers_release_from_pending";
+            v["releaseBaselineDistance"] = foldedRelease ? (object)release.AttributionBaselineDistance : null;
+            v["releaseMinimumDistance"] = foldedRelease ? (object)release.AttributionMinimumDistance : null;
+            v["releaseCurrentDistance"] = foldedRelease ? (object)release.AttributionCurrentDistance : null;
+            v["releaseDistanceRule"] = foldedRelease ? "pending_minimum_reopening_v2" : null;
             v["releaseOpeningSpeed"] = release.AttributionOpeningSpeed;
             v["releaseThreshold"] = release.AttributionThreshold;
             v["releaseGatePassed"] = release.AttributionGatePassed;

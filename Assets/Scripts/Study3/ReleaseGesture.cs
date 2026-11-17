@@ -6,9 +6,8 @@ using UnityEngine.Events;
 [DisallowMultipleComponent]
 public class ReleaseGesture : MonoBehaviour
 {
-    // Release Tap uses the frame-to-frame opening speed of the folded fingers,
-    // not the absolute distance between fingers.
-    [Tooltip("Per-frame increase in the average thumb-to-middle/ring/pinky tip distance required to detect release, in meters.")]
+    // Distance increase from the smallest average distance observed during pending.
+    [Tooltip("Increase in average thumb-to-middle/ring/pinky tip distance from the smallest pending distance, in meters.")]
     public float distanceDeltaThreshold = 0.01f;
 
     public UnityEvent ReleaseEvent = new UnityEvent();
@@ -17,6 +16,8 @@ public class ReleaseGesture : MonoBehaviour
     public float thumbRingDistance;
     public float thumbPinkyDistance;
     public float currentAverageDistance;
+    public float baselineAverageDistance;
+    public float minimumAverageDistance;
     public float previousAverageDistance;
     public float currentDistanceDelta;
     public float indexThumbDistance;
@@ -33,14 +34,21 @@ public class ReleaseGesture : MonoBehaviour
     public bool AttributionHistoryReady { get; private set; }
     public float AttributionDistanceDelta { get; private set; }
     public float AttributionOpeningSpeed { get; private set; }
+    public float AttributionBaselineDistance { get; private set; } = float.NaN;
+    public float AttributionMinimumDistance { get; private set; } = float.NaN;
+    public float AttributionCurrentDistance { get; private set; } = float.NaN;
     public float AttributionThreshold { get; private set; }
 
-    private bool hasPreviousDistance = false;
+    private bool releaseTrackingActive = false;
+    private bool hasReleaseBaseline = false;
     private bool hasPreviousIndexThumbDistance = false;
 
     public void ResetGesture()
     {
-        hasPreviousDistance = false;
+        releaseTrackingActive = false;
+        hasReleaseBaseline = false;
+        baselineAverageDistance = 0f;
+        minimumAverageDistance = 0f;
         hasPreviousIndexThumbDistance = false;
         previousAverageDistance = 0f;
         previousIndexThumbDistance = 0f;
@@ -49,41 +57,74 @@ public class ReleaseGesture : MonoBehaviour
         indexThumbOpeningSpeed = 0f;
     }
 
+    // Call at the actual pending transition. If a fingertip is unavailable,
+    // the first valid sample while still pending becomes the baseline.
+    public void BeginRelease(Handedness handedness = Handedness.Any)
+    {
+        ResetGesture();
+        releaseTrackingActive = true;
+        AttributionBaselineDistance = float.NaN;
+        AttributionMinimumDistance = float.NaN;
+        AttributionCurrentDistance = float.NaN;
+        if (TryGetAverageDistance(handedness, out float averageDistance))
+        {
+            baselineAverageDistance = averageDistance;
+            minimumAverageDistance = averageDistance;
+            currentAverageDistance = averageDistance;
+            previousAverageDistance = averageDistance;
+            hasReleaseBaseline = true;
+            AttributionBaselineDistance = averageDistance;
+            AttributionMinimumDistance = averageDistance;
+            AttributionCurrentDistance = averageDistance;
+        }
+    }
+
     public bool CheckRelease(Handedness handedness = Handedness.Any)
     {
-        AttributionObservation = "folded_fingers_release";
+        AttributionObservation = "folded_fingers_release_from_pending";
         AttributionSampleTime = Time.realtimeSinceStartupAsDouble;
         AttributionGatePassed = false;
-        AttributionHistoryReady = false;
+        AttributionHistoryReady = hasReleaseBaseline;
         AttributionDistanceDelta = AttributionOpeningSpeed = float.NaN;
         AttributionThreshold = distanceDeltaThreshold;
-        AttributionPoseValid = TryGetAverageDistance(handedness, out float averageDistance);
+        float averageDistance = 0f;
+        AttributionPoseValid = releaseTrackingActive && TryGetAverageDistance(handedness, out averageDistance);
         if (!AttributionPoseValid)
         {
-            ResetGesture();
+            // Preserve the pending minimum through a temporary missing fingertip sample.
+            // Contact or hand tracking loss resets it when pending ends.
+            AttributionCurrentDistance = float.NaN;
             PublishAttribution();
             return false;
         }
 
         currentAverageDistance = averageDistance;
-
-        if (!hasPreviousDistance)
+        AttributionCurrentDistance = averageDistance;
+        if (!hasReleaseBaseline)
         {
+            baselineAverageDistance = averageDistance;
+            minimumAverageDistance = averageDistance;
             previousAverageDistance = averageDistance;
-            hasPreviousDistance = true;
+            hasReleaseBaseline = true;
+            AttributionBaselineDistance = averageDistance;
+            AttributionMinimumDistance = averageDistance;
             PublishAttribution();
             return false;
         }
 
-        // A release is detected only when the average distance increases enough
-        // compared with the previous frame.
-        currentDistanceDelta = averageDistance - previousAverageDistance;
-        AttributionHistoryReady = true;
+        // Closing the hand updates the reference; reopening is measured from
+        // the smallest average distance seen during this pending interval.
+        if (averageDistance < minimumAverageDistance)
+        {
+            minimumAverageDistance = averageDistance;
+        }
         previousAverageDistance = averageDistance;
-
+        currentDistanceDelta = averageDistance - minimumAverageDistance;
+        AttributionMinimumDistance = minimumAverageDistance;
+        AttributionHistoryReady = true;
         AttributionDistanceDelta = currentDistanceDelta;
-        AttributionGatePassed = currentDistanceDelta >= distanceDeltaThreshold;
-        if (currentDistanceDelta >= distanceDeltaThreshold)
+        AttributionGatePassed = currentDistanceDelta > 0f && currentDistanceDelta >= distanceDeltaThreshold;
+        if (AttributionGatePassed)
         {
             PublishAttribution();
             ReleaseEvent.Invoke();
@@ -164,7 +205,7 @@ public class ReleaseGesture : MonoBehaviour
         thumbRingDistance = Vector3.Distance(thumbPose.Position, ringPose.Position);
         thumbPinkyDistance = Vector3.Distance(thumbPose.Position, pinkyPose.Position);
         averageDistance = (thumbMiddleDistance + thumbRingDistance + thumbPinkyDistance) / 3f;
-        return true;
+        return !float.IsNaN(averageDistance) && !float.IsInfinity(averageDistance);
     }
 
     private bool TryGetIndexThumbDistance(Handedness handedness, out float distance)

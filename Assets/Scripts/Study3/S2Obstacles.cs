@@ -108,33 +108,17 @@ public partial class S2Obstacles : MonoBehaviour
     private Vector3 dwellWithdrawEntryVelocityDirection = Vector3.zero;
     private Vector3 dwellWithdrawCurrentVelocityDirection = Vector3.zero;
     private readonly Queue<Vector3> dwellWithdrawPositionHistory = new Queue<Vector3>(3);
+    private readonly Study3DirectionConsecutiveTracker directionAngleTracker = new Study3DirectionConsecutiveTracker();
+    private readonly Study3DirectionConsecutiveTracker pinchDirectionAngleTracker = new Study3DirectionConsecutiveTracker();
     private bool direction010CancelTriggered = false;
     private bool direction010ReentryRequired = false;
-    private readonly Queue<Vector3> direction010PositionHistory = new Queue<Vector3>();
-    private bool direction010HasSmoothedDirection = false;
-    private Vector3 direction010SmoothedDirection = Vector3.zero;
     private bool swing010CancelTriggered = false;
     private bool swing010HasEntryDirection = false;
     private Vector3 swing010EntryDirection = Vector3.zero;
     private bool pinchDirectionCancelTriggered = false;
     private bool pinchDirectionReentryRequired = false;
-    private readonly Queue<Vector3> pinchDirectionCenterPositionHistory = new Queue<Vector3>();
-    private readonly Queue<double> pinchDirectionCenterTimeHistory = new Queue<double>();
-    private bool pinchDirectionHasSample;
-    private uint pinchDirectionSourceId;
-    private long pinchDirectionEpoch, pinchDirectionSequence;
-    private double pinchDirectionPreviousSampleTime;
-    private bool pinchDirectionHasSmoothedDirection = false;
-    private Vector3 pinchDirectionSmoothedDirection = Vector3.zero;
-    private bool directionCancelLowSpeedMet = false;
     private bool directionCancelEntryAxisCaptured = false;
     private Vector3 directionCancelEntryAxis = Vector3.zero;
-    private bool direction010HasAcceptedPosition = false;
-    private Vector3 direction010LastAcceptedPosition = Vector3.zero;
-    private bool pinchDirectionHasRawPosition = false;
-    private Vector3 pinchDirectionPreviousRawPosition = Vector3.zero;
-    private bool pinchDirectionHasAcceptedPosition = false;
-    private Vector3 pinchDirectionLastAcceptedPosition = Vector3.zero;
     private DirectionCDArrowVisual directionCDArrowVisual;
     public void Start()
     {
@@ -851,9 +835,8 @@ public partial class S2Obstacles : MonoBehaviour
 
     public void SetReleaseTapMode()
     {
-        // Obstacle Release Tap mirrors target-ball behavior:
-        // ReactTap entry starts the reacted state, release cancels, and leaving
-        // the obstacle without cancellation registers the obstacle trigger.
+        // Obstacle 010-Release mirrors the target: contact starts pending,
+        // a distance increase cancels, and an uncanceled ReactTap exit triggers.
         EnsureReleaseGesture();
 
         Acce.InEvent.AddListener(() =>
@@ -865,7 +848,7 @@ public partial class S2Obstacles : MonoBehaviour
                 canceled = false;
                 fastTapCancelTriggered = false;
                 ResetFastTapTiming();
-                ResetReleaseGestureTracking();
+                BeginReleaseGestureTracking();
                 ballSpawner.errorInTimes++;
                 Player.TurnShallow();
                 handInBall2 = true;
@@ -904,8 +887,6 @@ public partial class S2Obstacles : MonoBehaviour
                 return;
             }
 
-            bool enteredReactTap = !handInBall;
-
             if (!handInBall2)
             {
                 ballSpawner.errorInTimes++;
@@ -913,6 +894,7 @@ public partial class S2Obstacles : MonoBehaviour
                 handInBall2 = true;
                 fastTapEntryTimestamp = Time.time;
                 fastTapReactTimestamp = -1f;
+                BeginReleaseGestureTracking();
                 if (!triggered)
                 {
                     ballSpawner.area_type = 2;
@@ -939,14 +921,15 @@ public partial class S2Obstacles : MonoBehaviour
             canceled = false;
             fastTapCancelTriggered = false;
 
-            if (enteredReactTap)
-            {
-                ResetReleaseGestureTracking();
-            }
         });
 
         reactTap.AfterOutEvent.AddListener(() =>
         {
+            // Give a release observed on the exit callback precedence over confirmation.
+            if ((handInBall || handInBall2) && !fastTapCancelTriggered && !fastTapReentryRequired && !fastTapCanceledUntilExit)
+            {
+                CheckReleaseTapCancel();
+            }
             // Leaving the obstacle confirms only if no release-cancel or other cancel happened.
             bool shouldConfirm = handInBall
                 && !fastTapCancelTriggered
@@ -1060,7 +1043,7 @@ public partial class S2Obstacles : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 Player.showCircle();
                 fastTapReactTimestamp = Time.time;
-                ResetReleaseGestureTracking();
+                BeginReleaseGestureTracking();
             }
 
             reactReleaseSpeedAcceMet = true;
@@ -1249,9 +1232,7 @@ public partial class S2Obstacles : MonoBehaviour
                 canceled = false;
                 speedReleaseMinSpeedMet = false;
                 direction010CancelTriggered = false;
-                direction010PositionHistory.Clear();
-                direction010HasSmoothedDirection = false;
-                direction010SmoothedDirection = Vector3.zero;
+                ResetDirection010ObstacleTrackingWindow();
                 fastTapEntryTimestamp = Time.time;
             }
 
@@ -1271,8 +1252,7 @@ public partial class S2Obstacles : MonoBehaviour
             }
 
             bool directionDecisionReady = false;
-            bool shouldCancelForDirection = speedReleaseMinSpeedMet
-                && !speedReleaseTriggered
+            bool shouldCancelForDirection = !speedReleaseTriggered
                 && !speedReleaseReentryRequired
                 && IsDirection010CancelMovement(out directionDecisionReady);
 
@@ -2124,9 +2104,13 @@ public partial class S2Obstacles : MonoBehaviour
                 {
                     dwellReleaseInside = true;
                     dwellReleaseEntryTimestamp = Time.time;
-                    ResetReleaseGestureTracking();
+                    BeginReleaseGestureTracking();
                     ballSpawner.errorInTimes++;
                     handInBall2 = true;
+                }
+                if (dwellReleaseInside && !dwellReleaseCancelTriggered && !dwellReleaseReentryRequired)
+                {
+                    CheckDwellReleaseCancel();
                 }
             });
 
@@ -2460,7 +2444,7 @@ public partial class S2Obstacles : MonoBehaviour
                     ballSpawner.index = ballIndex;
                 }
 
-                // 在球内每个 FixedUpdate 通过 InEvent 检测一次：可调窗口内的平滑方向接近朝向用户方向时取消误触。
+                // 在障碍球内的每次新手部更新中检查方向；连续四次符合取消角度时取消。
                 if (IsDirection010CancelMovement())
                 {
                     TriggerDirection010ObstacleCancel();
@@ -2620,6 +2604,7 @@ public partial class S2Obstacles : MonoBehaviour
             {
                 pinchReleaseTriggerArmed = true;
                 ResetPinchDirectionObstacleTrackingWindow();
+                if (inBall) IsPinchDirectionCancelMovement(); // Prime at the pending transition.
             }
         });
 
@@ -2827,12 +2812,12 @@ public partial class S2Obstacles : MonoBehaviour
         }
 
         if (modeSelected == 7
-            && handInBall
+            && (handInBall || handInBall2)
             && !fastTapCancelTriggered
             && !fastTapReentryRequired
             && !fastTapCanceledUntilExit)
         {
-            // While the hand stays inside the ReactTap region, an opening gesture cancels the attempt.
+            // Pending starts on contact; opening the folded fingers cancels the attempt.
             CheckReleaseTapCancel();
         }
 
@@ -3024,7 +3009,7 @@ public partial class S2Obstacles : MonoBehaviour
 
     private void TriggerFastTapCancel()
     {
-        if (fastTapCancelTriggered || !handInBall)
+        if (fastTapCancelTriggered || (!handInBall && !(modeSelected == (int)BallSpawner.Mode.release010 && handInBall2)))
         {
             return;
         }
@@ -3057,6 +3042,10 @@ public partial class S2Obstacles : MonoBehaviour
         {
             return;
         }
+
+        // Evaluate cancellation on this sample before allowing a speed confirmation.
+        CheckReactReleaseCancel();
+        if (reactReleaseTriggered || reactReleaseReentryRequired) return;
 
         if (reactTap != null && reactTap.MotionSampleValid && reactTap.V_vec >= ballSpawner.reactReleaseIndexSpeedThreshold)
         {
@@ -3164,6 +3153,13 @@ public partial class S2Obstacles : MonoBehaviour
             return;
         }
 
+        // Evaluate cancellation on this sample before allowing a speed confirmation.
+        if (modeSelected == (int)BallSpawner.Mode.speedRelease && speedReleaseMinSpeedMet)
+        {
+            CheckSpeedReleaseCancel();
+            if (speedReleaseTriggered || speedReleaseReentryRequired) return;
+        }
+
         float indexSpeed = GetCurrentIndexSpeed();
         if (float.IsNaN(indexSpeed) || float.IsInfinity(indexSpeed)) return;
         if (!speedReleaseMinSpeedMet)
@@ -3172,7 +3168,14 @@ public partial class S2Obstacles : MonoBehaviour
             {
                 speedReleaseMinSpeedMet = true;
                 LogSpeedStudy("armed");
-                ResetReleaseGestureTracking();
+                if (modeSelected == (int)BallSpawner.Mode.speedRelease)
+                {
+                    BeginReleaseGestureTracking();
+                }
+                else
+                {
+                    ResetReleaseGestureTracking();
+                }
             }
 
             return;
@@ -3433,6 +3436,7 @@ public partial class S2Obstacles : MonoBehaviour
         if (exitedByIndex)
         {
             inBall = false;
+            ResetPinchDirectionObstacleTrackingWindow();
         }
         else
         {
@@ -3483,303 +3487,13 @@ public partial class S2Obstacles : MonoBehaviour
     }
     private bool IsPinchDirectionCancelMovement()
     {
-        if (ballSpawner == null)
+        if (ballSpawner == null || Acce == null) return false;
+        if (!TryGetPinchDirectionCenterPoint(out Vector3 center))
         {
+            pinchDirectionAngleTracker.Reset();
             return false;
         }
-
-        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
-        CaptureDirectionCancelEntryAxisIfNeeded();
-        Collider collider = GetComponent<Collider>();
-        Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
-        Vector3 windowMovement = GetPinchDirectionWindowMovement(out float centerSpeed);
-        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(centerSpeed);
-        if (windowMovement.sqrMagnitude <= 0.0000001f)
-        {
-            RecordPinchDirectionDebug(
-                entryDirectionAxisMode && centerSpeed < GetEntryDirectionCancelLowSpeedThreshold()
-                    ? "entry_direction_frame_skipped_low_speed"
-                    : entryDirectionAxisMode && !speedGatePass
-                        ? "direction_speed_below_threshold"
-                    : pinchDirectionCenterPositionHistory.Count < GetPinchDirectionWindowFrameCount() ? "not_ready_window" : "zero_window_movement",
-                false,
-                windowMovement,
-                Vector3.zero,
-                false,
-                entryDirectionAxisMode ? directionCancelEntryAxis : Vector3.zero,
-                float.NaN,
-                false,
-                centerSpeed,
-                ballCenter,
-                viewerPosition);
-            return false;
-        }
-
-        if (entryDirectionAxisMode)
-        {
-            if (!speedGatePass)
-            {
-                RecordPinchDirectionDebug(
-                    "direction_speed_below_threshold",
-                    false,
-                    windowMovement,
-                    Vector3.zero,
-                    false,
-                    directionCancelEntryAxis,
-                    float.NaN,
-                    false,
-                    centerSpeed,
-                    ballCenter,
-                    viewerPosition);
-                return false;
-            }
-        }
-        else
-        {
-            float minSpeed = GetPinchDirectionMinSpeedThreshold();
-            if (minSpeed > 0f && centerSpeed < minSpeed)
-            {
-                RecordPinchDirectionDebug(
-                    "speed_too_low",
-                    false,
-                    windowMovement,
-                    Vector3.zero,
-                    false,
-                    Vector3.zero,
-                    float.NaN,
-                    false,
-                    centerSpeed,
-                    ballCenter,
-                    viewerPosition);
-                return false;
-            }
-        }
-
-        Vector3 referenceDirection = entryDirectionAxisMode
-            ? directionCancelEntryAxis
-            : -GetViewerBackDirection(ballCenter);
-        if (referenceDirection.sqrMagnitude <= 0.0000001f)
-        {
-            RecordPinchDirectionDebug(
-                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
-                false,
-                windowMovement,
-                Vector3.zero,
-                false,
-                referenceDirection,
-                float.NaN,
-                true,
-                centerSpeed,
-                ballCenter,
-                viewerPosition);
-            return false;
-        }
-
-        Vector3 currentDirection = entryDirectionAxisMode
-            ? windowMovement.normalized
-            : SmoothPinchDirectionDirection(windowMovement.normalized);
-        Vector3 comparisonDirection = Vector3.zero;
-        Vector3 comparisonReferenceDirection = Vector3.zero;
-        if (entryDirectionAxisMode)
-        {
-            comparisonDirection = currentDirection.normalized;
-            comparisonReferenceDirection = referenceDirection.normalized;
-        }
-        else
-        {
-            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
-            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
-            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
-            {
-                RecordPinchDirectionDebug(
-                    "zero_horizontal_direction",
-                    false,
-                    windowMovement,
-                    comparisonDirection,
-                    true,
-                    comparisonReferenceDirection,
-                    float.NaN,
-                    false,
-                    centerSpeed,
-                    ballCenter,
-                    viewerPosition);
-                return false;
-            }
-        }
-
-        float angle = entryDirectionAxisMode
-            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
-            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
-        bool anglePass = entryDirectionAxisMode
-            ? angle <= GetPinchDirectionAngleThreshold()
-            : angle <= GetPinchDirectionAngleThreshold();
-        RecordPinchDirectionDebug(
-            entryDirectionAxisMode
-                ? (anglePass ? "inside_cancel_cone" : "angle_outside_cancel_cone")
-                : (anglePass ? "pass" : "angle_too_large"),
-            anglePass,
-            windowMovement,
-            comparisonDirection,
-            true,
-            comparisonReferenceDirection,
-            angle,
-            anglePass,
-            centerSpeed,
-            ballCenter,
-            viewerPosition);
-        return anglePass;
-    }
-
-    private Vector3 GetPinchDirectionWindowMovement(out float centerSpeed)
-    {
-        centerSpeed = 0f;
-        Study3JointSample sample = Acce.CurrentJointSample;
-        if (sample.Sequence <= 0 || !TryGetPinchDirectionCenterPoint(out Vector3 currentCenter))
-        {
-            ResetPinchDirectionObstacleTrackingWindow();
-            return Vector3.zero;
-        }
-        if (pinchDirectionHasSample && sample.SourceId == pinchDirectionSourceId
-            && sample.TrackingEpoch == pinchDirectionEpoch && sample.Sequence <= pinchDirectionSequence)
-            return Vector3.zero;
-        double elapsed = sample.Timestamp - pinchDirectionPreviousSampleTime;
-        if (pinchDirectionHasSample && (sample.SourceId != pinchDirectionSourceId
-            || sample.TrackingEpoch != pinchDirectionEpoch || elapsed <= 0
-            || elapsed > Study3MotionTracker.MaximumAgeSeconds))
-        {
-            ResetPinchDirectionObstacleTrackingWindow();
-        }
-        float sampleDelta = pinchDirectionHasSample ? (float)elapsed : 0f;
-        pinchDirectionHasSample = true;
-        pinchDirectionSourceId = sample.SourceId;
-        pinchDirectionEpoch = sample.TrackingEpoch;
-        pinchDirectionSequence = sample.Sequence;
-        pinchDirectionPreviousSampleTime = sample.Timestamp;
-
-        if (IsEntryDirectionAxisMode())
-        {
-            if (!pinchDirectionHasRawPosition)
-            {
-                pinchDirectionPreviousRawPosition = currentCenter;
-                pinchDirectionHasRawPosition = true;
-                pinchDirectionLastAcceptedPosition = currentCenter;
-                pinchDirectionHasAcceptedPosition = true;
-                return Vector3.zero;
-            }
-
-            Vector3 rawMovement = currentCenter - pinchDirectionPreviousRawPosition;
-            centerSpeed = rawMovement.magnitude / sampleDelta;
-            pinchDirectionPreviousRawPosition = currentCenter;
-
-            if (centerSpeed < GetEntryDirectionCancelLowSpeedThreshold())
-            {
-                directionCancelLowSpeedMet = true;
-                return Vector3.zero;
-            }
-
-            if (!pinchDirectionHasAcceptedPosition)
-            {
-                pinchDirectionLastAcceptedPosition = currentCenter;
-                pinchDirectionHasAcceptedPosition = true;
-                return Vector3.zero;
-            }
-
-            Vector3 acceptedMovement = currentCenter - pinchDirectionLastAcceptedPosition;
-            pinchDirectionLastAcceptedPosition = currentCenter;
-            if (acceptedMovement.sqrMagnitude <= 0.0000001f)
-            {
-                return Vector3.zero;
-            }
-
-            int entryWindowFrameCount = GetPinchDirectionWindowFrameCount();
-            pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
-            pinchDirectionCenterTimeHistory.Enqueue(sample.Timestamp);
-            while (pinchDirectionCenterPositionHistory.Count > entryWindowFrameCount)
-            {
-                pinchDirectionCenterPositionHistory.Dequeue();
-                pinchDirectionCenterTimeHistory.Dequeue();
-            }
-
-            if (pinchDirectionCenterPositionHistory.Count < entryWindowFrameCount)
-            {
-                return Vector3.zero;
-            }
-
-            Vector3[] entryPositions = pinchDirectionCenterPositionHistory.ToArray();
-            Vector3 entryAverageDirection = Vector3.zero;
-            int entryValidSegmentCount = 0;
-            for (int i = 1; i < entryPositions.Length; i++)
-            {
-                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
-                if (segment.sqrMagnitude <= 0.0000001f)
-                {
-                    continue;
-                }
-
-                entryAverageDirection += segment.normalized;
-                entryValidSegmentCount++;
-            }
-
-            return entryValidSegmentCount > 0
-                ? entryAverageDirection / entryValidSegmentCount
-                : Vector3.zero;
-        }
-
-        int windowFrameCount = GetPinchDirectionWindowFrameCount();
-        pinchDirectionCenterPositionHistory.Enqueue(currentCenter);
-        pinchDirectionCenterTimeHistory.Enqueue(sample.Timestamp);
-
-        while (pinchDirectionCenterPositionHistory.Count > windowFrameCount)
-        {
-            pinchDirectionCenterPositionHistory.Dequeue();
-            pinchDirectionCenterTimeHistory.Dequeue();
-        }
-
-        Vector3[] positions = pinchDirectionCenterPositionHistory.ToArray();
-        double[] times = pinchDirectionCenterTimeHistory.ToArray();
-        float currentSegmentSpeed = 0f;
-        if (positions.Length >= 2)
-        {
-            Vector3 currentSegment = positions[positions.Length - 1] - positions[positions.Length - 2];
-            currentSegmentSpeed = currentSegment.magnitude / (float)(times[times.Length - 1] - times[times.Length - 2]);
-        }
-
-        if (pinchDirectionCenterPositionHistory.Count < windowFrameCount)
-        {
-            if (IsEntryDirectionAxisMode())
-            {
-                centerSpeed = currentSegmentSpeed;
-            }
-            return Vector3.zero;
-        }
-
-        Vector3 averageDirection = Vector3.zero;
-        float totalSegmentSpeed = 0f;
-        int validSegmentCount = 0;
-
-        for (int i = 1; i < positions.Length; i++)
-        {
-            Vector3 segment = positions[i] - positions[i - 1];
-            if (segment.sqrMagnitude <= 0.0000001f)
-            {
-                continue;
-            }
-
-            averageDirection += segment.normalized;
-            totalSegmentSpeed += segment.magnitude / (float)(times[i] - times[i - 1]);
-            validSegmentCount++;
-        }
-
-        if (validSegmentCount == 0)
-        {
-            return Vector3.zero;
-        }
-
-        centerSpeed = IsEntryDirectionAxisMode()
-            ? currentSegmentSpeed
-            : totalSegmentSpeed / validSegmentCount;
-        return averageDirection / validSegmentCount;
+        return EvaluateConsecutiveDirection(pinchDirectionAngleTracker, center, true, out _);
     }
 
     private bool TryGetPinchDirectionCenterPoint(out Vector3 centerPoint)
@@ -3796,20 +3510,6 @@ public partial class S2Obstacles : MonoBehaviour
 
         centerPoint = (indexTipPose.Position + thumbTipPose.Position) * 0.5f;
         return true;
-    }
-
-    private Vector3 SmoothPinchDirectionDirection(Vector3 currentDirection)
-    {
-        if (!pinchDirectionHasSmoothedDirection)
-        {
-            pinchDirectionSmoothedDirection = currentDirection;
-            pinchDirectionHasSmoothedDirection = true;
-            return pinchDirectionSmoothedDirection;
-        }
-
-        float alpha = GetPinchDirectionSmoothingAlpha();
-        pinchDirectionSmoothedDirection = Vector3.Slerp(pinchDirectionSmoothedDirection, currentDirection, alpha).normalized;
-        return pinchDirectionSmoothedDirection;
     }
 
     private void RecordPinchDirectionDebug(
@@ -3831,9 +3531,9 @@ public partial class S2Obstacles : MonoBehaviour
         }
 
         int windowFrameCount = GetPinchDirectionWindowFrameCount();
-        float minSpeed = GetPinchDirectionMinSpeedThreshold();
-        bool speedPass = minSpeed <= 0f || centerSpeed >= minSpeed;
-        bool windowReady = pinchDirectionCenterPositionHistory.Count >= windowFrameCount;
+        float minSpeed = Mathf.Max(0f, ballSpawner.directionCancelMinSpeed);
+        bool speedPass = pinchDirectionAngleTracker.SpeedPass;
+        bool windowReady = pinchDirectionAngleTracker.CancelPass;
         Vector3 centerPosition = GetCurrentPinchDirectionCenterForDebug();
 
         logWriter3.WriteDirectionDebug(
@@ -3846,7 +3546,7 @@ public partial class S2Obstacles : MonoBehaviour
             handInBall,
             pinchDirectionReentryRequired,
             pinchDirectionCancelTriggered,
-            pinchDirectionCenterPositionHistory.Count,
+            pinchDirectionAngleTracker.ConsecutiveMatches,
             windowFrameCount,
             windowReady,
             windowMovement,
@@ -3873,12 +3573,7 @@ public partial class S2Obstacles : MonoBehaviour
 
     private int GetPinchDirectionWindowFrameCount()
     {
-        if (ballSpawner == null)
-        {
-            return 10;
-        }
-
-        return Mathf.Max(2, ballSpawner.pinchDirectionWindowFrameCount);
+        return Study3DirectionConsecutiveTracker.RequiredFrames;
     }
 
     private float GetPinchDirectionAngleThreshold()
@@ -3898,26 +3593,6 @@ public partial class S2Obstacles : MonoBehaviour
         return Mathf.Clamp(ballSpawner.pinchDirectionCDAngleThreshold, 0f, 90f);
     }
 
-    private float GetPinchDirectionSmoothingAlpha()
-    {
-        if (ballSpawner == null)
-        {
-            return 0.25f;
-        }
-
-        return Mathf.Clamp01(ballSpawner.pinchDirectionSmoothingAlpha);
-    }
-
-    private float GetPinchDirectionMinSpeedThreshold()
-    {
-        if (ballSpawner == null)
-        {
-            return 0.05f;
-        }
-
-        return Mathf.Max(0f, ballSpawner.pinchDirectionMinSpeedThreshold);
-    }
-
     private bool IsEntryDirectionAxisMode()
     {
         if (ballSpawner == null || !ballSpawner.useEntryDirectionAxisForDirectionCancel)
@@ -3930,33 +3605,6 @@ public partial class S2Obstacles : MonoBehaviour
             || modeSelected == (int)BallSpawner.Mode.speedDirection
             || modeSelected == (int)BallSpawner.Mode.direction010
             || modeSelected == (int)BallSpawner.Mode.direction010Test;
-    }
-
-    private float GetEntryDirectionCancelLowSpeedThreshold()
-    {
-        return ballSpawner != null ? Mathf.Max(0f, ballSpawner.speedMinThreshold) : 0.05f;
-    }
-
-    private float GetEntryDirectionCancelHighSpeedThreshold()
-    {
-        if (ballSpawner == null)
-        {
-            return 0.05f;
-        }
-
-        return modeSelected == (int)BallSpawner.Mode.pinchDirection
-            ? GetPinchDirectionMinSpeedThreshold()
-            : GetDirection010MinSpeedThreshold();
-    }
-
-    private bool UpdateEntryDirectionCancelSpeedGate(float speed)
-    {
-        if (!IsEntryDirectionAxisMode())
-        {
-            return true;
-        }
-
-        return speed > GetEntryDirectionCancelHighSpeedThreshold();
     }
 
     private void CaptureDirectionCancelEntryAxisIfNeeded()
@@ -3973,11 +3621,6 @@ public partial class S2Obstacles : MonoBehaviour
         directionCancelEntryAxisCaptured = true;
     }
 
-    private static float GetDirectionAxisAngle(Vector3 movementDirection, Vector3 axisDirection)
-    {
-        return Vector3.Angle(movementDirection, axisDirection);
-    }
-
     private void ResetPinchDirectionObstacleCancelState()
     {
         pinchDirectionCancelTriggered = false;
@@ -3989,17 +3632,7 @@ public partial class S2Obstacles : MonoBehaviour
 
     private void ResetPinchDirectionObstacleTrackingWindow()
     {
-        pinchDirectionCenterPositionHistory.Clear();
-        pinchDirectionCenterTimeHistory.Clear();
-        pinchDirectionHasSample = false;
-        pinchDirectionPreviousSampleTime = 0;
-        pinchDirectionHasSmoothedDirection = false;
-        pinchDirectionSmoothedDirection = Vector3.zero;
-        directionCancelLowSpeedMet = false;
-        pinchDirectionHasRawPosition = false;
-        pinchDirectionPreviousRawPosition = Vector3.zero;
-        pinchDirectionHasAcceptedPosition = false;
-        pinchDirectionLastAcceptedPosition = Vector3.zero;
+        pinchDirectionAngleTracker.Reset();
     }
 
     private void ApplyDirectionCDArrowVisibility()
@@ -4477,9 +4110,13 @@ public partial class S2Obstacles : MonoBehaviour
         }
     }
 
+    private void BeginReleaseGestureTracking()
+    {
+        EnsureReleaseGesture().BeginRelease();
+    }
+
     private void ResetReleaseGestureTracking()
     {
-        // Reset the previous-frame distance when a new entry/exit cycle starts.
         EnsureReleaseGesture().ResetGesture();
     }
 
@@ -4656,7 +4293,7 @@ public partial class S2Obstacles : MonoBehaviour
 
     private void CheckReleaseTapCancel()
     {
-        // ReleaseGesture returns true when the per-frame finger-distance increase exceeds the threshold.
+        // Compare the current finger distances with the smallest distance seen while pending.
         if (EnsureReleaseGesture().CheckRelease())
         {
             TriggerFastTapCancel();
@@ -4892,254 +4529,47 @@ public partial class S2Obstacles : MonoBehaviour
     private bool IsDirection010CancelMovement(out bool directionDecisionReady)
     {
         directionDecisionReady = false;
-        if (ballSpawner == null || Acce == null)
+        if (ballSpawner == null || Acce == null || !Acce.IndexTipPoseValid)
         {
+            directionAngleTracker.Reset();
             return false;
         }
+        return EvaluateConsecutiveDirection(directionAngleTracker, Acce.IndexTipPose2.Position, false, out directionDecisionReady);
+    }
 
-        bool entryDirectionAxisMode = IsEntryDirectionAxisMode();
+    private bool EvaluateConsecutiveDirection(Study3DirectionConsecutiveTracker tracker, Vector3 position,
+        bool pinch, out bool directionDecisionReady)
+    {
+        directionDecisionReady = false;
         CaptureDirectionCancelEntryAxisIfNeeded();
+        bool axisMode = IsEntryDirectionAxisMode();
         Collider collider = GetComponent<Collider>();
         Vector3 ballCenter = collider != null ? collider.bounds.center : transform.position;
-        Vector3 viewerPosition = GetViewerPositionForDirectionDebug();
-        float currentSpeed = Acce.IndexVelocity.magnitude;
-        Vector3 windowMovement = GetDirection010WindowMovement();
-        bool speedGatePass = !entryDirectionAxisMode || UpdateEntryDirectionCancelSpeedGate(currentSpeed);
-        if (windowMovement.sqrMagnitude <= 0.0000001f)
+        Vector3 reference = axisMode ? directionCancelEntryAxis : -GetViewerBackDirection(ballCenter);
+        float threshold = pinch ? GetPinchDirectionAngleThreshold() : GetDirection010AngleThreshold();
+        Study3JointSample sample = Acce.CurrentJointSample;
+        var observation = tracker.Evaluate(sample.SourceId, sample.TrackingEpoch, sample.Sequence, sample.Timestamp,
+            position, reference, !axisMode, threshold, ballSpawner.directionCancelMinSpeed, Study3MotionTracker.MaximumAgeSeconds);
+        if (observation == Study3DirectionConsecutiveTracker.Observation.Duplicate) return false;
+        bool angleObserved = observation == Study3DirectionConsecutiveTracker.Observation.AngleChecked;
+        bool cancel = angleObserved && tracker.CancelPass;
+        directionDecisionReady = angleObserved && tracker.AllowSpeedConfirmation;
+        string reason = !angleObserved ? observation.ToString()
+            : cancel ? "four_consecutive_cancel_angles"
+            : tracker.AnglePass ? "angle_in_cone_collecting"
+            : "angle_outside_cancel_cone";
+        Vector3 viewer = GetViewerPositionForDirectionDebug();
+        if (pinch)
         {
-            RecordDirection010Debug(
-                entryDirectionAxisMode && currentSpeed < GetEntryDirectionCancelLowSpeedThreshold()
-                    ? "entry_direction_frame_skipped_low_speed"
-                    : entryDirectionAxisMode && !speedGatePass
-                        ? "direction_speed_below_threshold"
-                    : direction010PositionHistory.Count < GetDirection010WindowFrameCount() ? "not_ready_window" : "zero_window_movement",
-                false,
-                windowMovement,
-                Vector3.zero,
-                false,
-                entryDirectionAxisMode ? directionCancelEntryAxis : Vector3.zero,
-                float.NaN,
-                false,
-                ballCenter,
-                viewerPosition);
-            return false;
-        }
-
-        float minSpeed = GetDirection010MinSpeedThreshold();
-        if (entryDirectionAxisMode)
-        {
-            if (!speedGatePass)
-            {
-                RecordDirection010Debug(
-                    "direction_speed_below_threshold",
-                    false,
-                    windowMovement,
-                    Vector3.zero,
-                    false,
-                    directionCancelEntryAxis,
-                    float.NaN,
-                    false,
-                    ballCenter,
-                    viewerPosition);
-                return false;
-            }
-        }
-        else if (minSpeed > 0f && Acce.IndexVelocity.sqrMagnitude < minSpeed * minSpeed)
-        {
-            RecordDirection010Debug(
-                "speed_too_low",
-                false,
-                windowMovement,
-                Vector3.zero,
-                false,
-                Vector3.zero,
-                float.NaN,
-                false,
-                ballCenter,
-                viewerPosition);
-            return false;
-        }
-
-        Vector3 referenceDirection = entryDirectionAxisMode
-            ? directionCancelEntryAxis
-            : -GetViewerBackDirection(ballCenter);
-        if (referenceDirection.sqrMagnitude <= 0.0000001f)
-        {
-            RecordDirection010Debug(
-                entryDirectionAxisMode ? "no_entry_direction_axis" : "no_viewer_direction",
-                false,
-                windowMovement,
-                Vector3.zero,
-                false,
-                referenceDirection,
-                float.NaN,
-                true,
-                ballCenter,
-                viewerPosition);
-            return false;
-        }
-
-        Vector3 currentDirection = entryDirectionAxisMode
-            ? windowMovement.normalized
-            : SmoothDirection010Direction(windowMovement.normalized);
-        Vector3 comparisonDirection = Vector3.zero;
-        Vector3 comparisonReferenceDirection = Vector3.zero;
-        if (entryDirectionAxisMode)
-        {
-            comparisonDirection = currentDirection.normalized;
-            comparisonReferenceDirection = referenceDirection.normalized;
+            RecordPinchDirectionDebug(reason, cancel, tracker.Movement, tracker.Direction, angleObserved,
+                tracker.Reference, tracker.Angle, tracker.AnglePass, tracker.Speed, ballCenter, viewer);
         }
         else
         {
-            bool hasSmoothedHorizontal = TryProjectHorizontalDirection(currentDirection, out comparisonDirection);
-            bool hasReferenceHorizontal = TryProjectHorizontalDirection(referenceDirection, out comparisonReferenceDirection);
-            if (!hasSmoothedHorizontal || !hasReferenceHorizontal)
-            {
-                RecordDirection010Debug(
-                    "zero_horizontal_direction",
-                    false,
-                    windowMovement,
-                    comparisonDirection,
-                    true,
-                    comparisonReferenceDirection,
-                    float.NaN,
-                    false,
-                    ballCenter,
-                    viewerPosition);
-                return false;
-            }
+            RecordDirection010Debug(reason, cancel, tracker.Movement, tracker.Direction, angleObserved,
+                tracker.Reference, tracker.Angle, tracker.AnglePass, ballCenter, viewer);
         }
-
-        float angle = entryDirectionAxisMode
-            ? GetDirectionAxisAngle(comparisonDirection, comparisonReferenceDirection)
-            : Vector3.Angle(comparisonDirection, comparisonReferenceDirection);
-        directionDecisionReady = true;
-        bool anglePass = entryDirectionAxisMode
-            ? angle <= GetDirection010AngleThreshold()
-            : angle <= GetDirection010AngleThreshold();
-        RecordDirection010Debug(
-            entryDirectionAxisMode
-                ? (anglePass ? "inside_cancel_cone" : "angle_outside_cancel_cone")
-                : (anglePass ? "pass" : "angle_too_large"),
-            anglePass,
-            windowMovement,
-            comparisonDirection,
-            true,
-            comparisonReferenceDirection,
-            angle,
-            anglePass,
-            ballCenter,
-            viewerPosition);
-        return anglePass;
-    }
-
-    private Vector3 SmoothDirection010Direction(Vector3 currentDirection)
-    {
-        if (!direction010HasSmoothedDirection)
-        {
-            direction010SmoothedDirection = currentDirection;
-            direction010HasSmoothedDirection = true;
-            return direction010SmoothedDirection;
-        }
-
-        float alpha = GetDirection010SmoothingAlpha();
-        // alpha 越小越平滑但反应越慢；越大越接近当前窗口方向。
-        direction010SmoothedDirection = Vector3.Slerp(direction010SmoothedDirection, currentDirection, alpha).normalized;
-        return direction010SmoothedDirection;
-    }
-
-    private Vector3 GetDirection010WindowMovement()
-    {
-        Vector3 currentPosition = Acce.IndexTipPose2.Position;
-        if (IsEntryDirectionAxisMode())
-        {
-            if (!direction010HasAcceptedPosition)
-            {
-                direction010LastAcceptedPosition = Acce.IndexTipPose1.Position;
-                direction010HasAcceptedPosition = true;
-            }
-
-            if (Acce.IndexVelocity.magnitude < GetEntryDirectionCancelLowSpeedThreshold())
-            {
-                directionCancelLowSpeedMet = true;
-                return Vector3.zero;
-            }
-
-            Vector3 currentMovement = currentPosition - direction010LastAcceptedPosition;
-            direction010LastAcceptedPosition = currentPosition;
-            if (currentMovement.sqrMagnitude <= 0.0000001f)
-            {
-                return Vector3.zero;
-            }
-
-            int entryWindowFrameCount = GetDirection010WindowFrameCount();
-            direction010PositionHistory.Enqueue(currentPosition);
-            while (direction010PositionHistory.Count > entryWindowFrameCount)
-            {
-                direction010PositionHistory.Dequeue();
-            }
-
-            if (direction010PositionHistory.Count < entryWindowFrameCount)
-            {
-                return Vector3.zero;
-            }
-
-            Vector3[] entryPositions = direction010PositionHistory.ToArray();
-            Vector3 entryAverageDirection = Vector3.zero;
-            int entryValidSegmentCount = 0;
-            for (int i = 1; i < entryPositions.Length; i++)
-            {
-                Vector3 segment = entryPositions[i] - entryPositions[i - 1];
-                if (segment.sqrMagnitude <= 0.0000001f)
-                {
-                    continue;
-                }
-
-                entryAverageDirection += segment.normalized;
-                entryValidSegmentCount++;
-            }
-
-            return entryValidSegmentCount > 0
-                ? entryAverageDirection / entryValidSegmentCount
-                : Vector3.zero;
-        }
-
-        int windowFrameCount = GetDirection010WindowFrameCount();
-        direction010PositionHistory.Enqueue(currentPosition);
-
-        while (direction010PositionHistory.Count > windowFrameCount)
-        {
-            direction010PositionHistory.Dequeue();
-        }
-
-        if (direction010PositionHistory.Count < windowFrameCount)
-        {
-            return Vector3.zero;
-        }
-
-        // Average per-segment directions instead of relying on a single oldest/current endpoint pair.
-        Vector3[] positions = direction010PositionHistory.ToArray();
-        Vector3 averageDirection = Vector3.zero;
-        int validSegmentCount = 0;
-
-        for (int i = 1; i < positions.Length; i++)
-        {
-            Vector3 segment = positions[i] - positions[i - 1];
-            if (segment.sqrMagnitude <= 0.0000001f)
-            {
-                continue;
-            }
-
-            averageDirection += segment.normalized;
-            validSegmentCount++;
-        }
-
-        if (validSegmentCount == 0)
-        {
-            return Vector3.zero;
-        }
-
-        return averageDirection / validSegmentCount;
+        return cancel;
     }
 
     private void RecordDirection010Debug(
@@ -5160,10 +4590,10 @@ public partial class S2Obstacles : MonoBehaviour
         }
 
         int windowFrameCount = GetDirection010WindowFrameCount();
-        float minSpeed = GetDirection010MinSpeedThreshold();
-        float indexSpeed = Acce.IndexVelocity.magnitude;
-        bool speedPass = minSpeed <= 0f || indexSpeed >= minSpeed;
-        bool windowReady = direction010PositionHistory.Count >= windowFrameCount;
+        float minSpeed = Mathf.Max(0f, ballSpawner.directionCancelMinSpeed);
+        float indexSpeed = directionAngleTracker.Speed;
+        bool speedPass = directionAngleTracker.SpeedPass;
+        bool windowReady = directionAngleTracker.CancelPass;
         Vector3 indexPosition = Acce.IndexTipPose2.Position;
 
         logWriter3.WriteDirectionDebug(
@@ -5176,7 +4606,7 @@ public partial class S2Obstacles : MonoBehaviour
             handInBall,
             direction010ReentryRequired,
             direction010CancelTriggered,
-            direction010PositionHistory.Count,
+            directionAngleTracker.ConsecutiveMatches,
             windowFrameCount,
             windowReady,
             windowMovement,
@@ -5209,31 +4639,9 @@ public partial class S2Obstacles : MonoBehaviour
         return viewerTransform != null ? viewerTransform.position : Vector3.zero;
     }
 
-    private bool TryProjectHorizontalDirection(Vector3 direction, out Vector3 horizontalDirection)
-    {
-        horizontalDirection = new Vector3(direction.x, 0f, direction.z);
-        if (horizontalDirection.sqrMagnitude <= 0.0000001f)
-        {
-            horizontalDirection = Vector3.zero;
-            return false;
-        }
-
-        horizontalDirection.Normalize();
-        return true;
-    }
-
     private int GetDirection010WindowFrameCount()
     {
-        if (ballSpawner == null)
-        {
-            return 10;
-        }
-
-        return Mathf.Max(
-            2,
-            IsDirection010TestMode()
-                ? ballSpawner.direction010TestWindowFrameCount
-                : ballSpawner.direction010WindowFrameCount);
+        return Study3DirectionConsecutiveTracker.RequiredFrames;
     }
 
     private float GetDirection010AngleThreshold()
@@ -5256,33 +4664,6 @@ public partial class S2Obstacles : MonoBehaviour
         return Mathf.Clamp(threshold, 0f, 90f);
     }
 
-    private float GetDirection010SmoothingAlpha()
-    {
-        if (ballSpawner == null)
-        {
-            return 0.25f;
-        }
-
-        return Mathf.Clamp01(
-            IsDirection010TestMode()
-                ? ballSpawner.direction010TestSmoothingAlpha
-                : ballSpawner.direction010SmoothingAlpha);
-    }
-
-    private float GetDirection010MinSpeedThreshold()
-    {
-        if (ballSpawner == null)
-        {
-            return 0.05f;
-        }
-
-        return Mathf.Max(
-            0f,
-            IsDirection010TestMode()
-                ? ballSpawner.direction010TestMinSpeedThreshold
-                : ballSpawner.direction010MinSpeedThreshold);
-    }
-
     private bool IsDirection010TestMode()
     {
         return modeSelected == (int)BallSpawner.Mode.direction010Test;
@@ -5298,21 +4679,15 @@ public partial class S2Obstacles : MonoBehaviour
         direction010ReentryRequired = false;
         directionCancelEntryAxisCaptured = false;
         directionCancelEntryAxis = Vector3.zero;
-        directionCancelLowSpeedMet = false;
         ResetDirection010ObstacleTrackingWindow();
         ResetRainbowState();
     }
 
     private void ResetDirection010ObstacleTrackingWindow()
     {
-        direction010PositionHistory.Clear();
-        direction010HasSmoothedDirection = false;
-        direction010SmoothedDirection = Vector3.zero;
-        directionCancelLowSpeedMet = false;
+        directionAngleTracker.Reset();
         directionCancelEntryAxisCaptured = false;
         directionCancelEntryAxis = Vector3.zero;
-        direction010HasAcceptedPosition = false;
-        direction010LastAcceptedPosition = Vector3.zero;
     }
 
     private void ShowRainbowArc()

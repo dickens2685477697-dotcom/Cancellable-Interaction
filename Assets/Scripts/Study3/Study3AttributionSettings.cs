@@ -12,7 +12,6 @@ public static class Study3AttributionSettings
         p["studyTaskCondition"] = host.studyTaskCondition;
         p["studyDeclaredIntent"] = host.studyDeclaredIntent;
         p["executionMode"] = host.executionMode;
-        p["samplingRateHz"] = host.samplingRateHz;
         p["LogSessionTimestamp"] = host.LogSessionTimestamp;
         p["modeSelected"] = host.modeSelected;
         p["targetSelectionMode"] = host.targetSelectionMode;
@@ -29,6 +28,10 @@ public static class Study3AttributionSettings
         p["directionCancelConeLength"] = host.directionCancelConeLength;
         p["useEntryDirectionAxisForDirectionCancel"] = host.useEntryDirectionAxisForDirectionCancel;
         p["entryDirectionConeHalfAngle"] = host.entryDirectionConeHalfAngle;
+        p["directionCancelRule"] = "four_consecutive_angles_min_speed_v2";
+        p["directionCancelRequiredFrames"] = 4;
+        p["directionCancelSpeedGateEnabled"] = true;
+        p["directionCancelMinSpeed"] = Mathf.Max(0f, host.directionCancelMinSpeed);
         p["direction010CDAngleThreshold"] = host.direction010CDAngleThreshold;
         p["direction010SmoothingAlpha"] = host.direction010SmoothingAlpha;
         p["direction010MinSpeedThreshold"] = host.direction010MinSpeedThreshold;
@@ -43,6 +46,7 @@ public static class Study3AttributionSettings
         p["direction010TestWindowFrameCount"] = host.direction010TestWindowFrameCount;
         p["swing010CancelAngleThreshold"] = host.swing010CancelAngleThreshold;
         p["releaseDistanceDeltaThreshold"] = host.releaseDistanceDeltaThreshold;
+        p["releaseDistanceRule"] = "pending_minimum_reopening_v2";
         p["reactReleaseIndexSpeedThreshold"] = host.reactReleaseIndexSpeedThreshold;
         p["speedMinThreshold"] = host.speedMinThreshold;
         p["speedMaxThreshold"] = host.speedMaxThreshold;

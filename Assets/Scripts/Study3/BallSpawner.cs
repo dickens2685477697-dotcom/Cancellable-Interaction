@@ -153,10 +153,6 @@ using System;
      [Tooltip("Study3Experiment 运行原实验流程；IntroPreview 只提供参数和手部状态，不生成实验目标。")]
      public ExecutionMode executionMode = ExecutionMode.Study3Experiment;
 
-     [Header("采样设置")]
-     [InspectorName("Sampling Rate (Hz)"), Min(1f)]
-     [Tooltip("Study3Experiment 的全局 FixedUpdate 频率，单位 Hz；影响物理步和 trajectory 轨迹日志。MRTK 手部运动计算使用实际更新接收间隔，其更新频率不由此设置决定。")]
-     public float samplingRateHz = 50f;
      private string logSessionTimestamp;
      public string LogSessionTimestamp => logSessionTimestamp
          ?? (logSessionTimestamp = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss"));
@@ -191,12 +187,16 @@ using System;
      [Tooltip("指尖取消方向锥体的显示长度，单位米。")]
      public float directionCancelConeLength = 0.15f;
      [InspectorName("Use Entry Direction Axis")]
-     [Tooltip("开启后，Direction相关模式使用绝对垂直于菲茨环平面的世界-Z单侧取消方向锥体；低于Speed-min-Threshold的帧不计入方向窗口，累计到对应Direction Window Frame Count后，以窗口平均方向进行取消判定。")]
+     [Tooltip("开启后，Direction相关模式使用世界-Z单侧取消方向锥体；连续4次有效手部更新的速度和运动方向均满足条件时取消。")]
      public bool useEntryDirectionAxisForDirectionCancel = false;
      [InspectorName("Entry Direction Cone Half Angle")]
      [Range(0f, 180f)]
      [Tooltip("Use Entry Direction Axis开启时的单侧取消锥体半角；当前方向与菲茨环平面世界-Z法线的夹角小于或等于该值时满足方向取消条件，单位度。")]
      public float entryDirectionConeHalfAngle = 45f;
+     [Header("Direction取消共用参数")]
+     [InspectorName("Direction Cancel Minimum Speed (m/s)"), Min(0f)]
+     [Tooltip("所有Direction模式共用的最低速度过滤，单位米/秒；低于阈值会中断连续4次角度判定。") ]
+     public float directionCancelMinSpeed = 0.05f;
      [Header("Direction正式实验参数")]
      [UnityEngine.Serialization.FormerlySerializedAs("direction010ParallelAngleThreshold")]
      [UnityEngine.Serialization.FormerlySerializedAs("direction010PerpendicularAngleThreshold")]
@@ -238,8 +238,9 @@ using System;
      public int direction010TestWindowFrameCount = 10;
      [Tooltip("010-Swing取消阈值：进入010-Time触发阶段后，食指尖-手腕连线方向变化达到该角度即取消，单位度；大于180时禁用")]
      public float swing010CancelAngleThreshold = 35f;
-     // Inspector threshold for 010-Release cancellation. The value is a delta per frame in meters.
-     [Tooltip("010-Release取消阈值：大拇指到中指/无名指/小拇指平均距离的单帧增量，单位米")]
+     [InspectorName("Release Cancel Distance Threshold (m)")]
+     [Min(0f)]
+     [Tooltip("Release取消阈值：拇指到中指、无名指和小指指尖的平均距离，相对于本次Pending期间最小距离的增加量，单位米。")]
      public float releaseDistanceDeltaThreshold = 0.01f;
      [UnityEngine.Serialization.FormerlySerializedAs("reactReleaseWristSpeedThreshold")]
      [Tooltip("React Release触发阈值：React Tap速度/加速度条件满足后，食指速度达到该值才触发，单位米/秒")]
@@ -449,74 +450,12 @@ using System;
      public bool isReact = false;
      private readonly Queue<ErrorTriggerSnapshot> pendingErrorTriggerSnapshots = new Queue<ErrorTriggerSnapshot>();
      private DirectionCancelConeVisual directionCancelConeVisual;
-     private bool samplingRateApplied;
-     private float originalFixedDeltaTime;
-     private float appliedFixedDeltaTime;
 
      #region Unity Lifecycle Methods
 
     private void Awake()
      {
          ApplySelectionSettings();
-     }
-
-     private void OnEnable()
-     {
-         ApplySamplingRate();
-     }
-
-     private void Update()
-     {
-         ApplySamplingRate();
-     }
-
-     private void OnDisable()
-     {
-         RestoreSamplingRate();
-     }
-
-     private void ApplySamplingRate()
-     {
-         if (executionMode != ExecutionMode.Study3Experiment)
-         {
-             RestoreSamplingRate();
-             return;
-         }
-
-         ValidateSamplingRate();
-         if (!samplingRateApplied)
-         {
-             originalFixedDeltaTime = Time.fixedDeltaTime;
-             samplingRateApplied = true;
-         }
-
-         appliedFixedDeltaTime = 1f / samplingRateHz;
-         if (Time.fixedDeltaTime != appliedFixedDeltaTime)
-         {
-             Time.fixedDeltaTime = appliedFixedDeltaTime;
-         }
-     }
-
-     private void RestoreSamplingRate()
-     {
-         if (!samplingRateApplied)
-         {
-             return;
-         }
-
-         if (Mathf.Approximately(Time.fixedDeltaTime, appliedFixedDeltaTime))
-         {
-             Time.fixedDeltaTime = originalFixedDeltaTime;
-         }
-
-         samplingRateApplied = false;
-     }
-
-     private void ValidateSamplingRate()
-     {
-         samplingRateHz = float.IsNaN(samplingRateHz) || float.IsInfinity(samplingRateHz)
-             ? 50f
-             : Mathf.Max(1f, samplingRateHz);
      }
 
     void Start()
@@ -1281,7 +1220,6 @@ using System;
      /// </summary>
      private void OnValidate()
      {
-         ValidateSamplingRate();
          ApplySelectionSettings();
          ID = ClampID(ID);
          if (!Application.isPlaying)

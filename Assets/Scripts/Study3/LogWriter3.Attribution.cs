@@ -109,6 +109,7 @@ public partial class LogWriter3
         if (owner == null || !attributionBridges.TryGetValue(owner.GetInstanceID(), out Study3AttributionBridge bridge)) return;
         bridge.Decision("direction_check", new Dictionary<string, object> {
             { "reason", failReason }, { "finalCancelPass", finalPass }, { "sampleCount", sampleCount },
+            { "directionRule", "four_consecutive_angles_min_speed_v2" }, { "speedGateEnabled", true },
             { "windowSamples", window }, { "windowReady", ready }, { "angle", angle }, { "angleThreshold", angleLimit },
             { "anglePass", anglePass }, { "speed", speed }, { "minSpeedThreshold", minSpeed }, { "speedPass", speedPass },
             { "windowMovement", Study3AttributionCapture.Vector(movement) }, { "direction", Study3AttributionCapture.Vector(direction) },

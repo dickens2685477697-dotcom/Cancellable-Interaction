@@ -20,13 +20,14 @@ MonoBehaviour:
   directionCancelConeLength: 0.15
   useEntryDirectionAxisForDirectionCancel: 1
   entryDirectionConeHalfAngle: 45
+  directionCancelMinSpeed: 0.05
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.65
-  direction010MinSpeedThreshold: 0.196
+  direction010MinSpeedThreshold: 0.197
   direction010WindowFrameCount: 4
   pinchDirectionCDAngleThreshold: 20
   pinchDirectionSmoothingAlpha: 0.65
-  pinchDirectionMinSpeedThreshold: 0.196
+  pinchDirectionMinSpeedThreshold: 0.197
   pinchDirectionWindowFrameCount: 4
   direction010TestCDAngleThreshold: 20
   direction010TestSmoothingAlpha: 0.65
@@ -35,8 +36,8 @@ MonoBehaviour:
   swing010CancelAngleThreshold: 20
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
-  speedMinThreshold: 0.067
-  speedMaxThreshold: 0.375
+  speedMinThreshold: 0.05
+  speedMaxThreshold: 0.25
   longPressTimeThreshold: 0.7
   magicTap2SpeedThreshold: 0.2
   magicTap2AccelerationThreshold: 11.661
@@ -48,11 +49,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 12.043
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
-  ixdlAccelerationThreshold: 0.375
+  ixdlAccelerationThreshold: 2
   ixdlInputSpeedMin: 0
   ixdlInputSpeedMax: 0.6
-  ixdlSpeedThresholdMin: 0.02
-  ixdlSpeedThresholdMax: 0.03
+  ixdlSpeedThresholdMin: 0.05
+  ixdlSpeedThresholdMax: 0.06
   pinchReleaseOpeningSpeedThreshold: 0.2
   pinchEndDistanceThreshold: 0.024
   pinchThumbSwipeDistanceThreshold: 0.013

@@ -330,7 +330,7 @@ public partial class LogWriter3 : MonoBehaviour
         string context = FormattableString.Invariant(
             $"{Time.frameCount},{Time.timeAsDouble:R},{Time.fixedTimeAsDouble:R},{Time.realtimeSinceStartupAsDouble:R},{ballSpawner.currentCaseNumber},{ballSpawner.currentRoundID},{ballSpawner.modeSelected},{EscapeCsv(source)},{sourceInstanceId},{ballIndex},{ballKind},{isMine},{started}");
         string settingsAndPosition = FormattableString.Invariant(
-            $",{record.AccelerationThreshold:R},{Time.fixedDeltaTime:R},{ballSpawner.samplingRateHz:R},{indexPosition.x:R},{indexPosition.y:R},{indexPosition.z:R},{Study3MotionTracker.RulesVersion},{motion.Motion.LastSample.Sequence},{motion.Motion.LastSample.Timestamp:R},{motion.Motion.DeltaTime:R},{Study3MotionTracker.TimestampKind},2");
+            $",{record.AccelerationThreshold:R},{Time.fixedDeltaTime:R},{float.NaN:R},{indexPosition.x:R},{indexPosition.y:R},{indexPosition.z:R},{Study3MotionTracker.RulesVersion},{motion.Motion.LastSample.Sequence},{motion.Motion.LastSample.Timestamp:R},{motion.Motion.DeltaTime:R},{Study3MotionTracker.TimestampKind},2");
         ixdlTriggerWriter.WriteLine(context + "," + record.ToCsv() + settingsAndPosition);
         ixdlTriggerWriter.Flush();
     }
@@ -374,15 +374,20 @@ public partial class LogWriter3 : MonoBehaviour
         }
     }
 
-    private string CurrentMotionRules => ballSpawner.modeSelected == BallSpawner.Mode.magicTap2
-        || ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic ? Study3MotionTracker.RulesVersion : "legacy_other_mode";
+    // Original Magic Tap uses provider events too, but retains signed speed-change
+    // acceleration and its own contact/confirmation rules rather than shared-provider-v3.
+    private string CurrentMotionRules => ballSpawner.modeSelected == BallSpawner.Mode.magicTap
+        ? "magictap-provider-v1"
+        : ballSpawner.modeSelected == BallSpawner.Mode.magicTap2
+            || ballSpawner.modeSelected == BallSpawner.Mode.ixdlDynamic ? Study3MotionTracker.RulesVersion : "legacy_other_mode";
 
-    private string CurrentMotionTimestampKind => CurrentMotionRules == Study3MotionTracker.RulesVersion
+    private string CurrentMotionTimestampKind => ballSpawner.modeSelected == BallSpawner.Mode.magicTap
+        || CurrentMotionRules == Study3MotionTracker.RulesVersion
         ? Study3MotionTracker.TimestampKind : "legacy_fixed_step";
 
     private string SessionConfiguration()
     {
-        return FormattableString.Invariant($"{ballSpawner.modeSelected},{ballSpawner.samplingRateHz:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{ballSpawner.direction010SmoothingAlpha:R},{ballSpawner.direction010MinSpeedThreshold:R},{ballSpawner.direction010WindowFrameCount},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R},{ballSpawner.ixdlAccelerationThreshold:R},{ballSpawner.ixdlInputSpeedMin:R},{ballSpawner.ixdlInputSpeedMax:R},{ballSpawner.ixdlSpeedThresholdMin:R},{ballSpawner.ixdlSpeedThresholdMax:R},{CurrentMotionRules},{CurrentMotionTimestampKind}");
+        return FormattableString.Invariant($"{ballSpawner.modeSelected},{float.NaN:R},{Time.fixedDeltaTime:R},{1f / Time.fixedDeltaTime:R},{Time.timeScale:R},{ballSpawner.speedMinThreshold:R},{ballSpawner.speedMaxThreshold:R},{ballSpawner.pinchDwellCancelTime:R},{ballSpawner.direction010CDAngleThreshold:R},{float.NaN:R},{Mathf.Max(0f, ballSpawner.directionCancelMinSpeed):R},{Study3DirectionConsecutiveTracker.RequiredFrames},{ballSpawner.useEntryDirectionAxisForDirectionCancel},{ballSpawner.entryDirectionConeHalfAngle:R},{ballSpawner.releaseDistanceDeltaThreshold:R},{ballSpawner.pinchWristTiltCancelAngleThreshold:R},{ballSpawner.targetSelectionMode},{ballSpawner.enableMineBall},{ballSpawner.enabledOb},{ballSpawner.enable_preview},{ballSpawner.magicTap2SpeedThreshold:R},{ballSpawner.magicTap2AccelerationThreshold:R},{ballSpawner.ixdlAccelerationThreshold:R},{ballSpawner.ixdlInputSpeedMin:R},{ballSpawner.ixdlInputSpeedMax:R},{ballSpawner.ixdlSpeedThresholdMin:R},{ballSpawner.ixdlSpeedThresholdMax:R},{CurrentMotionRules},{CurrentMotionTimestampKind}");
     }
 
     private void WriteSessionSettings(string eventName)
@@ -530,6 +535,11 @@ public partial class LogWriter3 : MonoBehaviour
         directionSpeedMinLog = met
             ? "met=1;frame=" + Mathf.Max(0, frameFromEntry)
             : "met=0;frame=NA";
+    }
+
+    public void RecordDirectionSpeedFilter(float threshold)
+    {
+        directionSpeedMinLog = "filter=1;threshold=" + Mathf.Max(0f, threshold).ToString("R", CultureInfo.InvariantCulture);
     }
 
     public void WriteDirectionDebug(

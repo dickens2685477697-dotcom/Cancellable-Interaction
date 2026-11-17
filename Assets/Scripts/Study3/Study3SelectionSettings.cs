@@ -12,10 +12,16 @@ public sealed class Study3SelectionSettings : ScriptableObject
     public bool showDirectionCDArrow;
     public bool showDirectionCancelCone;
     [Min(0.01f)] public float directionCancelConeLength = 0.15f;
+    [Tooltip("Direction取消要求连续4次有效手部更新的速度和方向均满足条件。开启时参考世界-Z，关闭时参考朝向用户的水平面方向。")]
     public bool useEntryDirectionAxisForDirectionCancel;
     [Range(0f, 180f)] public float entryDirectionConeHalfAngle = 45f;
 
-    [Header("Direction正式实验参数")]
+    [Header("Direction取消共用参数")]
+    [InspectorName("Direction Cancel Minimum Speed (m/s)"), Min(0f)]
+    [Tooltip("所有Direction模式共用：连续手部更新的三维位移除以实际采样间隔，速度低于该值时中断4次连续角度判定。Speed选择的准备与确认速度单独配置。") ]
+    public float directionCancelMinSpeed = 0.05f;
+
+    [Header("Direction共用参数 (Speed / Dwell / 010)")]
     [InspectorName("Direction Cancel Angle Threshold (°)")]
     [Tooltip("Speed-Direction、Dwell-Direction 和 010-direction 共用。Use Entry Direction Axis关闭时，食指移动方向与朝向用户方向在水平面内的夹角小于或等于此值时取消，单位度；开启时改用Entry Direction Cone Half Angle。")]
     public float direction010CDAngleThreshold = 20f;
@@ -43,6 +49,8 @@ public sealed class Study3SelectionSettings : ScriptableObject
 
     [Header("Time, release, and speed")]
     public float swing010CancelAngleThreshold = 35f;
+    [InspectorName("Release Cancel Distance Threshold (m)"), Min(0f)]
+    [Tooltip("Release取消阈值：拇指到中指、无名指和小指指尖的平均距离，相对于本次Pending期间最小距离的增加量，单位米。")]
     public float releaseDistanceDeltaThreshold = 0.01f;
     public float reactReleaseIndexSpeedThreshold = 0.2f;
     public float speedMinThreshold = 0.05f;
@@ -125,6 +133,7 @@ public sealed class Study3SelectionSettings : ScriptableObject
         target.directionCancelConeLength = directionCancelConeLength;
         target.useEntryDirectionAxisForDirectionCancel = useEntryDirectionAxisForDirectionCancel;
         target.entryDirectionConeHalfAngle = entryDirectionConeHalfAngle;
+        target.directionCancelMinSpeed = directionCancelMinSpeed;
 
         target.direction010CDAngleThreshold = direction010CDAngleThreshold;
         target.direction010SmoothingAlpha = direction010SmoothingAlpha;

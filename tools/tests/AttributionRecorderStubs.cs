@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 namespace UnityEngine {
+ public static class Mathf { public static float Max(float a,float b) => Math.Max(a,b); }
  public struct Vector3 { public float x,y,z; public Vector3(float x,float y,float z){this.x=x;this.y=y;this.z=z;} }
  public static class Time { public static int frameCount; public static double timeAsDouble,fixedTimeAsDouble,realtimeSinceStartupAsDouble; public static float fixedDeltaTime=.02f,timeScale=1; }
  public static class Application { public static string version="test",buildGUID="test-guid",unityVersion="stub",platform="test"; }
@@ -21,6 +22,7 @@ public class BallSpawner {
  public int ObNum;
  public bool able_to_process;
  public float direction010CDAngleThreshold;
+ public float directionCancelMinSpeed;
  public float direction010MinSpeedThreshold;
  public float direction010SmoothingAlpha;
  public float direction010TestCDAngleThreshold;

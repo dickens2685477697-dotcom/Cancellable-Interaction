@@ -1028,7 +1028,6 @@ MonoBehaviour:
   studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 0}
   executionMode: 0
-  samplingRateHz: 50
   modeSelected: 0
   targetSelectionMode: 0
   able_to_process: 1
@@ -1995,6 +1994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 0
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -2286,8 +2286,7 @@ MonoBehaviour:
   studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
   executionMode: 0
-  samplingRateHz: 50
-  modeSelected: 2
+  modeSelected: 28
   targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
@@ -2304,11 +2303,11 @@ MonoBehaviour:
   entryDirectionConeHalfAngle: 45
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.65
-  direction010MinSpeedThreshold: 0.196
+  direction010MinSpeedThreshold: 0.197
   direction010WindowFrameCount: 4
   pinchDirectionCDAngleThreshold: 20
   pinchDirectionSmoothingAlpha: 0.65
-  pinchDirectionMinSpeedThreshold: 0.196
+  pinchDirectionMinSpeedThreshold: 0.197
   pinchDirectionWindowFrameCount: 4
   direction010TestCDAngleThreshold: 20
   direction010TestSmoothingAlpha: 0.65
@@ -2317,8 +2316,8 @@ MonoBehaviour:
   swing010CancelAngleThreshold: 20
   releaseDistanceDeltaThreshold: 0.01
   reactReleaseIndexSpeedThreshold: 0.2
-  speedMinThreshold: 0.067
-  speedMaxThreshold: 0.375
+  speedMinThreshold: 0.05
+  speedMaxThreshold: 0.25
   longPressTimeThreshold: 0.7
   magicTap2SpeedThreshold: 0.2
   magicTap2AccelerationThreshold: 11.661
@@ -2330,11 +2329,11 @@ MonoBehaviour:
   dynamicStopAccelMax: 12.043
   dynamicStopAccelGain: 3
   dynamicStopHistorySeconds: 0.18
-  ixdlAccelerationThreshold: 0.375
+  ixdlAccelerationThreshold: 2
   ixdlInputSpeedMin: 0
   ixdlInputSpeedMax: 0.6
-  ixdlSpeedThresholdMin: 0.02
-  ixdlSpeedThresholdMax: 0.03
+  ixdlSpeedThresholdMin: 0.05
+  ixdlSpeedThresholdMax: 0.06
   pinchReleaseOpeningSpeedThreshold: 0.2
   pinchEndDistanceThreshold: 0.024
   pinchThumbSwipeDistanceThreshold: 0.013
@@ -2934,6 +2933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006ad6c32c0b17544a0babe26cbe084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMrtkJointUpdates: 1
   InEvent_Bool:
     m_PersistentCalls:
       m_Calls: []
@@ -3576,7 +3576,6 @@ MonoBehaviour:
   studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 0}
   executionMode: 0
-  samplingRateHz: 50
   modeSelected: 0
   targetSelectionMode: 0
   able_to_process: 1

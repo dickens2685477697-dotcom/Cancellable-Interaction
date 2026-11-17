@@ -60,6 +60,11 @@ PowerShell 示例：
 
 Pinch 检查使用 Pinch.Update 已经取得的两指位置、距离和查询有效性。即使旧算法在无效姿态下仍使用回退值，也会同时记录 `distanceUsed` 与有效性，避免把该回退值当作可靠物理距离。Release 在其旧工作状态清空前复制距离增量、张开速度、历史是否准备和判断结果。腕倾记录旧查询实际得到的角度。
 
+2026-11-17 起，010-Release、Dwell-Release、Speed-Release 与 React Release 的三指张开取消使用 `pending_minimum_reopening_v2`：进入 Pending 后持续记录拇指到中指、无名指和小指指尖平均距离的最小值；当前平均距离比该最小值增加达到 `releaseDistanceDeltaThreshold` 即取消。010 和 Dwell 在接触时开始，Speed 在低速准备时开始，React Release 在 React 准备时开始。初始手指追踪无效时取 Pending 内首次有效样本，短暂缺少某个指尖样本不重置已取得的最小值；接触结束或手部追踪中断会重置。新日志的 `releaseDistanceDelta` 是相对 Pending 期间最小值的增量，另有 `releaseBaselineDistance`（Pending 起始值）、`releaseMinimumDistance`、`releaseCurrentDistance` 和 `releaseDistanceRule`。此前 `pending_average_increase_v1` 以 Pending 起始值为参照，更旧日志则使用相邻读取之间的差值；三种口径不能直接混用。Pinch Release Cancel 仍使用独立的食指—拇指张开速度规则。
+
+
+2026-11-17 Direction 更新：`four_consecutive_angles_min_speed_v2` 采用所有 Direction 模式共用的最低速度过滤，默认 **0.05 m/s**；以连续独立手部更新的三维位移除以实际时间间隔计算速度。连续四次速度达到阈值且夹角处于取消范围内才取消；低速、静止、无效、失追或角度不符合会中断取消计数。Pinch-Direction 使用拇指和食指中心点，其余使用食指尖。旧 Direction 专属速度、平滑和位置窗口参数保留为历史序列化值，不参与新判定。Speed-Direction 的 Direction 取消从接触目标开始检测；Speed 选择的低速准备和高速确认仍独立生效。`direction-debug` 记录实际速度、共用最低速度和速度过滤结果，`sampleCount` 为连续满足条件次数，`windowFrameCount=4`；`windowMovement`/`smoothedDirection` 记录当前位移与未平滑的单位方向。归因数据记录新规则名、有效门槛及连续计数，`session-settings` 的方向速度字段记录当前最低速度，平滑字段为 NaN。连续采样属于应用收到的手部更新，不等同于固定显示帧率。旧的 `four_consecutive_angles_no_speed_v1` 描述的是本次恢复速度过滤前的历史规则。
+
 Dynamic Stop 另记录实际接受测量的序号、时间、dt、近期速度和当次两个阈值；测量间隔不足时的保留值标为 `sampleAccepted=false`。Magic2/IxDL 延续共同运动样本的来源、序号、接收时间、接受状态及严格比较门限；不会把接收时间称为硬件采集时间。
 
 ### attribution-entry-summary.csv：一次进入／尝试的一条最终记录

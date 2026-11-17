@@ -1,4 +1,3 @@
-using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,16 +34,28 @@ internal static class Study3DirectionInspectorGUI
             return;
         }
 
+        if (property.name == "releaseDistanceDeltaThreshold")
+        {
+            EditorGUILayout.PropertyField(property, new GUIContent("Release Cancel Distance Threshold (m)",
+                "Pending期间持续记录拇指到中指、无名指、小指指尖平均距离的最小值；张开使平均距离相对该最小值增加达到阈值时取消，单位米。"), true);
+            return;
+        }
+
         if (property.name == "useEntryDirectionAxisForDirectionCancel")
         {
             EditorGUILayout.PropertyField(property, new GUIContent("Use Entry Direction Axis",
-                "开启：世界-Z单侧取消锥体，使用窗口平均方向；关闭：朝向用户的水平面方向，使用方向平滑。"), true);
-            EditorGUILayout.HelpBox(selectedMode.HasValue
-                ? IsDirectionMode(selectedMode.Value)
-                    ? "以下Direction参数按当前模式和方向轴开关标注。灰色字段保留保存值，但不参与当前判定。"
-                    : "当前Mode Selected不是Direction模式；Direction参数当前不参与判定。切换到对应模式后，生效状态会自动更新。"
-                : "以下按方向算法分支标注生效状态；具体使用哪组参数取决于Spawner的Mode Selected。灰色字段保留保存值，但不参与该分支判定。",
+                "开启：使用世界-Z单侧取消方向；关闭：使用朝向用户的水平面方向。"), true);
+            EditorGUILayout.HelpBox(
+                "Direction取消：连续4次有效手部更新的三维速度均达到最低速度且移动方向均在取消角度内；低速、静止、失追或角度不符合会中断计数。Speed-Direction的速度准备及确认阈值仍单独生效。",
                 MessageType.Info);
+            return;
+        }
+
+        if (property.name == "directionCancelMinSpeed")
+        {
+            bool applies = !selectedMode.HasValue || IsDirectionMode(selectedMode.Value);
+            DrawWithStatus(property, "Direction Cancel Minimum Speed (m/s)", applies, false, true,
+                "所有Direction模式共用：连续更新的三维位移除以实际间隔；低于阈值时中断4次连续角度判定。Speed选择的速度阈值单独配置。");
             return;
         }
 
@@ -81,6 +92,9 @@ internal static class Study3DirectionInspectorGUI
         }
 
         string suffix = property.name.Substring(prefix.Length);
+        // Retain serialized legacy values but do not expose inactive speed,
+        // smoothing or window settings as if they still affected cancellation.
+        if (suffix == "MinSpeedThreshold" || suffix == "SmoothingAlpha" || suffix == "WindowFrameCount") return;
         string labelPrefix = group == "formal" ? "Direction" : group == "pinch" ? "Pinch Direction" : "Direction Test";
         string label;
         bool requiresLegacyBranch = false;
@@ -90,12 +104,6 @@ internal static class Study3DirectionInspectorGUI
                 label = labelPrefix + " Cancel Angle Threshold (°)";
                 requiresLegacyBranch = true;
                 break;
-            case "SmoothingAlpha":
-                label = labelPrefix + " Smoothing Alpha";
-                requiresLegacyBranch = true;
-                break;
-            case "MinSpeedThreshold": label = labelPrefix + " Min Speed Threshold (m/s)"; break;
-            case "WindowFrameCount": label = labelPrefix + " Window Frame Count"; break;
             default:
                 EditorGUILayout.PropertyField(property, true);
                 return;
@@ -106,13 +114,9 @@ internal static class Study3DirectionInspectorGUI
             requiresLegacyBranch && axis.hasMultipleDifferentValues,
             !requiresLegacyBranch || !axis.boolValue,
             requiresLegacyBranch
-                ? "仅在Use Entry Direction Axis关闭时生效；开启时使用Entry Direction Cone Half Angle和窗口平均方向。"
-                : "本组适用于" + GetGroupModes(group) + "；速度门槛和窗口帧数在两种方向算法分支中都生效。");
+                ? "仅在Use Entry Direction Axis关闭时生效；开启时使用Entry Direction Cone Half Angle。"
+                : "本组适用于" + GetGroupModes(group) + "。");
 
-        if (suffix == "WindowFrameCount" && usedByMode)
-        {
-            DrawSummary(source, axis, group, prefix, selectedMode);
-        }
     }
 
     private static void DrawWithStatus(SerializedProperty property, string label, bool usedByMode,
@@ -125,44 +129,10 @@ internal static class Study3DirectionInspectorGUI
         {
             tooltip += "\n当前Mode Selected不使用此参数。";
         }
-        using (new EditorGUI.DisabledScope(!usedByMode || (!mixedBranch && !enabledByBranch)))
+        using (new EditorGUI.DisabledScope(!mixedBranch && !enabledByBranch))
         {
             EditorGUILayout.PropertyField(property, new GUIContent(label + "（" + status + "）", tooltip), true);
         }
-    }
-
-    private static void DrawSummary(SerializedObject source, SerializedProperty axis, string group,
-        string prefix, BallSpawner.Mode? selectedMode)
-    {
-        string summary = "适用模式：" + GetGroupModes(group) + "。\n";
-        if (axis.hasMultipleDifferentValues)
-        {
-            summary += "所选对象的方向轴开关不同，角度和平滑参数按各对象的开关分别生效。";
-        }
-        else if (axis.boolValue)
-        {
-            summary += "当前取消角：" + Format(source.FindProperty("entryDirectionConeHalfAngle"), 0f, 180f)
-                + "°，使用Entry Direction Cone Half Angle。方向取窗口各段单位方向的平均；本组Cancel Angle和平滑系数不参与计算。";
-        }
-        else
-        {
-            summary += "当前取消角：" + Format(source.FindProperty(prefix + "CDAngleThreshold"), 0f, 90f)
-                + "°，使用本组Cancel Angle Threshold。方向投影到水平面并平滑，Alpha："
-                + Format(source.FindProperty(prefix + "SmoothingAlpha"), 0f, 1f) + "。";
-        }
-        if (selectedMode == BallSpawner.Mode.speedDirection)
-        {
-            summary += "\nSpeed-Direction：速度≤" + Format(source.FindProperty("speedMinThreshold"), 0f, float.MaxValue)
-                + " m/s进入准备；方向判定就绪且在取消方向范围外、速度≥"
-                + Format(source.FindProperty("speedMaxThreshold"), 0f, float.MaxValue) + " m/s才允许确认。";
-        }
-        EditorGUILayout.HelpBox(summary, MessageType.Info);
-    }
-
-    private static string Format(SerializedProperty property, float minimum, float maximum)
-    {
-        return property.hasMultipleDifferentValues ? "各对象不同"
-            : Mathf.Clamp(property.floatValue, minimum, maximum).ToString("0.###", CultureInfo.InvariantCulture);
     }
 
     private static bool IsDirectionMode(BallSpawner.Mode mode)

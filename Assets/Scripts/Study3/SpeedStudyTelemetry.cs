@@ -31,7 +31,7 @@ public sealed class SpeedStudySnapshot
             Realtime = UnityEngine.Time.realtimeSinceStartupAsDouble,
             InFixedStep = UnityEngine.Time.inFixedTimeStep,
             FixedDeltaTime = UnityEngine.Time.fixedDeltaTime,
-            RequestedHz = host.samplingRateHz,
+            RequestedHz = float.NaN,
             TimeScale = UnityEngine.Time.timeScale,
             Case = host.currentCaseNumber, Id = host.currentRoundID, Mode = mode,
             Source = source, SourceInstanceId = owner.GetInstanceID(),
