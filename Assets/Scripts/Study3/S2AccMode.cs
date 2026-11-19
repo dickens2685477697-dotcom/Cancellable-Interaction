@@ -246,6 +246,7 @@ public partial class S2AccMode : MonoBehaviour
         if (UsesPendingMineBallCue && Player != null)
         {
             Player.ChangeOpacityBack();
+            Player.ClearYellowCueTiming();
             HideModeReadyRing();
         }
 
@@ -627,6 +628,17 @@ public partial class S2AccMode : MonoBehaviour
     private void CompleteSelection()
     {
         logWriter3.pendingStateTimeSeconds = pendingStateTimer.ElapsedSeconds;
+        logWriter3.cancelCueToSuccessSeconds = null;
+        if (UsesPendingMineBallCue && isMineBall && logWriter3.successfully_Canceled)
+        {
+            double? cueFrame = Player != null ? Player.YellowCueFrameRealtime : null;
+            double elapsed = Time.realtimeSinceStartupAsDouble - (cueFrame ?? double.NaN);
+            if (elapsed >= 0 && !double.IsInfinity(elapsed))
+            {
+                logWriter3.cancelCueToSuccessSeconds = elapsed;
+            }
+        }
+
         AttributionBeforeComplete();
         if (!standalonePreview)
         {

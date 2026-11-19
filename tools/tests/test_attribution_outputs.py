@@ -103,6 +103,27 @@ class AttributionOutputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             read_trial_file(path)
 
+    def test_cancel_duration_requires_explicit_column_in_schema_four(self):
+        path = self.folder / "session-trial-results-v2.csv"
+        fields = PREFIX + TRIGGER + ["sessionId", "trialSequence", "targetPositionsJson",
+                                     "pending state time", "schemaVersion", "cancelCueToSuccessSeconds"]
+        values = ["NA"] * len(fields)
+        values[fields.index("schemaVersion")] = "4"
+        values[fields.index("cancelTime")] = "0.8"
+        values[fields.index("cancelCueToSuccessSeconds")] = "0.32"
+        save_csv(path, fields, [values])
+        row = read_trial_file(path)[0]
+        self.assertEqual(row["cancelCueToSuccessSeconds"], "0.32")
+        self.assertEqual(row["cancelTime"], "0.8")
+
+        save_csv(path, fields[:-1], [values[:-1]])
+        with self.assertRaisesRegex(ValueError, "cue-to-cancel duration missing"):
+            read_trial_file(path)
+        values[fields.index("schemaVersion")] = "3"
+        save_csv(path, fields[:-1], [values[:-1]])
+        self.assertEqual(read_trial_file(path)[0]["cancelCueToSuccessSeconds"], "NA")
+        self.assertEqual(read_trial_file(self.legacy(), prefer_v2=False)[0]["cancelCueToSuccessSeconds"], "NA")
+
     def test_quality_keeps_abort_unknown_and_unclosed_separate(self):
         fields = ["sessionId", "entrySequence", "event", "outcome", "experimentStarted", "entryStartObserved", "trackingLossObserved", "taskResult", "mode", "source", "expectedAction"]
         rows = [

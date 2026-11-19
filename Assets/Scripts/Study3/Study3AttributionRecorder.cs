@@ -176,14 +176,15 @@ public sealed class Study3AttributionRecorder : IDisposable
         return result;
     }
 
-    public void WriteNormalized(string legacyRow, double? pendingStateSeconds = null)
+    public void WriteNormalized(string legacyRow, double? pendingStateSeconds = null, double? cancelCueToSuccessSeconds = null)
     {
         if (closed) return;
         List<string> raw = Study3LogEncoding.ParseCsv(legacyRow);
         if (raw.Count < 26) throw new FormatException("Legacy result is shorter than the trial prefix.");
         bool mine = raw[19].Equals("True", StringComparison.OrdinalIgnoreCase);
         string expected = Expected(mine);
-        results.WriteLine(Study3LegacyTrialCsv.NormalizeWithPendingState(legacyRow, host.tatgetPos.Count, pendingStateSeconds,
+        results.WriteLine(Study3LegacyTrialCsv.NormalizeWithTiming(legacyRow, host.tatgetPos.Count,
+            pendingStateSeconds, cancelCueToSuccessSeconds,
             session, TrialSequence, SettingsRevision, expected, lastAction,
             Study3AttributionLedger.TaskResult(expected, lastAction, lastAction == "unknown" ? "aborted" : "completed"),
             host.studyParticipantId, host.studyProtocolVersion, host.studyBlockLabel, host.studyTaskCondition, host.studyDeclaredIntent, Study3LegacyTrialCsv.ResultSchemaVersion));

@@ -37,7 +37,8 @@ public static class AttributionRecorderFileChecks
         var header = Study3LogEncoding.ParseCsv(resultLines[0]); var result = Study3LogEncoding.ParseCsv(resultLines[1]);
         require(resultLines.Length == 2 && header.Count == result.Count && header.Distinct().Count() == header.Count, "Normalized result width/uniqueness wrong");
         require(header.IndexOf("pending state time") + 1 == header.IndexOf("triggerTime")
-            && result[header.IndexOf("pending state time")] == "0.075" && result[header.IndexOf("schemaVersion")] == "3", "Pending latency column/order/version incorrect");
+            && result[header.IndexOf("pending state time")] == "0.075" && result[header.IndexOf("schemaVersion")] == "4", "Pending latency column/order/version incorrect");
+        require(result[header.IndexOf("cancelCueToSuccessSeconds")] == "NA", "Normal selection must not get a cue-to-cancel duration");
         require(result[header.IndexOf("triggerSpeed")] == "NA", "Target coordinate became a trigger value");
         require(result[header.IndexOf("participantId")] == "p2" && result[header.IndexOf("taskResult")] == "success", "Trial metadata/result missing");
         var entries = File.ReadAllLines(Path.Combine(directory, "file-test-attribution-entry-summary.csv"));

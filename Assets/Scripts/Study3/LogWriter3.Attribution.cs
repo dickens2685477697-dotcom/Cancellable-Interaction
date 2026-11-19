@@ -49,7 +49,8 @@ public partial class LogWriter3
     public void BeginAttributionTrial(string reason) => WithAttribution(r => r.BeginTrial(reason));
     public void AbortAttributionTrial(string reason) { if (attributionRecorder != null) WithAttribution(r => r.AbortTrial(reason)); }
     private void CompleteAttributionTrial() => WithAttribution(r => r.CompleteTrial());
-    private void WriteAttributionNormalized(string row) => WithAttribution(r => r.WriteNormalized(row, pendingStateTimeSeconds));
+    private void WriteAttributionNormalized(string row) =>
+        WithAttribution(r => r.WriteNormalized(row, pendingStateTimeSeconds, cancelCueToSuccessSeconds));
     private void TickAttribution() => WithAttribution(r => r.Tick());
     private void FlushAttribution() { if (attributionRecorder != null) WithAttribution(r => r.Flush()); }
     private void AttributionMarker(string kind) => WithAttribution(r => r.Marker(kind));

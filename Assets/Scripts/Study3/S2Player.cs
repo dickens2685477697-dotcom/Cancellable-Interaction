@@ -24,6 +24,8 @@ public class S2Player : MonoBehaviour
     private BallSpawner ballSpawner;
     private S2AccMode accMode;
     private Coroutine mineBallRevealDelayCoroutine;
+    private Coroutine yellowCueFrameCoroutine;
+    internal double? YellowCueFrameRealtime { get; private set; }
     private int mineBallRevealDelayVersion = 0;
     private bool mineBallRevealDelayElapsed = false;
     private bool pendingMineBallCueRequested;
@@ -132,6 +134,7 @@ public class S2Player : MonoBehaviour
             return;
         }
 
+        ClearYellowCueTiming();
         ApplyMineBallMaterial(isMineBall ? shallowYellowBall : shallowGreenBall);
         pendingMineBallCueRequested = true;
     }
@@ -151,13 +154,13 @@ public class S2Player : MonoBehaviour
         if (!ShouldDelayMineBallReveal())
         {
             CancelMineBallRevealDelay();
-            gameObject.GetComponent<MeshRenderer>().material = material;
+            SetMineBallMaterial(material);
             return;
         }
 
         if (mineBallRevealDelayElapsed)
         {
-            gameObject.GetComponent<MeshRenderer>().material = material;
+            SetMineBallMaterial(material);
             return;
         }
 
@@ -195,13 +198,54 @@ public class S2Player : MonoBehaviour
         mineBallRevealDelayElapsed = true;
         if (pendingMineBallRevealMaterial != null)
         {
-            gameObject.GetComponent<MeshRenderer>().material = pendingMineBallRevealMaterial;
+            SetMineBallMaterial(pendingMineBallRevealMaterial);
         }
         mineBallRevealDelayCoroutine = null;
     }
 
+    private void SetMineBallMaterial(Material material)
+    {
+        var renderer = GetComponent<MeshRenderer>();
+        renderer.material = material;
+        if (accMode != null && accMode.UsesPendingMineBallCue && accMode.isMineBall
+            && material == shallowYellowBall && material != null
+            && !YellowCueFrameRealtime.HasValue && yellowCueFrameCoroutine == null)
+        {
+            yellowCueFrameCoroutine = StartCoroutine(RecordYellowCueFrame(renderer, material));
+        }
+    }
+
+    private IEnumerator RecordYellowCueFrame(MeshRenderer renderer, Material cueMaterial)
+    {
+        var endOfFrame = new WaitForEndOfFrame();
+        while (true)
+        {
+            yield return endOfFrame;
+            if (renderer == null || !renderer.enabled || renderer.sharedMaterial != cueMaterial)
+            {
+                break;
+            }
+
+            if (renderer.isVisible)
+            {
+                YellowCueFrameRealtime = Time.realtimeSinceStartupAsDouble;
+                break;
+            }
+        }
+
+        yellowCueFrameCoroutine = null;
+    }
+
+    internal void ClearYellowCueTiming() => YellowCueFrameRealtime = null;
+
     private void CancelMineBallRevealDelay()
     {
+        if (yellowCueFrameCoroutine != null)
+        {
+            StopCoroutine(yellowCueFrameCoroutine);
+            yellowCueFrameCoroutine = null;
+        }
+
         pendingMineBallCueRequested = false;
         mineBallRevealDelayVersion++;
         mineBallRevealDelayElapsed = false;
@@ -216,5 +260,6 @@ public class S2Player : MonoBehaviour
     private void OnDisable()
     {
         CancelMineBallRevealDelay();
+        ClearYellowCueTiming();
     }
 }
