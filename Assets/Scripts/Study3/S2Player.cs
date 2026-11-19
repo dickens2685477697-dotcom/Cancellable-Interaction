@@ -26,6 +26,7 @@ public class S2Player : MonoBehaviour
     private Coroutine mineBallRevealDelayCoroutine;
     private int mineBallRevealDelayVersion = 0;
     private bool mineBallRevealDelayElapsed = false;
+    private bool pendingMineBallCueRequested;
     private Material pendingMineBallRevealMaterial;
     private void Start()
     {
@@ -124,7 +125,28 @@ public class S2Player : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().material = redBall;
     }
 
+    internal void RevealPendingMineBallCue(bool isMineBall)
+    {
+        if (pendingMineBallCueRequested)
+        {
+            return;
+        }
+
+        ApplyMineBallMaterial(isMineBall ? shallowYellowBall : shallowGreenBall);
+        pendingMineBallCueRequested = true;
+    }
+
     private void RevealMineBallMaterial(Material material)
+    {
+        if (accMode != null && accMode.UsesPendingMineBallCue)
+        {
+            return;
+        }
+
+        ApplyMineBallMaterial(material);
+    }
+
+    private void ApplyMineBallMaterial(Material material)
     {
         if (!ShouldDelayMineBallReveal())
         {
@@ -180,6 +202,7 @@ public class S2Player : MonoBehaviour
 
     private void CancelMineBallRevealDelay()
     {
+        pendingMineBallCueRequested = false;
         mineBallRevealDelayVersion++;
         mineBallRevealDelayElapsed = false;
         pendingMineBallRevealMaterial = null;

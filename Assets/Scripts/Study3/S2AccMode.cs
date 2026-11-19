@@ -144,7 +144,60 @@ public partial class S2AccMode : MonoBehaviour
         pendingStateTimer.Contact(finger, inside, Time.timeAsDouble);
     }
 
-    private void RecordPendingStateEntry() => pendingStateTimer.EnterPending(Time.timeAsDouble);
+    internal bool UsesPendingMineBallCue
+    {
+        get
+        {
+            if (ballSpawner == null || !ballSpawner.enableMineBall ||
+                ballSpawner.executionMode != BallSpawner.ExecutionMode.Study3Experiment)
+            {
+                return false;
+            }
+
+            switch ((BallSpawner.Mode)modeSelected)
+            {
+                case BallSpawner.Mode.pinchReleaseTrigger:
+                case BallSpawner.Mode.pinchDwell:
+                case BallSpawner.Mode.pinchDirection:
+                case BallSpawner.Mode.pinchThumbSwipe:
+                case BallSpawner.Mode.dwell:
+                case BallSpawner.Mode.dwellRelease:
+                case BallSpawner.Mode.dwellDirection:
+                case BallSpawner.Mode.speed:
+                case BallSpawner.Mode.speedDwell:
+                case BallSpawner.Mode.speedRelease:
+                case BallSpawner.Mode.speedDirection:
+                case BallSpawner.Mode.release010:
+                case BallSpawner.Mode.time010:
+                case BallSpawner.Mode.direction010:
+                case BallSpawner.Mode.contact010:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+    private void RecordPendingStateEntry()
+    {
+        pendingStateTimer.EnterPending(Time.timeAsDouble);
+        if (UsesPendingMineBallCue && Player != null)
+        {
+            Player.RevealPendingMineBallCue(isMineBall);
+        }
+    }
+
+    private void RecordReactPendingStateEntry()
+    {
+        if (UsesPendingMineBallCue)
+        {
+            ShowModeReadyRing();
+        }
+        else
+        {
+            RecordPendingStateEntry();
+        }
+    }
 
     private void InitializePendingStateObservation()
     {
@@ -190,6 +243,12 @@ public partial class S2AccMode : MonoBehaviour
     private void OnLegacyMotionInterrupted()
     {
         pendingStateTimer.Reset();
+        if (UsesPendingMineBallCue && Player != null)
+        {
+            Player.ChangeOpacityBack();
+            HideModeReadyRing();
+        }
+
         AttributionMotionUnavailable("tracking lost");
         handInBall = handInBall2 = inBall = false;
         speedReleaseMinSpeedMet = false;
@@ -2391,7 +2450,7 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
-                RecordPendingStateEntry();
+                RecordReactPendingStateEntry();
                 logWriter3.reactFrequency++;
                 fastTapReactTimestamp = Time.time;
                 logWriter3.reactTime = fastTapEntryTimestamp >= 0f
@@ -2526,10 +2585,8 @@ public partial class S2AccMode : MonoBehaviour
 
     public void SetReleaseTapMode()
     {
-        // Target-ball 010-Release:
-        // 1. Target contact starts pending and initializes the finger-distance minimum.
-        // 2. The folded-finger distance increase cancels while pending.
-        // 3. Enter ReactTap and leave without cancellation to confirm the hit.
+        // Target contact tracks the gesture; the cancellation experiment arms it at React readiness.
+        // A folded-finger distance increase cancels. Exiting after React otherwise commits.
         EnsureReleaseGesture();
 
         Acce.InEvent.AddListener(() =>
@@ -2615,7 +2672,12 @@ public partial class S2AccMode : MonoBehaviour
                 reactTap.initialAngle = reactTap.CalculateAngle_between_finger_wrist();
                 ballSpawner.isReact = true;
                 logWriter3.isReact = true;
-                RecordPendingStateEntry();
+                if (UsesPendingMineBallCue)
+                {
+                    BeginReleaseGestureTracking();
+                }
+
+                RecordReactPendingStateEntry();
                 logWriter3.reactFrequency++;
                 fastTapReactTimestamp = Time.time;
                 logWriter3.reactTime = fastTapEntryTimestamp >= 0f
@@ -2928,7 +2990,8 @@ public partial class S2AccMode : MonoBehaviour
         Acce.AfterOutEvent.AddListener(() =>
         {
             LogSpeedStudy("exit");
-            if (handInBall && !speedReleaseTriggered)
+            if (handInBall && !speedReleaseTriggered
+                && (!UsesPendingMineBallCue || speedReleaseMinSpeedMet))
             {
                 TriggerSpeedCancel(speedReleaseMinSpeedMet ? "contact transition" : "contact transition before speed-min");
             }
@@ -2992,7 +3055,7 @@ public partial class S2AccMode : MonoBehaviour
                 && !speedReleaseReentryRequired
                 && IsDirection010CancelMovement(out directionDecisionReady);
 
-            if (shouldCancelForDirection)
+            if (shouldCancelForDirection && (!UsesPendingMineBallCue || speedReleaseMinSpeedMet))
             {
                 HideModeReadyRing();
                 TriggerDirection010Cancel();
@@ -5325,6 +5388,11 @@ public partial class S2AccMode : MonoBehaviour
             if (indexSpeed <= Mathf.Max(0f, ballSpawner.speedMinThreshold))
             {
                 speedReleaseMinSpeedMet = true;
+                if (modeSelected == (int)BallSpawner.Mode.speedDwell && UsesPendingMineBallCue)
+                {
+                    fastTapReactTimestamp = Time.time;
+                }
+
                 LogSpeedStudy("armed");
                 ShowModeReadyRing();
                 if (modeSelected == (int)BallSpawner.Mode.speedRelease)
@@ -5435,8 +5503,9 @@ public partial class S2AccMode : MonoBehaviour
 
     private bool HasSpeedDwellTimedOut()
     {
-        return fastTapEntryTimestamp >= 0f
-            && Time.time - fastTapEntryTimestamp >= Mathf.Max(0f, ballSpawner.pinchDwellCancelTime);
+        float cancelStartTime = UsesPendingMineBallCue ? fastTapReactTimestamp : fastTapEntryTimestamp;
+        return cancelStartTime >= 0f
+            && Time.time - cancelStartTime >= Mathf.Max(0f, ballSpawner.pinchDwellCancelTime);
     }
 
     private void TriggerSpeedCancel(string cancelReason, bool requireReentry = false)
@@ -5793,7 +5862,9 @@ public partial class S2AccMode : MonoBehaviour
 
     private void ShowModeReadyRingOnIndexEntryIfNeeded()
     {
-        if (IsModeReadyRingOnIndexEntryMode())
+        bool waitForReact = UsesPendingMineBallCue
+            && (modeSelected == (int)BallSpawner.Mode.time010 || modeSelected == (int)BallSpawner.Mode.release010);
+        if (IsModeReadyRingOnIndexEntryMode() && !waitForReact)
         {
             ShowModeReadyRing();
         }
@@ -6102,7 +6173,7 @@ public partial class S2AccMode : MonoBehaviour
     private void CheckReleaseTapCancel()
     {
         // Compare the current finger distances with the smallest distance seen while pending.
-        if (EnsureReleaseGesture().CheckRelease())
+        if ((!UsesPendingMineBallCue || logWriter3.isReact) && EnsureReleaseGesture().CheckRelease())
         {
             TriggerFastTapCancel("release");
         }

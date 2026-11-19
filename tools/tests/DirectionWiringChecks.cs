@@ -23,6 +23,7 @@ public abstract class DirectionWiringHost {
     public DirectionTestLogger logWriter3=new DirectionTestLogger();
     public bool handInBall,handInBall2,inBall,canceled,speedReleaseMinSpeedMet,direction010CancelTriggered;
     public bool speedReleaseReentryRequired,direction010ReentryRequired,speedReleaseTriggered,isMineBall,triggered,selected,canceledByDirection;
+    public bool UsesPendingMineBallCue;
     public int ballIndex=1; public float fastTapEntryTimestamp,oldTime,currentSpeed;
     private long sequence; private Vector3 position;
     private readonly Study3DirectionConsecutiveTracker tracker=new Study3DirectionConsecutiveTracker();
@@ -81,5 +82,27 @@ public static class DirectionWiringChecks {
         for(int i=1;i<=3;i++) { h.Sample(0,-i*.002f,.3f); Require(!h.selected && !h.canceledByDirection,"Inside cone must wait through three matching angles"); }
         h.Sample(0,-.008f,.3f); Require(h.canceledByDirection && !h.selected,"Fourth cancel angle must win over high-speed selection");
     }
-    public static int Run() { count=0; Test(()=>new DirectionTargetWiringHost()); Test(()=>new DirectionObstacleWiringHost()); return count; }
+    static void TestPendingCancellation()
+    {
+        var host = new DirectionTargetWiringHost { UsesPendingMineBallCue = true };
+        host.Configure();
+        host.Sample(0, 0, .1f);
+        for (int i = 1; i <= 4; i++) host.Sample(0, -i * .002f, .1f);
+        Require(!host.canceledByDirection, "A target must reach Pending before an experiment cancellation");
+
+        host.Exit();
+        host.Sample(0, 0, .01f);
+        Require(host.speedReleaseMinSpeedMet, "Low-speed preparation must still arm the target");
+        for (int i = 1; i <= 4; i++) host.Sample(0, -i * .002f, .3f);
+        Require(host.canceledByDirection && !host.selected, "Direction must still cancel after Pending");
+    }
+
+    public static int Run()
+    {
+        count = 0;
+        Test(() => new DirectionTargetWiringHost());
+        Test(() => new DirectionObstacleWiringHost());
+        TestPendingCancellation();
+        return count;
+    }
 }
