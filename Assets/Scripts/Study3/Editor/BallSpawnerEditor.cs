@@ -5,6 +5,23 @@ using UnityEngine;
 [CanEditMultipleObjects]
 public sealed class BallSpawnerEditor : Editor
 {
+    private static readonly string[] PrimaryFieldNames =
+    {
+        "modeSelected",
+        "targetSelectionMode",
+        "able_to_process",
+        "enable_preview",
+        "enableMineBall",
+        "enableMineBallRevealDelay",
+        "mineBallRevealDelayTime",
+        "idLogicMode",
+        "ID",
+        "enabledOb",
+        "disableNonTargetBallTriggers",
+        "start",
+        "rotationDirection"
+    };
+
     private static readonly string[] SharedFieldNames =
     {
         "m_Script",
@@ -66,6 +83,13 @@ public sealed class BallSpawnerEditor : Editor
     {
         serializedObject.Update();
 
+        foreach (string fieldName in PrimaryFieldNames)
+        {
+            SerializedProperty primaryProperty = serializedObject.FindProperty(fieldName);
+            Study3DirectionInspectorGUI.DrawProperty(primaryProperty, GetSelectedMode());
+        }
+
+        EditorGUILayout.Space();
         SerializedProperty settingsProperty = serializedObject.FindProperty("SelectionSettings");
         EditorGUILayout.LabelField("Shared Selection Technique Settings", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(settingsProperty);
@@ -93,7 +117,8 @@ public sealed class BallSpawnerEditor : Editor
         while (property.NextVisible(enterChildren))
         {
             enterChildren = false;
-            if (System.Array.IndexOf(excludedFields, property.name) >= 0)
+            if (System.Array.IndexOf(PrimaryFieldNames, property.name) >= 0
+                || System.Array.IndexOf(excludedFields, property.name) >= 0)
             {
                 continue;
             }

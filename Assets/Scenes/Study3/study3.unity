@@ -1043,6 +1043,7 @@ MonoBehaviour:
   directionCancelConeLength: 0.15
   useEntryDirectionAxisForDirectionCancel: 0
   entryDirectionConeHalfAngle: 45
+  directionCancelMinSpeed: 0.05
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
@@ -2286,7 +2287,7 @@ MonoBehaviour:
   studyDeclaredIntent: unspecified
   SelectionSettings: {fileID: 11400000, guid: f21e7d0c4b6442d8b71cecd9d38b6a5e, type: 2}
   executionMode: 0
-  modeSelected: 28
+  modeSelected: 24
   targetSelectionMode: 1
   able_to_process: 1
   enable_preview: 0
@@ -2301,6 +2302,7 @@ MonoBehaviour:
   directionCancelConeLength: 0.15
   useEntryDirectionAxisForDirectionCancel: 1
   entryDirectionConeHalfAngle: 45
+  directionCancelMinSpeed: 0.05
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.65
   direction010MinSpeedThreshold: 0.197
@@ -3591,6 +3593,7 @@ MonoBehaviour:
   directionCancelConeLength: 0.15
   useEntryDirectionAxisForDirectionCancel: 0
   entryDirectionConeHalfAngle: 45
+  directionCancelMinSpeed: 0.05
   direction010CDAngleThreshold: 20
   direction010SmoothingAlpha: 0.25
   direction010MinSpeedThreshold: 0.05
