@@ -190,8 +190,12 @@ class LegacyContractTests(unittest.TestCase):
         fields = re.findall(r"public\s+(?:float|int|bool|BallSpawner\.RainbowArcPlacement)\s+(\w+)\s*(?:=|;)", shared)
         snapshot = (root / "Study3AttributionSettings.cs").read_text(encoding="utf-8")
         self.assertTrue(fields)
+        effective_expressions = {
+            "directionCancelMinSpeed": "Mathf.Max(0f, host.directionCancelMinSpeed)",
+        }
         for field in fields:
-            self.assertIn(f'p["{field}"] = host.{field};', snapshot, field)
+            expression = effective_expressions.get(field, f"host.{field}")
+            self.assertIn(f'p["{field}"] = {expression};', snapshot, field)
 
 
 if __name__ == "__main__":
