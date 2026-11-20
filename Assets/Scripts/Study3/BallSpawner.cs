@@ -164,7 +164,7 @@ using System;
      public bool able_to_process = true;
      public bool enable_preview = true;
      public bool enableMineBall = false;
-     [Tooltip("Mine Ball模式下，食指进入目标球后是否延迟显示黄球/绿球")]
+     [Tooltip("是否延迟显示黄球/绿球。实验二的15项技术从各自进入 Pending 时开始计时。")]
      public bool enableMineBallRevealDelay = false;
      [Tooltip("Mine Ball模式下，延迟显示黄球/绿球的时间阈值，单位秒")]
      public float mineBallRevealDelayTime = 0.5f;

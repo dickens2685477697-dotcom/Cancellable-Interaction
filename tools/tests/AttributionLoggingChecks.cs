@@ -117,17 +117,22 @@ public static class AttributionLoggingChecks
             Require(Study3LogEncoding.Json(new Dictionary<string, object> { { "x", double.NaN }, { "y", 1.25 } }) == "{\"x\":null,\"y\":1.25}", "Invalid JSON numbers or locale");
         }
         finally { CultureInfo.CurrentCulture = culture; }
-        var legacy = Enumerable.Repeat<object>("NA", 26).ToList(); legacy[21] = "cancel, \"quote\"";
+        var legacy = Enumerable.Repeat<object>("NA", 26).ToList(); legacy[18] = .5; legacy[21] = "cancel, \"quote\"";
         legacy.AddRange(new object[] { 0, 1.1, .537 });
         for (int i = 0; i < 16; i++) legacy.AddRange(new object[] { i * .01, 1.1, .537 });
         legacy.AddRange(new object[] { .02, .04, .03, .1 });
         string oldRow = Study3LogEncoding.Row(legacy.ToArray());
         Require(Study3LogEncoding.ParseCsv(oldRow).Count == 81, "Historical row fixture differs");
         var metadata = new object[] { "session", 1, 2, "select", "trigger", "success", "p2", "protocol", "block", "normal", "unspecified", Study3LegacyTrialCsv.ResultSchemaVersion };
-        string normalized = Study3LegacyTrialCsv.NormalizeWithPendingState(oldRow, 16, .125, metadata);
+        string normalized = Study3LegacyTrialCsv.NormalizeWithTiming(oldRow, 16, .125, .25, metadata);
         var columns = Study3LegacyTrialCsv.Header.Split(','); var normalizedValues = Study3LogEncoding.ParseCsv(normalized);
         Require(columns.Distinct().Count() == columns.Length && normalizedValues.Count == columns.Length, "Normalized schema width/uniqueness wrong");
-        Require(columns.Length == 47 && columns[17] == "pending state time" && columns[18] == "triggerTime", "Pending column must immediately precede triggerTime");
+        Require(columns.Length == 48 && columns[17] == "pending state time" && columns[18] == "triggerTime", "Pending column must immediately precede triggerTime");
+        Require(columns[19] == "cancelTime" && normalizedValues[19] == "0.5"
+            && columns[20] == "cancelCueToSuccessSeconds" && normalizedValues[20] == "0.25",
+            "Cue-to-cancel duration must be a separate value from legacy cancelTime");
+        Require(Study3LogEncoding.ParseCsv(Study3LegacyTrialCsv.NormalizeWithTiming(oldRow, 16, null, -1, metadata))[20] == "NA",
+            "A negative cue-to-cancel interval must remain missing");
         Require(normalizedValues[17] == "0.125", "Pending latency was not written in seconds");
         Require(normalizedValues[Array.IndexOf(columns, "triggerSpeed")] == "0.02", "Coordinate was misread as triggerSpeed");
         Require(normalizedValues[Array.IndexOf(columns, "triggerAcceleration")] == "0.1", "Trigger tail was not preserved");
